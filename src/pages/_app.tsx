@@ -1,6 +1,6 @@
 import { type AppType } from "next/dist/shared/lib/utils";
 import "../styles/globals.css";
-import { Inter, JetBrains_Mono } from "next/font/google";
+import { Inter, JetBrains_Mono, Syne } from "next/font/google";
 import { Theme } from "@/components/theme";
 import Layout from "@/components/layout";
 import { Toaster } from "sonner";
@@ -8,6 +8,12 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Provider } from "react-redux";
 import { store } from "@/lib/redux/store";
 import IsAuth from "@/components/isAuth";
+
+const display = Syne({
+  weight: "variable",
+  subsets: ["latin"],
+  variable: "--font-display",
+});
 
 const sans = Inter({
   weight: "variable",
@@ -28,6 +34,7 @@ const MyApp: AppType = ({ Component, pageProps }) => {
     <>
       <style jsx global>{`
         :root {
+          --font-display: ${display.style.fontFamily};
           --font-sans: ${sans.style.fontFamily};
           --font-mono: ${mono.style.fontFamily};
         }

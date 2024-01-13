@@ -31,9 +31,9 @@ const IsAuth: React.FC<{ children: React.ReactNode }> = ({ children }) => {
           }),
         );
       } catch (error) {
-        if (!openPaths.includes(router.pathname)) {
-          await router.replace("/welcome");
-        }
+        // if (!openPaths.includes(router.pathname)) {
+        //   await router.replace("/");
+        // }
         dispatch(
           setAuthState({
             status: "unauthenticated",
@@ -52,15 +52,15 @@ const IsAuth: React.FC<{ children: React.ReactNode }> = ({ children }) => {
 
     const routeChangeStart = (url: string) => {
       if (url === router.pathname) return;
-      if (auth.status === "unauthenticated") {
-        if (!openPaths.includes(url)) {
-          throw "Aborting route change. You can safely ignore this error.";
-        }
-      } else if (auth.status === "authenticated") {
-        if (authPaths.includes(url)) {
-          throw "Aborting route change. You can safely ignore this error.";
-        }
-      }
+      // if (auth.status === "unauthenticated") {
+      //   if (!openPaths.includes(url)) {
+      //     throw "Aborting route change. You can safely ignore this error.";
+      //   }
+      // } else if (auth.status === "authenticated") {
+      //   if (authPaths.includes(url)) {
+      //     throw "Aborting route change. You can safely ignore this error.";
+      //   }
+      // }
     };
 
     router.events.on("routeChangeStart", routeChangeStart);

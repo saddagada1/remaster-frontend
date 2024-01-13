@@ -15,7 +15,6 @@ import {
 import { useRouter } from "next/router";
 import { ButtonLoading, Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { ArrowLeftIcon } from "@radix-ui/react-icons";
 import { useLoginUser } from "@/api/authentication-controller/authentication-controller";
 import { checkIfApiError, trimmedString } from "@/lib/utils";
 import { useAppDispatch } from "@/lib/redux/hooks";
@@ -73,7 +72,7 @@ const LoginForm: React.FC = () => {
     <Form {...form}>
       <form
         onSubmit={form.handleSubmit(onSubmit)}
-        className="w-full max-w-[400px] text-right"
+        className="mb-8 w-full max-w-[400px] px-2 text-right hr:px-0"
       >
         <FormField
           control={form.control}
@@ -107,15 +106,15 @@ const LoginForm: React.FC = () => {
         />
         <Button
           variant="link"
-          className="mb-8 h-fit p-0 text-xs font-normal hr:text-sm"
+          className="mono mb-8 h-fit p-0 text-xs font-normal hr:text-sm"
           asChild
         >
           <Link href="/forgot-password">Forgot Password?</Link>
         </Button>
         {form.formState.isSubmitting ? (
-          <ButtonLoading size="lg" />
+          <ButtonLoading className="text-sm" size="lg" />
         ) : (
-          <Button size="lg" type="submit">
+          <Button className="text-sm" size="lg" type="submit">
             Login
           </Button>
         )}
@@ -128,29 +127,20 @@ const Login: NextPage = ({}) => {
   return (
     <>
       <Head>
-        <title>Tether - Login</title>
+        <title>Remaster - Login</title>
       </Head>
-      <main className="flex h-screen">
-        <div className="hidden w-2/3 border-r bg-destructive hr:block"></div>
-        <div className="flex w-full flex-col gap-8 p-8 hr:w-1/3">
-          <Button variant="link" className="h-fit w-fit p-0" asChild>
-            <Link href="/">
-              <ArrowLeftIcon className="mr-2 h-5 w-5" />
-              Back home
-            </Link>
-          </Button>
-          <div className="flex flex-1 flex-col items-center justify-center gap-8">
-            <h1 className="h1">Login</h1>
-            <LoginForm />
-            <Button
-              variant="link"
-              className="h-fit p-0 text-xs font-normal hr:text-sm"
-              asChild
-            >
-              <Link href="/sign-up">Don&apos;t have an account? Sign Up!</Link>
-            </Button>
-          </div>
-        </div>
+      <main className="section flex h-full flex-col items-center justify-center">
+        <h1 className="title mono mb-8 w-full max-w-[400px] pl-2 hr:pl-0">
+          Login
+        </h1>
+        <LoginForm />
+        <Button
+          variant="link"
+          className="mono h-fit p-0 text-xs font-normal hr:text-sm"
+          asChild
+        >
+          <Link href="/sign-up">Don&apos;t have an account? Sign Up!</Link>
+        </Button>
       </main>
     </>
   );

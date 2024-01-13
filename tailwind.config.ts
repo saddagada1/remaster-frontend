@@ -17,10 +17,11 @@ module.exports = {
     extend: {
       screens: {
         hr: {
-          raw: "((min-width: 1024px) and (min-aspect-ratio: 16/10))",
+          raw: "(min-width: 1024px) and (min-aspect-ratio: 16/10)",
         },
       },
       fontFamily: {
+        display: ["var(--font-display)"],
         sans: ["var(--font-sans)"],
         mono: ["var(--font-mono)"],
       },

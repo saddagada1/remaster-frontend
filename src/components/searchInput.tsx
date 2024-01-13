@@ -1,5 +1,3 @@
-"use client";
-
 import { zodResolver } from "@hookform/resolvers/zod";
 import z from "zod";
 import { useForm } from "react-hook-form";
@@ -42,15 +40,16 @@ const SearchInput: React.FC<SearchInputProps> = ({ ...FormHTMLAtrributes }) => {
           control={form.control}
           name="query"
           render={({ field }) => (
-            <FormItem className="flex items-center space-y-0">
+            <FormItem className="section flex h-full items-center space-y-0 hr:h-14">
               <FormControl>
                 <>
-                  <div className="flex h-11 items-center justify-center border-b pl-2">
-                    <MagnifyingGlassIcon className="h-5 w-5" />
+                  <div className="flex items-center justify-center pl-2">
+                    <MagnifyingGlassIcon className="h-5 w-5 hr:h-6 hr:w-6" />
                   </div>
                   <Input
                     placeholder="Search for something...anything"
-                    className="h-11 rounded-none border-x-0 border-t-0"
+                    className="mono h-full rounded-none border-0 text-xs shadow-none focus-visible:ring-0 hr:text-sm"
+                    autoComplete="off"
                     {...field}
                   />
                 </>

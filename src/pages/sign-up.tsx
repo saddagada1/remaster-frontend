@@ -15,7 +15,6 @@ import {
 import { Button, ButtonLoading } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import Link from "next/link";
-import { ArrowLeftIcon } from "@radix-ui/react-icons";
 import { checkIfApiError, trimmedString } from "@/lib/utils";
 import { useRegisterUser } from "@/api/authentication-controller/authentication-controller";
 import { useAppDispatch } from "@/lib/redux/hooks";
@@ -46,6 +45,7 @@ const SignUpForm: React.FC = () => {
     resolver: zodResolver(formSchema),
     defaultValues: {
       email: "",
+      username: "",
       password: "",
       confirmPassword: "",
     },
@@ -86,7 +86,7 @@ const SignUpForm: React.FC = () => {
     <Form {...form}>
       <form
         onSubmit={form.handleSubmit(onSubmit)}
-        className="w-full max-w-[400px] space-y-8"
+        className="mb-8 w-full max-w-[400px] space-y-8 px-2 hr:px-0"
       >
         <FormField
           control={form.control}
@@ -149,9 +149,9 @@ const SignUpForm: React.FC = () => {
           )}
         />
         {form.formState.isSubmitting ? (
-          <ButtonLoading size="lg" />
+          <ButtonLoading className="text-sm" size="lg" />
         ) : (
-          <Button size="lg" type="submit">
+          <Button className="text-sm" size="lg" type="submit">
             Sign Up
           </Button>
         )}
@@ -164,29 +164,20 @@ const SignUp: NextPage = ({}) => {
   return (
     <>
       <Head>
-        <title>Tether - Sign Up</title>
+        <title>Remaster - Sign Up</title>
       </Head>
-      <main className="flex h-screen">
-        <div className="hidden w-2/3 border-r bg-destructive hr:block"></div>
-        <div className="flex w-full flex-col gap-8 p-8 hr:w-1/3">
-          <Button variant="link" className="h-fit w-fit p-0" asChild>
-            <Link href="/">
-              <ArrowLeftIcon className="mr-2 h-5 w-5" />
-              Back home
-            </Link>
-          </Button>
-          <div className="flex flex-1 flex-col items-center justify-center gap-8">
-            <h1 className="h1">Sign Up</h1>
-            <SignUpForm />
-            <Button
-              variant="link"
-              className="h-fit p-0 text-xs font-normal hr:text-sm"
-              asChild
-            >
-              <Link href="/login">Already have an account? Login!</Link>
-            </Button>
-          </div>
-        </div>
+      <main className="section flex h-full flex-col items-center justify-center">
+        <h1 className="title mono mb-8 w-full max-w-[400px] pl-2 hr:pl-0">
+          Sign Up
+        </h1>
+        <SignUpForm />
+        <Button
+          variant="link"
+          className="mono h-fit p-0 text-xs font-normal hr:text-sm"
+          asChild
+        >
+          <Link href="/login">Already have an account? Login!</Link>
+        </Button>
       </main>
     </>
   );

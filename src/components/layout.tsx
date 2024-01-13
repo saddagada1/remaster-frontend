@@ -1,23 +1,30 @@
 import Head from "next/head";
-import Navbar from "./navbar";
+import { useWindowSize } from "usehooks-ts";
+import { Navbar, SideNavbar } from "./navbar";
+import Header from "./header";
 
 interface LayoutProps {
   children: React.ReactNode;
 }
 
 const Layout: React.FC<LayoutProps> = ({ children }) => {
+  const { width, height } = useWindowSize();
   return (
     <>
       <Head>
-        <meta
-          name="description"
-          content="Tether - Content curated by your friends"
-        />
+        <meta name="description" content="Remaster - Rediscover your music" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <div className="max-w-screen max-h-screen font-sans">
+      <div
+        style={{ maxWidth: width, maxHeight: height }}
+        className="flex h-screen w-screen flex-col gap-2 p-2 font-sans lg:flex-row"
+      >
+        <SideNavbar />
         <Navbar />
-        {children}
+        <div className="flex flex-1 flex-col gap-2 overflow-hidden">
+          <Header />
+          {children}
+        </div>
       </div>
     </>
   );
