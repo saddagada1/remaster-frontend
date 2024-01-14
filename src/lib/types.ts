@@ -12,3 +12,32 @@ export interface Tuning {
   name: string;
   notes: string[];
 }
+
+export interface Loop {
+  [key: string]: string | number;
+  id: number;
+  start: number;
+  end: number;
+  key: number;
+  mode: number;
+  chord: string;
+  composition: string;
+}
+
+export interface Metadata {
+  id: string;
+  url: string;
+  name: string;
+  description?: string;
+  duration: number;
+  key: number;
+  mode: number;
+  tempo: number;
+  timeSignature: number;
+  tuning: number;
+}
+
+export interface Tab {
+  head: string[];
+  frets: string[][];
+}

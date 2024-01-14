@@ -1,17 +1,15 @@
 import Link from "next/link";
 import { Button } from "./ui/button";
 import { useAppSelector } from "@/lib/redux/hooks";
-import { pitchClassColours } from "@/lib/constants";
 import { useRouter } from "next/router";
 import { useTheme } from "next-themes";
 import { cn } from "@/lib/utils";
-import Gradient from "./gradient";
 import { ExitIcon, SunIcon } from "@radix-ui/react-icons";
-import { useElementSize } from "usehooks-ts";
 import { useState } from "react";
 import { Drawer, DrawerContent, DrawerTrigger } from "./ui/drawer";
 import { useLogoutUser } from "@/api/authentication-controller/authentication-controller";
 import SearchInput from "./searchInput";
+import Orb from "./orb";
 
 interface NavButtonProps {
   href: string;
@@ -43,25 +41,10 @@ const NavButton: React.FC<NavButtonProps> = ({ href, label, description }) => {
 
 const SideNavbar: React.FC = () => {
   const { theme, setTheme } = useTheme();
-  const [gradientContainer, { width }] = useElementSize();
 
   return (
-    <nav className="mono hidden w-[200px] shrink-0 flex-col justify-end gap-2 2xl:w-[300px] hr:flex">
-      <div className="section relative flex items-center justify-center">
-        <div
-          ref={gradientContainer}
-          style={{ height: width }}
-          className="w-full overflow-hidden rounded-[50%]"
-        >
-          <Gradient
-            colours={Object.values(pitchClassColours).filter(
-              (_, i) => i % 2 === 0,
-            )}
-            animated
-          />
-        </div>
-        <div className="anim-grain opacity-10 mix-blend-overlay" />
-      </div>
+    <nav className="sidebar">
+      <Orb orientation="side" grain />
       <div className="section flex flex-1 flex-col">
         <Link href="/" className="h1 mb-6 font-display">
           remaster
@@ -107,7 +90,6 @@ const Navbar: React.FC = () => {
   const [open, setOpen] = useState(false);
   const auth = useAppSelector((state) => state.auth);
   const router = useRouter();
-  const [gradientContainer, { height }] = useElementSize();
   const { theme, setTheme } = useTheme();
   const { mutateAsync: logout } = useLogoutUser();
 
@@ -116,30 +98,17 @@ const Navbar: React.FC = () => {
   }
 
   return (
-    <nav className="flex h-24 w-full shrink-0 gap-2 hr:hidden">
-      <div className="section">
-        <div
-          ref={gradientContainer}
-          style={{ width: height }}
-          className="h-full overflow-hidden rounded-[50%]"
-        >
-          <Gradient
-            colours={Object.values(pitchClassColours).filter(
-              (_, i) => i % 2 === 0,
-            )}
-            animated
-          />
-        </div>
-      </div>
+    <nav className="topbar">
+      <Orb orientation="top" />
       <div className="flex flex-1 flex-col gap-2">
-        <div className="mono flex gap-2">
+        <div className="flex gap-2">
           {auth.status === "authenticated" ? (
             <>
               <Button
-                variant="outline"
                 asChild
+                variant="outline"
                 className={cn(
-                  "flex-1 uppercase",
+                  "button-accent flex-1",
                   router.pathname === "/profile" && "bg-background/80",
                 )}
               >
@@ -148,7 +117,7 @@ const Navbar: React.FC = () => {
               <Button
                 asChild
                 className={cn(
-                  "flex-1 uppercase",
+                  "flex-1",
                   router.pathname === "/create" && "bg-foreground/80",
                 )}
               >
@@ -161,7 +130,7 @@ const Navbar: React.FC = () => {
                 asChild
                 variant="outline"
                 className={cn(
-                  "flex-1 uppercase hover:bg-background/80",
+                  "button-accent flex-1",
                   router.pathname === "/sign-up" && "bg-background/80",
                 )}
               >
@@ -170,7 +139,7 @@ const Navbar: React.FC = () => {
               <Button
                 asChild
                 className={cn(
-                  "flex-1 uppercase",
+                  "flex-1",
                   router.pathname === "/login" && "bg-foreground/80",
                 )}
               >
@@ -181,7 +150,7 @@ const Navbar: React.FC = () => {
 
           <Drawer open={open} onOpenChange={(o) => setOpen(o)}>
             <DrawerTrigger asChild>
-              <Button variant="outline" className="mono">
+              <Button variant="outline" className="button-accent">
                 Menu
               </Button>
             </DrawerTrigger>

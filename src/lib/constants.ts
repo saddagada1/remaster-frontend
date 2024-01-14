@@ -17,11 +17,14 @@ export const tuning: Record<number, Tuning> = {
 };
 
 export const timeSignature: Record<number, string> = {
-  3: "3/4",
-  4: "4/4",
-  5: "5/4",
-  6: "6/4",
-  7: "7/4",
+  0: "2/2",
+  1: "2/4",
+  2: "3/4",
+  3: "4/4",
+  4: "5/4",
+  5: "6/8",
+  6: "9/8",
+  7: "12/8",
 };
 
 export const mode: Record<number, string> = {
@@ -58,3 +61,5 @@ export const pitchClassColours: Record<number, string> = {
   10: "#ec4899",
   11: "#f43f5e",
 };
+
+export const colourMod = "CC";

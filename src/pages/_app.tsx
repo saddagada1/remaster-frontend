@@ -42,7 +42,10 @@ const MyApp: AppType = ({ Component, pageProps }) => {
       <Theme attribute="class" defaultTheme="dark">
         <Provider store={store}>
           <QueryClientProvider client={queryClient}>
-            <Toaster position="top-right" />
+            <Toaster
+              position="top-right"
+              toastOptions={{ className: "mono" }}
+            />
             <Layout>
               <IsAuth>
                 <Component {...pageProps} />

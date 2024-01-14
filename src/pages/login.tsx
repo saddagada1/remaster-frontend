@@ -16,7 +16,7 @@ import { useRouter } from "next/router";
 import { ButtonLoading, Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useLoginUser } from "@/api/authentication-controller/authentication-controller";
-import { checkIfApiError, trimmedString } from "@/lib/utils";
+import { checkIfApiError, handleApiError, trimmedString } from "@/lib/utils";
 import { useAppDispatch } from "@/lib/redux/hooks";
 import { setAuthState } from "@/lib/redux/slices/authSlice";
 
@@ -59,12 +59,13 @@ const LoginForm: React.FC = () => {
       void router.push("/");
     } catch (error) {
       const apiError = checkIfApiError(error);
-      if (!!apiError) {
+      if (!!apiError && typeof apiError !== "number") {
         form.setError(apiError.subject as "emailOrUsername", {
           message: apiError.message,
         });
+        return;
       }
-      return;
+      handleApiError(error, { fatal: true });
     }
   };
 

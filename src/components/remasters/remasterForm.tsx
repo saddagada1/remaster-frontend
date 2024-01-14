@@ -21,14 +21,18 @@ import {
 } from "../ui/form";
 import { Input } from "../ui/input";
 import { Textarea } from "../ui/textarea";
-import { type HTMLAttributes } from "react";
+import { useState, type HTMLAttributes } from "react";
 import { pitchClass, mode, timeSignature, tuning } from "@/lib/constants";
 import ReactPlayer from "react-player";
+import { toast } from "sonner";
 
 const formSchema = z.object({
   url: z.string().min(1, { message: "Required" }),
-  name: z.string().min(1, { message: "Required" }),
-  description: z.string().max(500),
+  name: z
+    .string()
+    .min(1, { message: "Required" })
+    .max(20, { message: "Max 20 Chars" }),
+  description: z.string().max(500).optional(),
   key: z.number().min(0).max(11),
   mode: z.number().min(0).max(1),
   timeSignature: z.number().min(3).max(7),
@@ -37,7 +41,9 @@ const formSchema = z.object({
 });
 
 interface RemasterFormProps extends HTMLAttributes<HTMLDivElement> {
-  onFormSubmit: (values: z.infer<typeof formSchema>) => void | Promise<void>;
+  onFormSubmit: (
+    values: z.infer<typeof formSchema> & { duration: number },
+  ) => void | Promise<void>;
   buttonLabel: string;
   defaultValues?: z.infer<typeof formSchema>;
 }
@@ -48,6 +54,7 @@ const RemasterForm: React.FC<RemasterFormProps> = ({
   defaultValues,
   ...props
 }) => {
+  const [duration, setDuration] = useState<null | number>(null);
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues,
@@ -57,19 +64,27 @@ const RemasterForm: React.FC<RemasterFormProps> = ({
       <form
         className="mb-8 w-full max-w-[600px] px-2 text-right hr:px-0"
         // eslint-disable-next-line @typescript-eslint/no-misused-promises
-        onSubmit={form.handleSubmit(onFormSubmit)}
+        onSubmit={form.handleSubmit((values) => {
+          if (!duration) {
+            toast.error(
+              "could not fetch youtube data. please check the url, refresh and try again",
+            );
+            return;
+          }
+          void onFormSubmit({ ...values, duration });
+        })}
       >
         <div {...props}>
           <div className="space-y-8 hr:w-1/2">
-            <div className="relative flex aspect-video items-center justify-center overflow-hidden rounded-md border border-input">
+            <div className="flex aspect-video items-center justify-center overflow-hidden rounded-md border border-input">
               {!form.getValues().url ? (
                 <p className="mono p-accent">Preview</p>
               ) : (
                 <ReactPlayer
-                  className="absolute left-0 top-0"
                   width="100%"
                   height="100%"
                   url={form.getValues().url}
+                  onReady={(player) => setDuration(player.getDuration())}
                 />
               )}
             </div>
@@ -211,7 +226,7 @@ const RemasterForm: React.FC<RemasterFormProps> = ({
                   >
                     <FormControl>
                       <SelectTrigger>
-                        <SelectValue placeholder="Select a mode" />
+                        <SelectValue placeholder="Select a time signature" />
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>

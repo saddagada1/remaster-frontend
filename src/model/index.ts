@@ -6,7 +6,10 @@
  */
 
 export * from "./authenticationResponse";
+export * from "./basicUserResponse";
 export * from "./loginRequest";
 export * from "./registerRequest";
+export * from "./remasterRequest";
+export * from "./remasterResponse";
 export * from "./userResponse";
 export * from "./userResponseRole";

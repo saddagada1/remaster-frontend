@@ -15,7 +15,7 @@ import {
 import { Button, ButtonLoading } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import Link from "next/link";
-import { checkIfApiError, trimmedString } from "@/lib/utils";
+import { checkIfApiError, handleApiError, trimmedString } from "@/lib/utils";
 import { useRegisterUser } from "@/api/authentication-controller/authentication-controller";
 import { useAppDispatch } from "@/lib/redux/hooks";
 import { setAuthState } from "@/lib/redux/slices/authSlice";
@@ -73,12 +73,13 @@ const SignUpForm: React.FC = () => {
       void router.push("/");
     } catch (error) {
       const apiError = checkIfApiError(error);
-      if (!!apiError) {
+      if (!!apiError && typeof apiError !== "number") {
         form.setError(apiError.subject as "email" | "username", {
           message: apiError.message,
         });
+        return;
       }
-      return;
+      handleApiError(error, { fatal: true });
     }
   };
 

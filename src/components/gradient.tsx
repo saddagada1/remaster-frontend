@@ -59,6 +59,7 @@ const Gradient: React.FC<GradientProps> = ({ animated, colours, ...props }) => {
       height = cv.offsetHeight;
       cv.width = width * pixelRatio;
       cv.height = height * pixelRatio;
+      ctx.globalCompositeOperation = "saturation";
       ctx.scale(pixelRatio, pixelRatio);
     };
 

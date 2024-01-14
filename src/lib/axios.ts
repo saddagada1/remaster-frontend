@@ -9,6 +9,7 @@ import { store } from "./redux/store";
 import { setAuthState } from "./redux/slices/authSlice";
 import { refreshToken } from "@/api/authentication-controller/authentication-controller";
 import { handleApiError } from "./utils";
+import Router from "next/router";
 
 export const client = axios.create({
   baseURL: env.NEXT_PUBLIC_SERVER_BASE_URL,
@@ -45,6 +46,9 @@ client.interceptors.request.use(
     const { auth } = store.getState();
     if (!auth.credentials) {
       console.log("no auth");
+      if (auth.status !== "loading") {
+        void Router.replace("/login");
+      }
       controller.abort();
       return {
         ...config,
@@ -122,6 +126,9 @@ client.interceptors.response.use(
       if (status === 403) {
         console.log("auth error");
         if (!auth.credentials) {
+          if (auth.status !== "loading") {
+            void Router.replace("/login");
+          }
           return Promise.reject(error);
         }
         if (isRefreshing) {

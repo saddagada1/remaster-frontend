@@ -25,7 +25,7 @@ const UserMenu: React.FC<{ user: UserResponse }> = ({ user }) => {
       <DropdownMenuTrigger asChild>
         <Button
           className={cn(
-            "bg-background uppercase text-foreground hover:bg-background/80",
+            "button-accent",
             router.pathname === "/profile" && "bg-background/80",
           )}
         >
@@ -87,7 +87,6 @@ const Header: React.FC = ({}) => {
               <Button
                 asChild
                 className={cn(
-                  "uppercase",
                   router.pathname === "/create" && "bg-foreground/80",
                 )}
               >
@@ -99,7 +98,7 @@ const Header: React.FC = ({}) => {
               <Button
                 asChild
                 className={cn(
-                  "bg-background uppercase text-foreground hover:bg-background/80",
+                  "button-accent",
                   router.pathname === "/sign-up" && "bg-background/80",
                 )}
               >
@@ -108,7 +107,6 @@ const Header: React.FC = ({}) => {
               <Button
                 asChild
                 className={cn(
-                  "uppercase",
                   router.pathname === "/login" && "bg-foreground/80",
                 )}
               >

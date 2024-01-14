@@ -8,13 +8,11 @@ import type { UserResponseRole } from "./userResponseRole";
 
 export interface UserResponse {
   bio?: string;
-  createdAt: string;
   email: string;
   id: string;
   image?: string;
   name?: string;
   role: UserResponseRole;
-  updatedAt: string;
   username: string;
   verified: boolean;
 }
