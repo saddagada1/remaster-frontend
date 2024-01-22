@@ -24,7 +24,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
         className="flex h-screen w-screen flex-col gap-2 p-2 font-sans lg:flex-row"
       >
         {router.pathname.includes("editor") ||
-        router.pathname.includes("player") ? (
+        router.pathname.includes("remaster") ? (
           <>
             <Sidebar />
             <Topbar />
@@ -36,7 +36,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
           <>
             <SideNavbar />
             <Navbar />
-            <div className="flex flex-1 flex-col gap-2 overflow-hidden">
+            <div className="flex flex-1 flex-col gap-2 overflow-y-scroll">
               <Header />
               {children}
             </div>

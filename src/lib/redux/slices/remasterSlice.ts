@@ -6,10 +6,11 @@ interface RemasterState {
   seek: (position: number) => void;
   loops: Loop[];
   isPlaying: boolean;
+  isScrubbing: boolean;
+  volume: number;
   playbackPosition: number;
   playingLoop: Loop | null;
   repeatingLoop: Loop | null;
-  clipboard: string[][];
 }
 
 const initialState: RemasterState = {
@@ -19,10 +20,11 @@ const initialState: RemasterState = {
   },
   loops: [],
   isPlaying: false,
-  playbackPosition: 0,
+  isScrubbing: false,
+  volume: 0.0,
+  playbackPosition: 0.0,
   playingLoop: null,
   repeatingLoop: null,
-  clipboard: [],
 };
 
 const remasterSlice = createSlice({
@@ -48,19 +50,33 @@ const remasterSlice = createSlice({
     setIsPlaying(state, action: PayloadAction<boolean>) {
       state.isPlaying = action.payload;
     },
-    setPlayingLoop(state, action: PayloadAction<Loop>) {
+    setIsScrubbing(state, action: PayloadAction<boolean>) {
+      state.isScrubbing = action.payload;
+    },
+    setVolume(state, action: PayloadAction<number>) {
+      state.volume = action.payload;
+    },
+    setPlayingLoop(state, action: PayloadAction<Loop | null>) {
       state.playingLoop = action.payload;
     },
-    setRepeatingLoop(state, action: PayloadAction<Loop>) {
+    setRepeatingLoop(state, action: PayloadAction<Loop | null>) {
       state.repeatingLoop = action.payload;
     },
-    setClipboard(state, action: PayloadAction<string[][]>) {
-      state.clipboard = action.payload;
-    },
-    createLoop(
+    resizeLoop(
       state,
-      action: PayloadAction<{ key: number; mode: number; chord: string }>,
+      action: PayloadAction<{ index: number; width: number; snapTo: number }>,
     ) {
+      state.loops = state.loops.map((lp, i) => {
+        if (i === action.payload.index) {
+          lp.end = lp.end + action.payload.width / action.payload.snapTo;
+        } else if (i > action.payload.index) {
+          lp.start = lp.start + action.payload.width / action.payload.snapTo;
+          lp.end = lp.end + action.payload.width / action.payload.snapTo;
+        }
+        return lp;
+      });
+    },
+    createLoop(state, action: PayloadAction<{ key: number; mode: number }>) {
       if (!state.metadata) return;
       let lastLoopEnd: number;
       let newLoopEnd: number;
@@ -80,7 +96,6 @@ const remasterSlice = createSlice({
         end: newLoopEnd,
         key: action.payload.key,
         mode: action.payload.mode,
-        chord: action.payload.chord,
         composition: "",
       };
 
@@ -111,7 +126,7 @@ const remasterSlice = createSlice({
         (state.repeatingLoop.start > action.payload.position ||
           action.payload.position > state.repeatingLoop.end)
       ) {
-        void state.seek(state.repeatingLoop.start * 1000);
+        state.seek(state.repeatingLoop.start * 1000);
         state.playbackPosition = state.repeatingLoop.start;
         return;
       }
@@ -165,7 +180,6 @@ const remasterSlice = createSlice({
             id: action.payload.id,
             key: loop.key,
             mode: loop.mode,
-            chord: loop.chord,
             composition: loop.composition,
             start: action.payload.id === 1 ? 0 : filteredLoops[index - 1]!.end,
             end: loop.end,
@@ -223,9 +237,11 @@ export const {
   setLoops,
   setPlaybackPosition,
   setIsPlaying,
+  setIsScrubbing,
+  setVolume,
   setPlayingLoop,
   setRepeatingLoop,
-  setClipboard,
+  resizeLoop,
   createLoop,
   handlePlayingLoop,
   updateLoop,

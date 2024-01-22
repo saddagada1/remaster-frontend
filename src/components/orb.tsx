@@ -23,7 +23,7 @@ const Orb: React.FC<OrbProps> = ({
       {...props}
       onClick={() => void router.push("/")}
       className={cn(
-        "section relative flex items-center justify-center overflow-hidden",
+        "section relative flex cursor-pointer items-center justify-center overflow-hidden",
         className,
       )}
     >

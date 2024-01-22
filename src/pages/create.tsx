@@ -34,6 +34,7 @@ const Create: NextPage = ({}) => {
                 tempo: 80.0,
                 timeSignature: 3,
                 tuning: 0,
+                duration: 0,
                 url: "",
                 name: "",
                 description: "",

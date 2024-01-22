@@ -1,6 +1,9 @@
 import { colourMod, pitchClassColours } from "@/lib/constants";
 import { useAppDispatch, useAppSelector } from "@/lib/redux/hooks";
-import { handlePlayingLoop, setLoops } from "@/lib/redux/slices/remasterSlice";
+import {
+  handlePlayingLoop,
+  resizeLoop,
+} from "@/lib/redux/slices/remasterSlice";
 import { cn, getVideoTimestamp } from "@/lib/utils";
 import { Resizable } from "re-resizable";
 import { useEffect, useRef, useState } from "react";
@@ -161,16 +164,7 @@ const LoopTimeline: React.FC<LoopTimelineProps> = ({
                 onResizeStop={(_event, _direction, _refToElement, delta) => {
                   setIsResizing(false);
                   setResizePosition(null);
-                  const loops = state.loops.map((lp, i) => {
-                    if (i === index) {
-                      lp.end = lp.end + delta.width / snapTo;
-                    } else if (i > index) {
-                      lp.start = lp.start + delta.width / snapTo;
-                      lp.end = lp.end + delta.width / snapTo;
-                    }
-                    return lp;
-                  });
-                  dispatch(setLoops(loops));
+                  dispatch(resizeLoop({ index, width: delta.width, snapTo }));
                   dispatch(
                     handlePlayingLoop({
                       position: state.playbackPosition,

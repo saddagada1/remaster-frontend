@@ -10,11 +10,11 @@ const NoData: React.FC<HTMLAttributes<HTMLParagraphElement>> = ({
     <div
       {...props}
       className={cn(
-        "flex h-1/2 w-full items-center justify-center px-4 text-center",
+        "flex h-1/2 w-full items-center justify-center p-4 text-center",
         className,
       )}
     >
-      <p className="p-accent">{children ?? "Nothing to show here :("}</p>
+      <p className="p-accent mono">{children ?? "Nothing to show here :("}</p>
     </div>
   );
 };

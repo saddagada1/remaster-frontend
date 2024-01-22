@@ -1,7 +1,13 @@
 import { type Tuning } from "./types";
 
-export const openPaths = ["/welcome", "/login", "/sign-up", "/"];
-export const authPaths = ["/welcome", "/login", "/sign-up"];
+export const openPaths = [
+  "/login",
+  "/sign-up",
+  "/",
+  "/[username]",
+  "/remaster",
+];
+export const authPaths = ["/login", "/sign-up"];
 
 export const tuning: Record<number, Tuning> = {
   0: { name: "Standard", notes: ["E", "A", "D", "G", "B", "E"] },
@@ -63,3 +69,5 @@ export const pitchClassColours: Record<number, string> = {
 };
 
 export const colourMod = "CC";
+
+export const defaultPaginationLimit = 50;

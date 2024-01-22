@@ -11,6 +11,11 @@ export default defineConfig({
       prettier: true,
       clean: true,
       override: {
+        query: {
+          useQuery: true,
+          useInfinite: true,
+          useInfiniteQueryParam: "cursor",
+        },
         mutator: {
           path: "./src/lib/axios.ts",
           name: "customInstance",

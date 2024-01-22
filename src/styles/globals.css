@@ -80,7 +80,7 @@
     @apply rounded-md border border-input p-2;
   }
   .label {
-    @apply mono mb-2 w-full text-left text-xs leading-tight text-muted-foreground hr:mb-8 hr:text-sm;
+    @apply mono mb-4 w-full text-left text-xs leading-tight text-muted-foreground hr:mb-8 hr:text-sm;
   }
   .button-accent {
     @apply !bg-background !text-foreground hover:!bg-background/80;
@@ -97,17 +97,20 @@
   .h2 {
     @apply text-xl font-medium leading-none tracking-tight hr:text-2xl;
   }
+  .h3 {
+    @apply font-medium leading-none tracking-tight hr:text-lg;
+  }
   .p {
     @apply font-sans text-sm normal-case leading-none tracking-tight hr:text-base hr:font-medium;
   }
   .p-accent {
-    @apply text-xs tracking-tight text-muted-foreground;
+    @apply text-xs leading-none tracking-tight text-muted-foreground;
   }
   .mono {
     @apply font-mono uppercase;
   }
   .sidebar {
-    @apply mono hidden h-full w-[200px] shrink-0 flex-col justify-end gap-2 2xl:w-[300px] hr:flex;
+    @apply mono hidden h-full w-[300px] shrink-0 flex-col justify-end gap-2 hr:flex;
   }
   .topbar {
     @apply mono flex h-[98px] w-full shrink-0 gap-2 hr:hidden;
@@ -116,8 +119,8 @@
 
 * {
   -webkit-tap-highlight-color: rgba(255, 255, 255, 0) !important;
-  -ms-overflow-style: none;
-  scrollbar-width: none;
+  /* -ms-overflow-style: none;
+  scrollbar-width: none; */
 }
 
 *::selection {
@@ -126,7 +129,7 @@
 }
 
 *::-webkit-scrollbar {
-  display: none;
+  /* display: none; */
 }
 
 .bg-radial-gradient {

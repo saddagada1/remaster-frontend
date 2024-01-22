@@ -4,16 +4,25 @@
  * OpenAPI definition
  * OpenAPI spec version: v0
  */
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useInfiniteQuery, useMutation, useQuery } from "@tanstack/react-query";
 import type {
+  InfiniteData,
   MutationFunction,
   QueryFunction,
   QueryKey,
+  UseInfiniteQueryOptions,
+  UseInfiniteQueryResult,
   UseMutationOptions,
   UseQueryOptions,
   UseQueryResult,
 } from "@tanstack/react-query";
-import type { RemasterRequest, RemasterResponse } from "../../model";
+import type {
+  GetAllRemastersByUserIdParams,
+  GetAllUserRemastersParams,
+  PageResponseRemasterResponse,
+  RemasterRequest,
+  RemasterResponse,
+} from "../../model";
 import { customInstance } from "../../lib/axios";
 import type { BodyType } from "../../lib/axios";
 
@@ -77,7 +86,7 @@ export const useCreateRemaster = <
 
   return useMutation(mutationOptions);
 };
-export const getUserRemaster = (id: string, signal?: AbortSignal) => {
+export const getRemaster = (id: string, signal?: AbortSignal) => {
   return customInstance<RemasterResponse>({
     url: `/user/remaster/${id}`,
     method: "GET",
@@ -85,8 +94,379 @@ export const getUserRemaster = (id: string, signal?: AbortSignal) => {
   });
 };
 
-export const getGetUserRemasterQueryKey = (id: string) => {
+export const getGetRemasterQueryKey = (id: string) => {
   return [`/user/remaster/${id}`] as const;
+};
+
+export const getGetRemasterInfiniteQueryOptions = <
+  TData = InfiniteData<Awaited<ReturnType<typeof getRemaster>>>,
+  TError = unknown,
+>(
+  id: string,
+  options?: {
+    query?: Partial<
+      UseInfiniteQueryOptions<
+        Awaited<ReturnType<typeof getRemaster>>,
+        TError,
+        TData
+      >
+    >;
+  },
+) => {
+  const { query: queryOptions } = options ?? {};
+
+  const queryKey = queryOptions?.queryKey ?? getGetRemasterQueryKey(id);
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof getRemaster>>> = ({
+    signal,
+  }) => getRemaster(id, signal);
+
+  return {
+    queryKey,
+    queryFn,
+    enabled: !!id,
+    ...queryOptions,
+  } as UseInfiniteQueryOptions<
+    Awaited<ReturnType<typeof getRemaster>>,
+    TError,
+    TData
+  > & { queryKey: QueryKey };
+};
+
+export type GetRemasterInfiniteQueryResult = NonNullable<
+  Awaited<ReturnType<typeof getRemaster>>
+>;
+export type GetRemasterInfiniteQueryError = unknown;
+
+export const useGetRemasterInfinite = <
+  TData = InfiniteData<Awaited<ReturnType<typeof getRemaster>>>,
+  TError = unknown,
+>(
+  id: string,
+  options?: {
+    query?: Partial<
+      UseInfiniteQueryOptions<
+        Awaited<ReturnType<typeof getRemaster>>,
+        TError,
+        TData
+      >
+    >;
+  },
+): UseInfiniteQueryResult<TData, TError> & { queryKey: QueryKey } => {
+  const queryOptions = getGetRemasterInfiniteQueryOptions(id, options);
+
+  const query = useInfiniteQuery(queryOptions) as UseInfiniteQueryResult<
+    TData,
+    TError
+  > & { queryKey: QueryKey };
+
+  query.queryKey = queryOptions.queryKey;
+
+  return query;
+};
+
+export const getGetRemasterQueryOptions = <
+  TData = Awaited<ReturnType<typeof getRemaster>>,
+  TError = unknown,
+>(
+  id: string,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof getRemaster>>, TError, TData>
+    >;
+  },
+) => {
+  const { query: queryOptions } = options ?? {};
+
+  const queryKey = queryOptions?.queryKey ?? getGetRemasterQueryKey(id);
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof getRemaster>>> = ({
+    signal,
+  }) => getRemaster(id, signal);
+
+  return {
+    queryKey,
+    queryFn,
+    enabled: !!id,
+    ...queryOptions,
+  } as UseQueryOptions<
+    Awaited<ReturnType<typeof getRemaster>>,
+    TError,
+    TData
+  > & { queryKey: QueryKey };
+};
+
+export type GetRemasterQueryResult = NonNullable<
+  Awaited<ReturnType<typeof getRemaster>>
+>;
+export type GetRemasterQueryError = unknown;
+
+export const useGetRemaster = <
+  TData = Awaited<ReturnType<typeof getRemaster>>,
+  TError = unknown,
+>(
+  id: string,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof getRemaster>>, TError, TData>
+    >;
+  },
+): UseQueryResult<TData, TError> & { queryKey: QueryKey } => {
+  const queryOptions = getGetRemasterQueryOptions(id, options);
+
+  const query = useQuery(queryOptions) as UseQueryResult<TData, TError> & {
+    queryKey: QueryKey;
+  };
+
+  query.queryKey = queryOptions.queryKey;
+
+  return query;
+};
+
+export const getAllUserRemasters = (
+  params: GetAllUserRemastersParams,
+  signal?: AbortSignal,
+) => {
+  return customInstance<PageResponseRemasterResponse>({
+    url: `/user/remaster/private`,
+    method: "GET",
+    params,
+    signal,
+  });
+};
+
+export const getGetAllUserRemastersQueryKey = (
+  params: GetAllUserRemastersParams,
+) => {
+  return [`/user/remaster/private`, ...(params ? [params] : [])] as const;
+};
+
+export const getGetAllUserRemastersInfiniteQueryOptions = <
+  TData = InfiniteData<
+    Awaited<ReturnType<typeof getAllUserRemasters>>,
+    GetAllUserRemastersParams["cursor"]
+  >,
+  TError = unknown,
+>(
+  params: GetAllUserRemastersParams,
+  options?: {
+    query?: Partial<
+      UseInfiniteQueryOptions<
+        Awaited<ReturnType<typeof getAllUserRemasters>>,
+        TError,
+        TData,
+        Awaited<ReturnType<typeof getAllUserRemasters>>,
+        QueryKey,
+        GetAllUserRemastersParams["cursor"]
+      >
+    >;
+  },
+) => {
+  const { query: queryOptions } = options ?? {};
+
+  const queryKey =
+    queryOptions?.queryKey ?? getGetAllUserRemastersQueryKey(params);
+
+  const queryFn: QueryFunction<
+    Awaited<ReturnType<typeof getAllUserRemasters>>,
+    QueryKey,
+    GetAllUserRemastersParams["cursor"]
+  > = ({ signal, pageParam }) =>
+    getAllUserRemasters(
+      { ...params, cursor: pageParam || params?.["cursor"] },
+      signal,
+    );
+
+  return { queryKey, queryFn, ...queryOptions } as UseInfiniteQueryOptions<
+    Awaited<ReturnType<typeof getAllUserRemasters>>,
+    TError,
+    TData,
+    Awaited<ReturnType<typeof getAllUserRemasters>>,
+    QueryKey,
+    GetAllUserRemastersParams["cursor"]
+  > & { queryKey: QueryKey };
+};
+
+export type GetAllUserRemastersInfiniteQueryResult = NonNullable<
+  Awaited<ReturnType<typeof getAllUserRemasters>>
+>;
+export type GetAllUserRemastersInfiniteQueryError = unknown;
+
+export const useGetAllUserRemastersInfinite = <
+  TData = InfiniteData<
+    Awaited<ReturnType<typeof getAllUserRemasters>>,
+    GetAllUserRemastersParams["cursor"]
+  >,
+  TError = unknown,
+>(
+  params: GetAllUserRemastersParams,
+  options?: {
+    query?: Partial<
+      UseInfiniteQueryOptions<
+        Awaited<ReturnType<typeof getAllUserRemasters>>,
+        TError,
+        TData,
+        Awaited<ReturnType<typeof getAllUserRemasters>>,
+        QueryKey,
+        GetAllUserRemastersParams["cursor"]
+      >
+    >;
+  },
+): UseInfiniteQueryResult<TData, TError> & { queryKey: QueryKey } => {
+  const queryOptions = getGetAllUserRemastersInfiniteQueryOptions(
+    params,
+    options,
+  );
+
+  const query = useInfiniteQuery(queryOptions) as UseInfiniteQueryResult<
+    TData,
+    TError
+  > & { queryKey: QueryKey };
+
+  query.queryKey = queryOptions.queryKey;
+
+  return query;
+};
+
+export const getGetAllUserRemastersQueryOptions = <
+  TData = Awaited<ReturnType<typeof getAllUserRemasters>>,
+  TError = unknown,
+>(
+  params: GetAllUserRemastersParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof getAllUserRemasters>>,
+        TError,
+        TData
+      >
+    >;
+  },
+) => {
+  const { query: queryOptions } = options ?? {};
+
+  const queryKey =
+    queryOptions?.queryKey ?? getGetAllUserRemastersQueryKey(params);
+
+  const queryFn: QueryFunction<
+    Awaited<ReturnType<typeof getAllUserRemasters>>
+  > = ({ signal }) => getAllUserRemasters(params, signal);
+
+  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
+    Awaited<ReturnType<typeof getAllUserRemasters>>,
+    TError,
+    TData
+  > & { queryKey: QueryKey };
+};
+
+export type GetAllUserRemastersQueryResult = NonNullable<
+  Awaited<ReturnType<typeof getAllUserRemasters>>
+>;
+export type GetAllUserRemastersQueryError = unknown;
+
+export const useGetAllUserRemasters = <
+  TData = Awaited<ReturnType<typeof getAllUserRemasters>>,
+  TError = unknown,
+>(
+  params: GetAllUserRemastersParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof getAllUserRemasters>>,
+        TError,
+        TData
+      >
+    >;
+  },
+): UseQueryResult<TData, TError> & { queryKey: QueryKey } => {
+  const queryOptions = getGetAllUserRemastersQueryOptions(params, options);
+
+  const query = useQuery(queryOptions) as UseQueryResult<TData, TError> & {
+    queryKey: QueryKey;
+  };
+
+  query.queryKey = queryOptions.queryKey;
+
+  return query;
+};
+
+export const getUserRemaster = (id: string, signal?: AbortSignal) => {
+  return customInstance<RemasterResponse>({
+    url: `/user/remaster/private/${id}`,
+    method: "GET",
+    signal,
+  });
+};
+
+export const getGetUserRemasterQueryKey = (id: string) => {
+  return [`/user/remaster/private/${id}`] as const;
+};
+
+export const getGetUserRemasterInfiniteQueryOptions = <
+  TData = InfiniteData<Awaited<ReturnType<typeof getUserRemaster>>>,
+  TError = unknown,
+>(
+  id: string,
+  options?: {
+    query?: Partial<
+      UseInfiniteQueryOptions<
+        Awaited<ReturnType<typeof getUserRemaster>>,
+        TError,
+        TData
+      >
+    >;
+  },
+) => {
+  const { query: queryOptions } = options ?? {};
+
+  const queryKey = queryOptions?.queryKey ?? getGetUserRemasterQueryKey(id);
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof getUserRemaster>>> = ({
+    signal,
+  }) => getUserRemaster(id, signal);
+
+  return {
+    queryKey,
+    queryFn,
+    enabled: !!id,
+    ...queryOptions,
+  } as UseInfiniteQueryOptions<
+    Awaited<ReturnType<typeof getUserRemaster>>,
+    TError,
+    TData
+  > & { queryKey: QueryKey };
+};
+
+export type GetUserRemasterInfiniteQueryResult = NonNullable<
+  Awaited<ReturnType<typeof getUserRemaster>>
+>;
+export type GetUserRemasterInfiniteQueryError = unknown;
+
+export const useGetUserRemasterInfinite = <
+  TData = InfiniteData<Awaited<ReturnType<typeof getUserRemaster>>>,
+  TError = unknown,
+>(
+  id: string,
+  options?: {
+    query?: Partial<
+      UseInfiniteQueryOptions<
+        Awaited<ReturnType<typeof getUserRemaster>>,
+        TError,
+        TData
+      >
+    >;
+  },
+): UseInfiniteQueryResult<TData, TError> & { queryKey: QueryKey } => {
+  const queryOptions = getGetUserRemasterInfiniteQueryOptions(id, options);
+
+  const query = useInfiniteQuery(queryOptions) as UseInfiniteQueryResult<
+    TData,
+    TError
+  > & { queryKey: QueryKey };
+
+  query.queryKey = queryOptions.queryKey;
+
+  return query;
 };
 
 export const getGetUserRemasterQueryOptions = <
@@ -145,6 +525,195 @@ export const useGetUserRemaster = <
   },
 ): UseQueryResult<TData, TError> & { queryKey: QueryKey } => {
   const queryOptions = getGetUserRemasterQueryOptions(id, options);
+
+  const query = useQuery(queryOptions) as UseQueryResult<TData, TError> & {
+    queryKey: QueryKey;
+  };
+
+  query.queryKey = queryOptions.queryKey;
+
+  return query;
+};
+
+export const getAllRemastersByUserId = (
+  id: string,
+  params: GetAllRemastersByUserIdParams,
+  signal?: AbortSignal,
+) => {
+  return customInstance<PageResponseRemasterResponse>({
+    url: `/user/remaster/all/${id}`,
+    method: "GET",
+    params,
+    signal,
+  });
+};
+
+export const getGetAllRemastersByUserIdQueryKey = (
+  id: string,
+  params: GetAllRemastersByUserIdParams,
+) => {
+  return [`/user/remaster/all/${id}`, ...(params ? [params] : [])] as const;
+};
+
+export const getGetAllRemastersByUserIdInfiniteQueryOptions = <
+  TData = InfiniteData<
+    Awaited<ReturnType<typeof getAllRemastersByUserId>>,
+    GetAllRemastersByUserIdParams["cursor"]
+  >,
+  TError = unknown,
+>(
+  id: string,
+  params: GetAllRemastersByUserIdParams,
+  options?: {
+    query?: Partial<
+      UseInfiniteQueryOptions<
+        Awaited<ReturnType<typeof getAllRemastersByUserId>>,
+        TError,
+        TData,
+        Awaited<ReturnType<typeof getAllRemastersByUserId>>,
+        QueryKey,
+        GetAllRemastersByUserIdParams["cursor"]
+      >
+    >;
+  },
+) => {
+  const { query: queryOptions } = options ?? {};
+
+  const queryKey =
+    queryOptions?.queryKey ?? getGetAllRemastersByUserIdQueryKey(id, params);
+
+  const queryFn: QueryFunction<
+    Awaited<ReturnType<typeof getAllRemastersByUserId>>,
+    QueryKey,
+    GetAllRemastersByUserIdParams["cursor"]
+  > = ({ signal, pageParam }) =>
+    getAllRemastersByUserId(
+      id,
+      { ...params, cursor: pageParam || params?.["cursor"] },
+      signal,
+    );
+
+  return {
+    queryKey,
+    queryFn,
+    enabled: !!id,
+    ...queryOptions,
+  } as UseInfiniteQueryOptions<
+    Awaited<ReturnType<typeof getAllRemastersByUserId>>,
+    TError,
+    TData,
+    Awaited<ReturnType<typeof getAllRemastersByUserId>>,
+    QueryKey,
+    GetAllRemastersByUserIdParams["cursor"]
+  > & { queryKey: QueryKey };
+};
+
+export type GetAllRemastersByUserIdInfiniteQueryResult = NonNullable<
+  Awaited<ReturnType<typeof getAllRemastersByUserId>>
+>;
+export type GetAllRemastersByUserIdInfiniteQueryError = unknown;
+
+export const useGetAllRemastersByUserIdInfinite = <
+  TData = InfiniteData<
+    Awaited<ReturnType<typeof getAllRemastersByUserId>>,
+    GetAllRemastersByUserIdParams["cursor"]
+  >,
+  TError = unknown,
+>(
+  id: string,
+  params: GetAllRemastersByUserIdParams,
+  options?: {
+    query?: Partial<
+      UseInfiniteQueryOptions<
+        Awaited<ReturnType<typeof getAllRemastersByUserId>>,
+        TError,
+        TData,
+        Awaited<ReturnType<typeof getAllRemastersByUserId>>,
+        QueryKey,
+        GetAllRemastersByUserIdParams["cursor"]
+      >
+    >;
+  },
+): UseInfiniteQueryResult<TData, TError> & { queryKey: QueryKey } => {
+  const queryOptions = getGetAllRemastersByUserIdInfiniteQueryOptions(
+    id,
+    params,
+    options,
+  );
+
+  const query = useInfiniteQuery(queryOptions) as UseInfiniteQueryResult<
+    TData,
+    TError
+  > & { queryKey: QueryKey };
+
+  query.queryKey = queryOptions.queryKey;
+
+  return query;
+};
+
+export const getGetAllRemastersByUserIdQueryOptions = <
+  TData = Awaited<ReturnType<typeof getAllRemastersByUserId>>,
+  TError = unknown,
+>(
+  id: string,
+  params: GetAllRemastersByUserIdParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof getAllRemastersByUserId>>,
+        TError,
+        TData
+      >
+    >;
+  },
+) => {
+  const { query: queryOptions } = options ?? {};
+
+  const queryKey =
+    queryOptions?.queryKey ?? getGetAllRemastersByUserIdQueryKey(id, params);
+
+  const queryFn: QueryFunction<
+    Awaited<ReturnType<typeof getAllRemastersByUserId>>
+  > = ({ signal }) => getAllRemastersByUserId(id, params, signal);
+
+  return {
+    queryKey,
+    queryFn,
+    enabled: !!id,
+    ...queryOptions,
+  } as UseQueryOptions<
+    Awaited<ReturnType<typeof getAllRemastersByUserId>>,
+    TError,
+    TData
+  > & { queryKey: QueryKey };
+};
+
+export type GetAllRemastersByUserIdQueryResult = NonNullable<
+  Awaited<ReturnType<typeof getAllRemastersByUserId>>
+>;
+export type GetAllRemastersByUserIdQueryError = unknown;
+
+export const useGetAllRemastersByUserId = <
+  TData = Awaited<ReturnType<typeof getAllRemastersByUserId>>,
+  TError = unknown,
+>(
+  id: string,
+  params: GetAllRemastersByUserIdParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof getAllRemastersByUserId>>,
+        TError,
+        TData
+      >
+    >;
+  },
+): UseQueryResult<TData, TError> & { queryKey: QueryKey } => {
+  const queryOptions = getGetAllRemastersByUserIdQueryOptions(
+    id,
+    params,
+    options,
+  );
 
   const query = useQuery(queryOptions) as UseQueryResult<TData, TError> & {
     queryKey: QueryKey;

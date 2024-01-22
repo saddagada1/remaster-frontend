@@ -7,7 +7,10 @@
 
 export * from "./authenticationResponse";
 export * from "./basicUserResponse";
+export * from "./getAllRemastersByUserIdParams";
+export * from "./getAllUserRemastersParams";
 export * from "./loginRequest";
+export * from "./pageResponseRemasterResponse";
 export * from "./registerRequest";
 export * from "./remasterRequest";
 export * from "./remasterResponse";

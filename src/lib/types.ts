@@ -20,7 +20,6 @@ export interface Loop {
   end: number;
   key: number;
   mode: number;
-  chord: string;
   composition: string;
 }
 

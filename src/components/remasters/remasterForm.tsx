@@ -45,7 +45,7 @@ interface RemasterFormProps extends HTMLAttributes<HTMLDivElement> {
     values: z.infer<typeof formSchema> & { duration: number },
   ) => void | Promise<void>;
   buttonLabel: string;
-  defaultValues?: z.infer<typeof formSchema>;
+  defaultValues?: z.infer<typeof formSchema> & { duration: number };
 }
 
 const RemasterForm: React.FC<RemasterFormProps> = ({
@@ -54,7 +54,9 @@ const RemasterForm: React.FC<RemasterFormProps> = ({
   defaultValues,
   ...props
 }) => {
-  const [duration, setDuration] = useState<null | number>(null);
+  const [duration, setDuration] = useState<null | number>(
+    defaultValues?.duration ?? null,
+  );
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues,

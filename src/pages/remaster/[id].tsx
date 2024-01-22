@@ -1,4 +1,4 @@
-import { useGetUserRemaster } from "@/api/remaster-controller/remaster-controller";
+import { useGetRemaster } from "@/api/remaster-controller/remaster-controller";
 import Loading from "@/components/loading";
 import AudioTimeline from "@/components/remasters/audioTimeline";
 import LoopTimeline from "@/components/remasters/loopTimeline";
@@ -20,7 +20,7 @@ import { useEffect, useRef } from "react";
 import ReactPlayer from "react-player";
 import { useElementSize } from "usehooks-ts";
 
-const Editor: NextPage = ({}) => {
+const Remaster: NextPage = ({}) => {
   const [container, { width }] = useElementSize();
   const router = useRouter();
   const state = useAppSelector((state) => state.remaster);
@@ -29,7 +29,7 @@ const Editor: NextPage = ({}) => {
     data: remaster,
     isLoading,
     error,
-  } = useGetUserRemaster(router.query.id as string, {
+  } = useGetRemaster(router.query.id as string, {
     query: {
       enabled: typeof router.query.id === "string",
     },
@@ -74,7 +74,7 @@ const Editor: NextPage = ({}) => {
   return (
     <>
       <Head>
-        <title>Remaster - Editor</title>
+        <title>Remaster - {state.metadata.name}</title>
       </Head>
       <main
         ref={container}
@@ -126,12 +126,16 @@ const Editor: NextPage = ({}) => {
                 height="100%"
               />
             </div>
-            <LoopView className="hidden flex-1 hr:flex" />
+            <LoopView disabled className="hidden flex-1 hr:flex" />
           </div>
           <TabView className="flex-1" tuningIndex={state.metadata.tuning} />
         </div>
         <div className="section">
-          <LoopTimeline width={width} duration={state.metadata.duration} />
+          <LoopTimeline
+            disabled
+            width={width}
+            duration={state.metadata.duration}
+          />
         </div>
         <div className="section flex flex-col gap-2">
           <AudioTimeline width={width} duration={state.metadata.duration} />
@@ -140,4 +144,4 @@ const Editor: NextPage = ({}) => {
     </>
   );
 };
-export default Editor;
+export default Remaster;

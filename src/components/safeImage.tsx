@@ -1,52 +1,50 @@
 import Image from "next/image";
 import { type HTMLAttributes, useState } from "react";
-import { randomBytes } from "crypto";
 import { cn } from "@/lib/utils";
-import Avatar from "boring-avatars";
-
-const fallbackAlt = randomBytes(32).toString();
+import Gradient from "./gradient";
+import { pitchClassColours } from "@/lib/constants";
 
 interface SafeImageProps extends HTMLAttributes<HTMLDivElement> {
   url?: string | null;
   alt?: string;
-  width: number;
   square?: boolean;
 }
 
 const SafeImage: React.FC<SafeImageProps> = ({
   url,
   alt,
-  width,
   square,
+  className,
   ...props
 }) => {
-  const { className, style, ...rest } = props;
   const [error, setError] = useState(false);
 
   return (
     <div
-      style={{ width, ...style }}
-      {...rest}
+      {...props}
       className={cn(
-        "relative aspect-square",
+        "relative aspect-square overflow-hidden",
         square ? "rounded-md" : "rounded-full",
         className,
       )}
     >
       {url && !error ? (
         <Image
-          unoptimized
           src={url}
-          alt={alt ?? fallbackAlt}
-          sizes={`${width}px`}
+          alt={alt ?? "Remaster Image"}
           fill
           className="object-cover"
           onError={() => setError(true)}
         />
       ) : (
-        <Avatar size={width} square={square} name={alt ?? fallbackAlt} />
+        <Gradient
+          colours={Object.values(pitchClassColours).filter(
+            (_, i) => i % 2 !== 0,
+          )}
+        />
       )}
     </div>
   );
 };
+
 export default SafeImage;

@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useEffectOnce, useWindowSize } from "usehooks-ts";
 import { Button } from "../ui/button";
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
@@ -8,7 +8,9 @@ import { useAppDispatch, useAppSelector } from "@/lib/redux/hooks";
 import {
   handlePlayingLoop,
   setIsPlaying,
+  setIsScrubbing,
   setPlaybackPosition,
+  setVolume,
 } from "@/lib/redux/slices/remasterSlice";
 
 interface AudioTimelineProps {
@@ -19,14 +21,12 @@ interface AudioTimelineProps {
 const AudioTimeline: React.FC<AudioTimelineProps> = ({ width, duration }) => {
   const dispatch = useAppDispatch();
   const state = useAppSelector((store) => store.remaster);
-  const [volume, setVolume] = useState(0.5);
-  const [isScrubbing, setIsScrubbing] = useState(false);
   const { width: windowWidth } = useWindowSize();
 
   const handleClickToSeek = (
     e: React.MouseEvent<HTMLDivElement, MouseEvent>,
   ) => {
-    if (isScrubbing) return;
+    if (state.isScrubbing) return;
     const seekPercentage =
       clamp(e.clientX - (windowWidth - width), 0, width) / width;
     const seekPosition = duration * seekPercentage;
@@ -42,13 +42,13 @@ const AudioTimeline: React.FC<AudioTimelineProps> = ({ width, duration }) => {
   useEffectOnce(() => {
     const savedVolume = sessionStorage.getItem("volume");
     if (savedVolume) {
-      setVolume(parseFloat(savedVolume));
+      dispatch(setVolume(parseFloat(savedVolume)));
     }
   });
 
   useEffect(() => {
     const handleMouseScrub = (e: MouseEvent) => {
-      if (!isScrubbing) return;
+      if (!state.isScrubbing) return;
       const seekPercentage =
         clamp(e.clientX - (windowWidth - width), 0, width) / width;
       const seekPosition = duration * seekPercentage;
@@ -56,7 +56,7 @@ const AudioTimeline: React.FC<AudioTimelineProps> = ({ width, duration }) => {
     };
 
     const handleTouchScrub = (e: TouchEvent) => {
-      if (!isScrubbing || !e.touches[0]) return;
+      if (!state.isScrubbing || !e.touches[0]) return;
       const seekPercentage =
         clamp(e.touches[0].clientX - (windowWidth - width), 0, width) / width;
       const seekPosition = duration * seekPercentage;
@@ -64,10 +64,10 @@ const AudioTimeline: React.FC<AudioTimelineProps> = ({ width, duration }) => {
     };
 
     const handleFinishScrub = () => {
-      if (!isScrubbing) return;
+      if (!state.isScrubbing) return;
       state.seek(state.playbackPosition);
       dispatch(handlePlayingLoop({ position: state.playbackPosition }));
-      setIsScrubbing(false);
+      dispatch(setIsScrubbing(false));
     };
 
     window.addEventListener("mousemove", handleMouseScrub);
@@ -81,7 +81,7 @@ const AudioTimeline: React.FC<AudioTimelineProps> = ({ width, duration }) => {
       window.removeEventListener("mouseup", handleFinishScrub);
       window.removeEventListener("touchend", handleFinishScrub);
     };
-  }, [duration, isScrubbing, width]);
+  }, [duration, state.isScrubbing, width]);
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -113,8 +113,8 @@ const AudioTimeline: React.FC<AudioTimelineProps> = ({ width, duration }) => {
     <>
       <div
         onClick={(e) => handleClickToSeek(e)}
-        onMouseDown={() => setIsScrubbing(true)}
-        onTouchStart={() => setIsScrubbing(true)}
+        onMouseDown={() => dispatch(setIsScrubbing(true))}
+        onTouchStart={() => dispatch(setIsScrubbing(true))}
         className="relative flex h-1.5 cursor-pointer items-center rounded border bg-accent"
       >
         <div className="h-full w-full overflow-hidden">
@@ -155,20 +155,19 @@ const AudioTimeline: React.FC<AudioTimelineProps> = ({ width, duration }) => {
               Volume
             </Button>
           </PopoverTrigger>
-          <PopoverContent className="w-fit">
+          <PopoverContent className="h-32 w-fit">
             <Slider
               onValueChange={(value) => {
                 if (value[0]) {
-                  //   void context.player?.setVolume(value[0]);
-                  setVolume(value[0]);
+                  dispatch(setVolume(value[0]));
                   sessionStorage.setItem("volume", value[0].toString());
                 }
               }}
-              defaultValue={[volume]}
+              defaultValue={[state.volume]}
               max={1}
+              min={0}
               step={0.01}
               orientation="vertical"
-              className="h-[100px]"
             />
           </PopoverContent>
         </Popover>
