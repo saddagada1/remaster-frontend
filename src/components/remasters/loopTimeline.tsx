@@ -1,9 +1,6 @@
 import { colourMod, pitchClassColours } from "@/lib/constants";
 import { useAppDispatch, useAppSelector } from "@/lib/redux/hooks";
-import {
-  handlePlayingLoop,
-  resizeLoop,
-} from "@/lib/redux/slices/remasterSlice";
+import { resizeLoop } from "@/lib/redux/slices/remasterSlice";
 import { cn, getVideoTimestamp } from "@/lib/utils";
 import { Resizable } from "re-resizable";
 import { useEffect, useRef, useState } from "react";
@@ -61,12 +58,14 @@ interface LoopTimelineProps {
   width: number;
   duration: number;
   disabled?: boolean;
+  seek: (position: number) => void;
 }
 
 const LoopTimeline: React.FC<LoopTimelineProps> = ({
   width,
   duration,
   disabled,
+  seek,
 }) => {
   const state = useAppSelector((store) => store.remaster);
   const dispatch = useAppDispatch();
@@ -151,7 +150,7 @@ const LoopTimeline: React.FC<LoopTimelineProps> = ({
                   height: "100%",
                 }}
                 bounds="parent"
-                enable={{ right: !disabled }}
+                enable={{ right: !disabled && !state.isPlaying }}
                 handleComponent={{ right: <SliderLoopHandle /> }}
                 handleClasses={{ right: "z-10" }}
                 onResizeStart={() => {
@@ -165,12 +164,6 @@ const LoopTimeline: React.FC<LoopTimelineProps> = ({
                   setIsResizing(false);
                   setResizePosition(null);
                   dispatch(resizeLoop({ index, width: delta.width, snapTo }));
-                  dispatch(
-                    handlePlayingLoop({
-                      position: state.playbackPosition,
-                      refresh: true,
-                    }),
-                  );
                 }}
               >
                 <div
@@ -178,7 +171,7 @@ const LoopTimeline: React.FC<LoopTimelineProps> = ({
                     backgroundColor: pitchClassColours[loop.key] + colourMod,
                   }}
                   onClick={() => {
-                    state.seek(loop.start);
+                    seek(loop.start);
                   }}
                   className="h-full w-full cursor-pointer rounded-md"
                 />

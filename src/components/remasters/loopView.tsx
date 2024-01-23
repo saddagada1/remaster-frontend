@@ -10,10 +10,12 @@ import { useElementSize } from "usehooks-ts";
 
 interface LoopViewProps extends HTMLAttributes<HTMLDivElement> {
   disabled?: boolean;
+  seek: (position: number) => void;
 }
 
 const LoopView: React.FC<LoopViewProps> = ({
   disabled,
+  seek,
   className,
   ...props
 }) => {
@@ -21,7 +23,7 @@ const LoopView: React.FC<LoopViewProps> = ({
   const [container, { height }] = useElementSize();
 
   return (
-    <div {...props} className={cn("section flex flex-col", className)}>
+    <div {...props} className={cn("section flex flex-col gap-2", className)}>
       <div className="flex justify-between">
         <h1 className="label">Loops</h1>
         {!disabled && <CreateLoopModal />}
@@ -35,7 +37,7 @@ const LoopView: React.FC<LoopViewProps> = ({
               className="flex flex-col gap-2"
             >
               {state.loops.map((loop) => (
-                <LoopButton key={loop.id} loop={loop} />
+                <LoopButton key={loop.id} loop={loop} seek={seek} />
               ))}
             </Accordion>
           </ScrollArea>

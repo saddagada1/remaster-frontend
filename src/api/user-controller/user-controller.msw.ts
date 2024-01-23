@@ -19,7 +19,7 @@ export const getGetUserByUsernameMock = () => ({
 });
 
 export const getUserControllerMock = () => [
-  http.get("*/user/:username", async () => {
+  http.get("*/open/:username", async () => {
     await delay(1000);
     return new HttpResponse(JSON.stringify(getGetUserByUsernameMock()), {
       status: 200,

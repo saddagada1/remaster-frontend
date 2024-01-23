@@ -5,6 +5,7 @@ import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
 import { Slider } from "../ui/slider";
 import { clamp, getVideoTimestamp } from "@/lib/utils";
 import { useAppDispatch, useAppSelector } from "@/lib/redux/hooks";
+
 import {
   handlePlayingLoop,
   setIsPlaying,
@@ -12,13 +13,19 @@ import {
   setPlaybackPosition,
   setVolume,
 } from "@/lib/redux/slices/remasterSlice";
+import { store } from "@/lib/redux/store";
 
 interface AudioTimelineProps {
   width: number;
   duration: number;
+  seek: (position: number) => void;
 }
 
-const AudioTimeline: React.FC<AudioTimelineProps> = ({ width, duration }) => {
+const AudioTimeline: React.FC<AudioTimelineProps> = ({
+  width,
+  duration,
+  seek,
+}) => {
   const dispatch = useAppDispatch();
   const state = useAppSelector((store) => store.remaster);
   const { width: windowWidth } = useWindowSize();
@@ -31,7 +38,7 @@ const AudioTimeline: React.FC<AudioTimelineProps> = ({ width, duration }) => {
       clamp(e.clientX - (windowWidth - width), 0, width) / width;
     const seekPosition = duration * seekPercentage;
     dispatch(setPlaybackPosition(seekPosition));
-    state.seek(seekPosition);
+    seek(seekPosition);
     dispatch(handlePlayingLoop({ position: seekPosition }));
   };
 
@@ -65,7 +72,7 @@ const AudioTimeline: React.FC<AudioTimelineProps> = ({ width, duration }) => {
 
     const handleFinishScrub = () => {
       if (!state.isScrubbing) return;
-      state.seek(state.playbackPosition);
+      seek(state.playbackPosition);
       dispatch(handlePlayingLoop({ position: state.playbackPosition }));
       dispatch(setIsScrubbing(false));
     };
@@ -85,16 +92,20 @@ const AudioTimeline: React.FC<AudioTimelineProps> = ({ width, duration }) => {
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
+      const { remaster } = store.getState();
       if (e.key === "ArrowLeft") {
-        const playbackPosition = Math.max(state.playbackPosition - 5, 0);
+        const playbackPosition = Math.max(remaster.playbackPosition - 5, 0);
         dispatch(setPlaybackPosition(playbackPosition));
-        state.seek(playbackPosition);
+        seek(playbackPosition);
         dispatch(handlePlayingLoop({ position: playbackPosition }));
       }
       if (e.key === "ArrowRight") {
-        const playbackPosition = Math.min(state.playbackPosition + 5, duration);
+        const playbackPosition = Math.min(
+          remaster.playbackPosition + 5,
+          duration,
+        );
         dispatch(setPlaybackPosition(playbackPosition));
-        state.seek(playbackPosition);
+        seek(playbackPosition);
         dispatch(handlePlayingLoop({ position: playbackPosition }));
       }
       if (e.key === "Space") {

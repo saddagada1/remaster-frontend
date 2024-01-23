@@ -15,22 +15,23 @@ import {
 import { cn } from "@/lib/utils";
 import { useAppDispatch, useAppSelector } from "@/lib/redux/hooks";
 import {
-  setIsPlaying,
   setPlaybackPosition,
   setPlayingLoop,
   setRepeatingLoop,
 } from "@/lib/redux/slices/remasterSlice";
-import { LoopIcon, PauseIcon, PlayIcon } from "@radix-ui/react-icons";
+import { LoopIcon, ResetIcon } from "@radix-ui/react-icons";
 import EditLoopModal from "./editLoopModal";
 
 interface LoopButtonProps extends HTMLAttributes<HTMLDivElement> {
   loop: Loop;
   disabled?: boolean;
+  seek: (position: number) => void;
 }
 
 const LoopButton: React.FC<LoopButtonProps> = ({
   loop,
   disabled,
+  seek,
   className,
   style,
   ...props
@@ -55,47 +56,39 @@ const LoopButton: React.FC<LoopButtonProps> = ({
           <div className="flex flex-1 gap-2">
             <Button
               onClick={() => {
-                state.seek(loop.start);
+                seek(loop.start);
                 dispatch(setPlaybackPosition(loop.start));
-                if (!state.isPlaying) {
-                  dispatch(setPlayingLoop(loop));
-                  dispatch(setIsPlaying(true));
-                } else {
-                  dispatch(setIsPlaying(false));
-                }
+                dispatch(setPlayingLoop(loop));
               }}
               variant="link"
               className="h-fit pl-0"
             >
-              {state.isPlaying &&
-              (loop.id === state.repeatingLoop?.id ||
-                (!state.repeatingLoop && loop.id === state.playingLoop?.id)) ? (
-                <PauseIcon className="h-5 w-5" />
-              ) : (
-                <PlayIcon className="h-5 w-5" />
-              )}
+              <ResetIcon className="h-5 w-5" />
             </Button>
             <Button
               variant={
-                loop.id === state.repeatingLoop?.id ? "secondary" : "link"
+                loop.id === state.playingLoop?.id && state.repeatPlayingLoop
+                  ? "secondary"
+                  : "link"
               }
               className="h-fit"
               onClick={() => {
-                if (loop.id === state.repeatingLoop?.id) {
-                  dispatch(setRepeatingLoop(null));
+                if (
+                  loop.id === state.playingLoop?.id &&
+                  state.repeatPlayingLoop
+                ) {
+                  dispatch(setRepeatingLoop(false));
                 } else {
-                  dispatch(setRepeatingLoop(loop));
+                  dispatch(setRepeatingLoop(true));
                   if (
                     state.playbackPosition >= loop.start &&
                     loop.end >= state.playbackPosition
                   ) {
                     return;
                   }
-                  state.seek(loop.start);
+                  seek(loop.start);
                   dispatch(setPlaybackPosition(loop.start));
-                  if (!state.isPlaying) {
-                    dispatch(setPlayingLoop(loop));
-                  }
+                  dispatch(setPlayingLoop(loop));
                 }
               }}
             >

@@ -41,7 +41,8 @@ const processRequestQueue = ({
 
 client.interceptors.request.use(
   async (config) => {
-    if (config.url?.includes("auth")) return config;
+    if (config.url?.includes("open") || config.url?.includes("auth"))
+      return config;
     const controller = new AbortController();
     const { auth } = store.getState();
     if (!auth.credentials) {

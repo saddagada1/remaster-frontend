@@ -1,8 +1,8 @@
 import { useAppSelector } from "@/lib/redux/hooks";
-import Orb from "./orb";
-import EditRemasterModal from "./remasters/editRemasterModal";
-import { Button } from "./ui/button";
-import NoData from "./noData";
+import Orb from "../orb";
+import EditRemasterModal from "./editRemasterModal";
+import { Button } from "../ui/button";
+import NoData from "../noData";
 
 const Topbar: React.FC = ({}) => {
   const metadata = useAppSelector((store) => store.remaster.metadata);

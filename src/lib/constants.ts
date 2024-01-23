@@ -1,12 +1,6 @@
 import { type Tuning } from "./types";
 
-export const openPaths = [
-  "/login",
-  "/sign-up",
-  "/",
-  "/[username]",
-  "/remaster",
-];
+export const privatePaths = ["/profile", "/create", "/editor"];
 export const authPaths = ["/login", "/sign-up"];
 
 export const tuning: Record<number, Tuning> = {

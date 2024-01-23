@@ -66,7 +66,7 @@ export const handleApiError = (
   error: unknown,
   options?: { fatal?: boolean },
 ) => {
-  if ((error as { message: string }).message === "canceled") return;
+  if (!!error && (error as { message: string }).message === "canceled") return;
   const apiError = checkIfApiError(error);
   if (!!apiError && !options?.fatal) {
     if (typeof apiError === "number") {

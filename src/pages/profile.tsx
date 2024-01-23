@@ -1,18 +1,16 @@
 import type { NextPage } from "next";
 import Head from "next/head";
-import {
-  useGetAllUserRemasters,
-  useGetAllUserRemastersInfinite,
-} from "@/api/remaster-controller/remaster-controller";
-import Loading from "@/components/loading";
+import { useGetAllUserRemastersInfinite } from "@/api/remaster-controller/remaster-controller";
 import { useAppSelector } from "@/lib/redux/hooks";
 import UserLayout from "@/components/userLayout";
 import RemasterCard from "@/components/remasters/remasterCard";
-import { useMemo } from "react";
+import { useMemo, useRef } from "react";
 import { defaultPaginationLimit } from "@/lib/constants";
+import InfinitePagination from "@/components/infinitePagination";
+import NoData from "@/components/noData";
 
 const Profile: NextPage = ({}) => {
-  // const lastItem = useRef<HTMLButtonElement>(null!);
+  const lastItem = useRef<HTMLDivElement>(null!);
   const {
     data: remasterPages,
     isLoading,
@@ -31,22 +29,36 @@ const Profile: NextPage = ({}) => {
     return remasterPages?.pages.flatMap((page) => page.data.items);
   }, [remasterPages]);
 
-  if (isLoading) {
-    return <Loading />;
-  }
-
   return (
     <>
       <Head>
         <title>Remaster - Profile</title>
       </Head>
       <main className="flex flex-1 flex-col-reverse justify-start gap-2 hr:flex-row">
-        <div className="grid h-fit flex-1 grid-flow-row gap-2 hr:grid-cols-4">
-          {remasters?.map((remaster, index) => (
-            <RemasterCard key={index} remaster={remaster} />
-          ))}
-          <h1 onClick={() => fetchNextPage()}>load</h1>
-        </div>
+        <InfinitePagination
+          lastItem={lastItem}
+          onLastItem={() => void fetchNextPage()}
+          loading={isLoading}
+          className="flex-1"
+        >
+          {remasters && remasters.length > 0 ? (
+            <div className="grid grid-flow-row gap-2 hr:grid-cols-4">
+              {remasters?.map((remaster, index) => (
+                <RemasterCard
+                  ref={
+                    index === (remasters?.length ?? 0) - 1
+                      ? lastItem
+                      : undefined
+                  }
+                  key={index}
+                  remaster={remaster}
+                />
+              ))}
+            </div>
+          ) : (
+            !isLoading && <NoData>No sloops have been made :(</NoData>
+          )}
+        </InfinitePagination>
         <UserLayout user={user} remasterCount={1} />
       </main>
     </>

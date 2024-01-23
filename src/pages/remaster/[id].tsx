@@ -3,12 +3,12 @@ import Loading from "@/components/loading";
 import AudioTimeline from "@/components/remasters/audioTimeline";
 import LoopTimeline from "@/components/remasters/loopTimeline";
 import LoopView from "@/components/remasters/loopView";
-import TabView from "@/components/remasters/tabView";
+import CompositionView from "@/components/remasters/compositionView";
 import { mode, pitchClass, timeSignature, tuning } from "@/lib/constants";
 import { useAppDispatch, useAppSelector } from "@/lib/redux/hooks";
 import {
   handlePlayingLoop,
-  initRemaster,
+  initMetadata,
   setIsPlaying,
   setPlaybackPosition,
 } from "@/lib/redux/slices/remasterSlice";
@@ -19,6 +19,7 @@ import { useRouter } from "next/router";
 import { useEffect, useRef } from "react";
 import ReactPlayer from "react-player";
 import { useElementSize } from "usehooks-ts";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 const Remaster: NextPage = ({}) => {
   const [container, { width }] = useElementSize();
@@ -49,20 +50,17 @@ const Remaster: NextPage = ({}) => {
     }
 
     dispatch(
-      initRemaster({
-        seek: seek,
-        metadata: {
-          id: remaster.data.id,
-          url: remaster.data.url,
-          name: remaster.data.name,
-          description: remaster.data.description,
-          duration: remaster.data.duration,
-          key: remaster.data.key,
-          mode: remaster.data.mode,
-          tempo: remaster.data.tempo,
-          timeSignature: remaster.data.timeSignature,
-          tuning: remaster.data.tuning,
-        },
+      initMetadata({
+        id: remaster.data.id,
+        url: remaster.data.url,
+        name: remaster.data.name,
+        description: remaster.data.description,
+        duration: remaster.data.duration,
+        key: remaster.data.key,
+        mode: remaster.data.mode,
+        tempo: remaster.data.tempo,
+        timeSignature: remaster.data.timeSignature,
+        tuning: remaster.data.tuning,
       }),
     );
   }, [remaster]);
@@ -108,10 +106,22 @@ const Remaster: NextPage = ({}) => {
                 url={state.metadata.url}
                 progressInterval={1}
                 onProgress={({ playedSeconds }) => {
-                  !state.isScrubbing &&
-                    state.isPlaying &&
+                  if (!state.isScrubbing && state.isPlaying) {
                     dispatch(setPlaybackPosition(playedSeconds));
+                  }
                   dispatch(handlePlayingLoop({ position: playedSeconds }));
+
+                  if (!state.playingLoop) return;
+
+                  const loopOutOfPosition = !!(
+                    state.playingLoop.start > playedSeconds ||
+                    playedSeconds > state.playingLoop.end
+                  );
+
+                  if (state.repeatPlayingLoop && loopOutOfPosition) {
+                    seek(state.playingLoop.start);
+                    dispatch(setPlaybackPosition(state.playingLoop.start));
+                  }
                 }}
                 onPlay={() => dispatch(setIsPlaying(true))}
                 onPause={() => dispatch(setIsPlaying(false))}
@@ -126,19 +136,40 @@ const Remaster: NextPage = ({}) => {
                 height="100%"
               />
             </div>
-            <LoopView disabled className="hidden flex-1 hr:flex" />
+            <LoopView disabled seek={seek} className="hidden flex-1 hr:flex" />
           </div>
-          <TabView className="flex-1" tuningIndex={state.metadata.tuning} />
+          <CompositionView disabled className="hidden flex-1 hr:flex" />
+          <Tabs defaultValue="loops" className="flex flex-1 flex-col hr:hidden">
+            <TabsList>
+              <TabsTrigger className="mono flex-1" value="loops">
+                Loops
+              </TabsTrigger>
+              <TabsTrigger className="mono flex-1" value="tabs">
+                Composition
+              </TabsTrigger>
+            </TabsList>
+            <TabsContent value="loops" className="flex-1">
+              <LoopView disabled seek={seek} className="h-full" />
+            </TabsContent>
+            <TabsContent value="tabs" className="flex-1">
+              <CompositionView disabled className="h-full" />
+            </TabsContent>
+          </Tabs>
         </div>
         <div className="section">
           <LoopTimeline
-            disabled
+            seek={seek}
             width={width}
             duration={state.metadata.duration}
+            disabled
           />
         </div>
         <div className="section flex flex-col gap-2">
-          <AudioTimeline width={width} duration={state.metadata.duration} />
+          <AudioTimeline
+            seek={seek}
+            width={width}
+            duration={state.metadata.duration}
+          />
         </div>
       </main>
     </>

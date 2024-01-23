@@ -3,7 +3,7 @@ import { useWindowSize } from "usehooks-ts";
 import { Navbar, SideNavbar } from "./navbar";
 import Header from "./header";
 import { useRouter } from "next/router";
-import { Sidebar, Topbar } from "./remasterLayout";
+import { Sidebar, Topbar } from "./remasters/remasterLayout";
 
 interface LayoutProps {
   children: React.ReactNode;

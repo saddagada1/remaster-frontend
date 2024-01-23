@@ -1,22 +1,24 @@
 import { cn, getRelativeTime } from "@/lib/utils";
 import { type RemasterResponse } from "@/model";
-import { type HTMLAttributes } from "react";
+import { type RefObject, type HTMLAttributes } from "react";
 import ReactPlayer from "react-player";
 import { Button } from "../ui/button";
 import { useRouter } from "next/router";
 
 interface RemasterCardProps extends HTMLAttributes<HTMLDivElement> {
   remaster: RemasterResponse;
+  ref?: RefObject<HTMLDivElement>;
 }
 
 const RemasterCard: React.FC<RemasterCardProps> = ({
   remaster,
+  ref,
   className,
   ...props
 }) => {
   const router = useRouter();
   return (
-    <div {...props} className={cn("flex flex-col gap-2", className)}>
+    <div {...props} ref={ref} className={cn("flex flex-col gap-2", className)}>
       <div className="relative aspect-video overflow-hidden rounded-md border border-input">
         <ReactPlayer url={remaster.url} light width="100%" height="100%" />
       </div>

@@ -7,38 +7,6 @@
 import { faker } from "@faker-js/faker";
 import { HttpResponse, delay, http } from "msw";
 
-export const getCreateRemasterMock = () => ({
-  createdAt: `${faker.date.past().toISOString().split(".")[0]}Z`,
-  description: faker.helpers.arrayElement([faker.word.sample(), undefined]),
-  duration: faker.number.int({ min: undefined, max: undefined }),
-  id: faker.string.uuid(),
-  key: faker.number.int({ min: undefined, max: undefined }),
-  mode: faker.number.int({ min: undefined, max: undefined }),
-  name: faker.word.sample(),
-  tempo: faker.number.int({ min: undefined, max: undefined }),
-  timeSignature: faker.number.int({ min: undefined, max: undefined }),
-  tuning: faker.number.int({ min: undefined, max: undefined }),
-  updatedAt: `${faker.date.past().toISOString().split(".")[0]}Z`,
-  url: faker.word.sample(),
-  user: { id: faker.string.uuid(), username: faker.word.sample() },
-});
-
-export const getGetRemasterMock = () => ({
-  createdAt: `${faker.date.past().toISOString().split(".")[0]}Z`,
-  description: faker.helpers.arrayElement([faker.word.sample(), undefined]),
-  duration: faker.number.int({ min: undefined, max: undefined }),
-  id: faker.string.uuid(),
-  key: faker.number.int({ min: undefined, max: undefined }),
-  mode: faker.number.int({ min: undefined, max: undefined }),
-  name: faker.word.sample(),
-  tempo: faker.number.int({ min: undefined, max: undefined }),
-  timeSignature: faker.number.int({ min: undefined, max: undefined }),
-  tuning: faker.number.int({ min: undefined, max: undefined }),
-  updatedAt: `${faker.date.past().toISOString().split(".")[0]}Z`,
-  url: faker.word.sample(),
-  user: { id: faker.string.uuid(), username: faker.word.sample() },
-});
-
 export const getGetAllUserRemastersMock = () => ({
   items: Array.from(
     { length: faker.number.int({ min: 1, max: 10 }) },
@@ -61,7 +29,39 @@ export const getGetAllUserRemastersMock = () => ({
   next: faker.helpers.arrayElement([faker.string.uuid(), undefined]),
 });
 
+export const getCreateRemasterMock = () => ({
+  createdAt: `${faker.date.past().toISOString().split(".")[0]}Z`,
+  description: faker.helpers.arrayElement([faker.word.sample(), undefined]),
+  duration: faker.number.int({ min: undefined, max: undefined }),
+  id: faker.string.uuid(),
+  key: faker.number.int({ min: undefined, max: undefined }),
+  mode: faker.number.int({ min: undefined, max: undefined }),
+  name: faker.word.sample(),
+  tempo: faker.number.int({ min: undefined, max: undefined }),
+  timeSignature: faker.number.int({ min: undefined, max: undefined }),
+  tuning: faker.number.int({ min: undefined, max: undefined }),
+  updatedAt: `${faker.date.past().toISOString().split(".")[0]}Z`,
+  url: faker.word.sample(),
+  user: { id: faker.string.uuid(), username: faker.word.sample() },
+});
+
 export const getGetUserRemasterMock = () => ({
+  createdAt: `${faker.date.past().toISOString().split(".")[0]}Z`,
+  description: faker.helpers.arrayElement([faker.word.sample(), undefined]),
+  duration: faker.number.int({ min: undefined, max: undefined }),
+  id: faker.string.uuid(),
+  key: faker.number.int({ min: undefined, max: undefined }),
+  mode: faker.number.int({ min: undefined, max: undefined }),
+  name: faker.word.sample(),
+  tempo: faker.number.int({ min: undefined, max: undefined }),
+  timeSignature: faker.number.int({ min: undefined, max: undefined }),
+  tuning: faker.number.int({ min: undefined, max: undefined }),
+  updatedAt: `${faker.date.past().toISOString().split(".")[0]}Z`,
+  url: faker.word.sample(),
+  user: { id: faker.string.uuid(), username: faker.word.sample() },
+});
+
+export const getGetRemasterMock = () => ({
   createdAt: `${faker.date.past().toISOString().split(".")[0]}Z`,
   description: faker.helpers.arrayElement([faker.word.sample(), undefined]),
   duration: faker.number.int({ min: undefined, max: undefined }),
@@ -100,6 +100,15 @@ export const getGetAllRemastersByUserIdMock = () => ({
 });
 
 export const getRemasterControllerMock = () => [
+  http.get("*/user/remaster", async () => {
+    await delay(1000);
+    return new HttpResponse(JSON.stringify(getGetAllUserRemastersMock()), {
+      status: 200,
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+  }),
   http.post("*/user/remaster", async () => {
     await delay(1000);
     return new HttpResponse(JSON.stringify(getCreateRemasterMock()), {
@@ -111,24 +120,6 @@ export const getRemasterControllerMock = () => [
   }),
   http.get("*/user/remaster/:id", async () => {
     await delay(1000);
-    return new HttpResponse(JSON.stringify(getGetRemasterMock()), {
-      status: 200,
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
-  }),
-  http.get("*/user/remaster/private", async () => {
-    await delay(1000);
-    return new HttpResponse(JSON.stringify(getGetAllUserRemastersMock()), {
-      status: 200,
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
-  }),
-  http.get("*/user/remaster/private/:id", async () => {
-    await delay(1000);
     return new HttpResponse(JSON.stringify(getGetUserRemasterMock()), {
       status: 200,
       headers: {
@@ -136,7 +127,16 @@ export const getRemasterControllerMock = () => [
       },
     });
   }),
-  http.get("*/user/remaster/all/:id", async () => {
+  http.get("*/open/remaster/:id", async () => {
+    await delay(1000);
+    return new HttpResponse(JSON.stringify(getGetRemasterMock()), {
+      status: 200,
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+  }),
+  http.get("*/open/remaster/all/:id", async () => {
     await delay(1000);
     return new HttpResponse(JSON.stringify(getGetAllRemastersByUserIdMock()), {
       status: 200,

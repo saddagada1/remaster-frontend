@@ -80,7 +80,7 @@
     @apply rounded-md border border-input p-2;
   }
   .label {
-    @apply mono mb-4 w-full text-left text-xs leading-tight text-muted-foreground hr:mb-8 hr:text-sm;
+    @apply mono mb-2 w-full text-left text-xs leading-tight text-muted-foreground hr:mb-8 hr:text-sm;
   }
   .button-accent {
     @apply !bg-background !text-foreground hover:!bg-background/80;

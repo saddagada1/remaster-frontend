@@ -19,14 +19,14 @@ import { customInstance } from "../../lib/axios";
 
 export const getUserByUsername = (username: string, signal?: AbortSignal) => {
   return customInstance<UserResponse>({
-    url: `/user/${username}`,
+    url: `/open/${username}`,
     method: "GET",
     signal,
   });
 };
 
 export const getGetUserByUsernameQueryKey = (username: string) => {
-  return [`/user/${username}`] as const;
+  return [`/open/${username}`] as const;
 };
 
 export const getGetUserByUsernameInfiniteQueryOptions = <

@@ -2,7 +2,7 @@ import { useAppDispatch, useAppSelector } from "@/lib/redux/hooks";
 import { useRefreshToken } from "@/api/authentication-controller/authentication-controller";
 import { setAuthState } from "@/lib/redux/slices/authSlice";
 import { useRouter } from "next/router";
-import { authPaths, openPaths } from "@/lib/constants";
+import { authPaths, privatePaths } from "@/lib/constants";
 import { useEffect } from "react";
 import { useEffectOnce } from "usehooks-ts";
 import Loading from "./loading";
@@ -17,7 +17,7 @@ const IsAuth: React.FC<{ children: React.ReactNode }> = ({ children }) => {
     const checkAuth = async () => {
       try {
         const response = await refreshToken();
-        if (authPaths.includes(router.pathname)) {
+        if (authPaths.some((path) => router.pathname.includes(path))) {
           await router.replace("/");
         }
         dispatch(
@@ -31,8 +31,8 @@ const IsAuth: React.FC<{ children: React.ReactNode }> = ({ children }) => {
           }),
         );
       } catch (error) {
-        if (!openPaths.includes(router.pathname)) {
-          await router.replace("/");
+        if (privatePaths.some((path) => router.pathname.includes(path))) {
+          await router.replace("/login");
         }
         dispatch(
           setAuthState({
@@ -51,22 +51,18 @@ const IsAuth: React.FC<{ children: React.ReactNode }> = ({ children }) => {
     if (auth.status === "loading") return;
 
     const routeChangeStart = (url: string) => {
-      console.log(url);
       if (url === router.pathname) return;
       if (auth.status === "unauthenticated") {
-        if (!openPaths.includes(url)) {
+        if (privatePaths.some((path) => url.includes(path))) {
           throw "Aborting route change. You can safely ignore this error.";
         }
       } else if (auth.status === "authenticated") {
-        if (authPaths.includes(url)) {
+        if (authPaths.some((path) => url.includes(path))) {
           throw "Aborting route change. You can safely ignore this error.";
         }
-        // if (
-        //   url === "/[username]" &&
-        //   auth.credentials?.user.username === "sai_"
-        // ) {
-        //   void router.replace("/profile");
-        // }
+        if (auth.credentials?.user.username === url.slice(1, url.length)) {
+          void router.replace("/profile");
+        }
       }
     };
 

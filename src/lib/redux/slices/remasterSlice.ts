@@ -1,45 +1,34 @@
 import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
-import { type Metadata, type Loop, type Tab } from "@/lib/types";
+import { type Metadata, type Loop } from "@/lib/types";
 
 interface RemasterState {
   metadata: Metadata | null;
-  seek: (position: number) => void;
   loops: Loop[];
   isPlaying: boolean;
   isScrubbing: boolean;
   volume: number;
   playbackPosition: number;
   playingLoop: Loop | null;
-  repeatingLoop: Loop | null;
+  repeatPlayingLoop: boolean;
 }
 
 const initialState: RemasterState = {
   metadata: null,
-  seek: () => {
-    return;
-  },
   loops: [],
   isPlaying: false,
   isScrubbing: false,
   volume: 0.0,
   playbackPosition: 0.0,
   playingLoop: null,
-  repeatingLoop: null,
+  repeatPlayingLoop: false,
 };
 
 const remasterSlice = createSlice({
   name: "remaster",
   initialState,
   reducers: {
-    initRemaster(
-      state,
-      action: PayloadAction<{
-        seek: (position: number) => void;
-        metadata: Metadata;
-      }>,
-    ) {
-      (state.seek = action.payload.seek),
-        (state.metadata = action.payload.metadata);
+    initMetadata(state, action: PayloadAction<Metadata>) {
+      state.metadata = action.payload;
     },
     setLoops(state, action: PayloadAction<Loop[]>) {
       state.loops = action.payload;
@@ -59,8 +48,8 @@ const remasterSlice = createSlice({
     setPlayingLoop(state, action: PayloadAction<Loop | null>) {
       state.playingLoop = action.payload;
     },
-    setRepeatingLoop(state, action: PayloadAction<Loop | null>) {
-      state.repeatingLoop = action.payload;
+    setRepeatingLoop(state, action: PayloadAction<boolean>) {
+      state.repeatPlayingLoop = action.payload;
     },
     resizeLoop(
       state,
@@ -72,6 +61,9 @@ const remasterSlice = createSlice({
         } else if (i > action.payload.index) {
           lp.start = lp.start + action.payload.width / action.payload.snapTo;
           lp.end = lp.end + action.payload.width / action.payload.snapTo;
+        }
+        if (state.playingLoop?.id === lp.id) {
+          state.playingLoop = lp;
         }
         return lp;
       });
@@ -98,7 +90,6 @@ const remasterSlice = createSlice({
         mode: action.payload.mode,
         composition: "",
       };
-
       if (
         loop.start <= state.playbackPosition &&
         state.playbackPosition <= loop.end
@@ -107,27 +98,14 @@ const remasterSlice = createSlice({
       }
       state.loops = [...state.loops, loop];
     },
-    handlePlayingLoop(
-      state,
-      action: PayloadAction<{ position: number; refresh?: boolean }>,
-    ) {
-      if (
-        !action.payload.refresh &&
+    handlePlayingLoop(state, action: PayloadAction<{ position: number }>) {
+      const loopInPosition = !!(
         state.playingLoop &&
         state.playingLoop.start <= action.payload.position &&
         action.payload.position <= state.playingLoop.end
-      ) {
-        return;
-      }
+      );
 
-      if (
-        !action.payload.refresh &&
-        state.repeatingLoop &&
-        (state.repeatingLoop.start > action.payload.position ||
-          action.payload.position > state.repeatingLoop.end)
-      ) {
-        state.seek(state.repeatingLoop.start * 1000);
-        state.playbackPosition = state.repeatingLoop.start;
+      if (loopInPosition || state.repeatPlayingLoop) {
         return;
       }
 
@@ -140,23 +118,10 @@ const remasterSlice = createSlice({
       if (next) {
         state.playingLoop = next;
       }
-
-      if (action.payload.refresh && state.repeatingLoop !== null) {
-        const update = state.loops.find(
-          (loop) => loop.id === state.repeatingLoop!.id,
-        );
-        if (!update) return;
-        state.repeatingLoop = update;
-      }
     },
     updateLoop(state, action: PayloadAction<Loop>) {
       state.loops = state.loops.map((loop) => {
         if (loop.id === action.payload.id) {
-          if (state.repeatingLoop) {
-            if (state.repeatingLoop.id === loop.id) {
-              state.repeatingLoop = action.payload;
-            }
-          }
           if (state.playingLoop) {
             if (state.playingLoop.id === loop.id) {
               state.playingLoop = action.payload;
@@ -169,7 +134,6 @@ const remasterSlice = createSlice({
       });
     },
     deleteLoop(state, action: PayloadAction<Loop>) {
-      state.repeatingLoop = null;
       state.playingLoop = null;
       const filteredLoops = state.loops.filter(
         (loop) => action.payload.id !== loop.id,
@@ -184,11 +148,6 @@ const remasterSlice = createSlice({
             start: action.payload.id === 1 ? 0 : filteredLoops[index - 1]!.end,
             end: loop.end,
           };
-          if (state.repeatingLoop) {
-            if (state.repeatingLoop.id === action.payload.id) {
-              state.repeatingLoop = updatedLoop;
-            }
-          }
           if (state.playingLoop) {
             if (state.playingLoop.id === action.payload.id) {
               state.playingLoop = updatedLoop;
@@ -205,35 +164,23 @@ const remasterSlice = createSlice({
         return loop;
       });
     },
-    updateTuning(state, action: PayloadAction<{ tuning: string[] }>) {
-      const update = state.loops.map((loop) => {
-        const tabs = JSON.parse(loop.composition) as Tab[];
-        return {
-          ...loop,
-          composition: JSON.stringify(
-            tabs.map((tab) => ({
-              ...tab,
-              head: action.payload.tuning.map((note) =>
-                note.length > 1 ? `${note}|` : `${note} |`,
-              ),
-            })),
-          ),
-        };
+    updateComposition(state, action: PayloadAction<string>) {
+      if (!state.playingLoop) return;
+
+      state.loops = state.loops.map((loop) => {
+        if (loop.id === state.playingLoop?.id) {
+          loop.composition = action.payload;
+        }
+        return loop;
       });
-      if (state.playingLoop) {
-        const playingUpdate = update.find(
-          (loop) => loop.id === state.playingLoop?.id,
-        );
-        if (!playingUpdate) return;
-        state.playingLoop = playingUpdate;
-      }
-      state.loops = update;
+
+      state.playingLoop.composition = action.payload;
     },
   },
 });
 
 export const {
-  initRemaster,
+  initMetadata,
   setLoops,
   setPlaybackPosition,
   setIsPlaying,
@@ -246,7 +193,7 @@ export const {
   handlePlayingLoop,
   updateLoop,
   deleteLoop,
-  updateTuning,
+  updateComposition,
 } = remasterSlice.actions;
 
 export default remasterSlice.reducer;
