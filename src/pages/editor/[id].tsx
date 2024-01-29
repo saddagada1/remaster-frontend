@@ -9,7 +9,7 @@ import { mode, pitchClass, timeSignature, tuning } from "@/lib/constants";
 import { useAppDispatch, useAppSelector } from "@/lib/redux/hooks";
 import {
   handlePlayingLoop,
-  initMetadata,
+  initRemaster,
   setIsPlaying,
   setPlaybackPosition,
 } from "@/lib/redux/slices/remasterSlice";
@@ -20,6 +20,7 @@ import { useRouter } from "next/router";
 import { useEffect, useRef } from "react";
 import ReactPlayer from "react-player";
 import { useElementSize } from "usehooks-ts";
+import { type Loop } from "@/lib/types";
 
 const Editor: NextPage = ({}) => {
   const [container, { width }] = useElementSize();
@@ -29,6 +30,7 @@ const Editor: NextPage = ({}) => {
   const {
     data: remaster,
     isLoading,
+    isRefetching,
     error,
   } = useGetUserRemaster(router.query.id as string, {
     query: {
@@ -42,7 +44,12 @@ const Editor: NextPage = ({}) => {
   };
 
   useEffect(() => {
-    if (isLoading || state.metadata !== null) return;
+    if (
+      isLoading ||
+      isRefetching ||
+      (state.metadata !== null && state.metadata.id === remaster?.data.id)
+    )
+      return;
 
     if (!remaster || error) {
       handleApiError(error);
@@ -50,20 +57,44 @@ const Editor: NextPage = ({}) => {
     }
 
     dispatch(
-      initMetadata({
-        id: remaster.data.id,
-        url: remaster.data.url,
-        name: remaster.data.name,
-        description: remaster.data.description,
-        duration: remaster.data.duration,
-        key: remaster.data.key,
-        mode: remaster.data.mode,
-        tempo: remaster.data.tempo,
-        timeSignature: remaster.data.timeSignature,
-        tuning: remaster.data.tuning,
+      initRemaster({
+        loops:
+          remaster.data.loops === null
+            ? []
+            : (JSON.parse(remaster.data.loops) as Loop[]),
+        metadata: {
+          id: remaster.data.id,
+          url: remaster.data.url,
+          name: remaster.data.name,
+          description: remaster.data.description,
+          duration: remaster.data.duration,
+          key: remaster.data.key,
+          mode: remaster.data.mode,
+          tempo: remaster.data.tempo,
+          timeSignature: remaster.data.timeSignature,
+          tuning: remaster.data.tuning,
+          userId: remaster.data.user.id,
+        },
       }),
     );
   }, [remaster]);
+
+  // useEffect(() => {
+  //   if (!remaster?.data || !state.metadata) return;
+
+  //   const autoSave = () => {
+  //     const updatedRemaster = {
+  //       ...remaster.data,
+  //       ...state.metadata,
+  //       loop: state.loops,
+  //     };
+  //     const update = JSON.stringify(updatedRemaster);
+  //     console.log("call");
+  //     localStorage.setItem(remaster.data.id, update);
+  //   };
+
+  //   autoSave();
+  // }, [state.metadata, state.loops]);
 
   if (isLoading || state.metadata === null) {
     return <Loading />;
@@ -99,7 +130,7 @@ const Editor: NextPage = ({}) => {
           </div>
         </header>
         <div className="flex flex-1 flex-col gap-2 hr:flex-row">
-          <div className="flex flex-col gap-2 hr:w-1/3">
+          <div className="flex flex-col gap-2 md:flex-row hr:w-1/3 hr:flex-col">
             <div className="aspect-video w-full overflow-hidden rounded-md border border-input">
               <ReactPlayer
                 ref={player}
@@ -136,10 +167,13 @@ const Editor: NextPage = ({}) => {
                 height="100%"
               />
             </div>
-            <LoopView seek={seek} className="hidden flex-1 hr:flex" />
+            <LoopView
+              seek={seek}
+              className="hidden min-w-[25%] flex-1 md:flex"
+            />
           </div>
-          <CompositionView className="hidden flex-1 hr:flex" />
-          <Tabs defaultValue="loops" className="flex flex-1 flex-col hr:hidden">
+          <CompositionView className="hidden flex-1 md:flex" />
+          <Tabs defaultValue="loops" className="flex flex-1 flex-col md:hidden">
             <TabsList>
               <TabsTrigger className="mono flex-1" value="loops">
                 Loops

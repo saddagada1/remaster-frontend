@@ -30,7 +30,7 @@ const NavButton: React.FC<NavButtonProps> = ({ href, label, description }) => {
       )}
     >
       <Link href={href} className="flex flex-col space-y-2">
-        <p className="w-full text-xs font-medium tracking-tight sm:text-sm">
+        <p className="w-full text-xs font-medium tracking-tight xl:text-sm">
           {label}
         </p>
         <p className="p-accent w-full truncate">{description}</p>
@@ -94,12 +94,12 @@ const Navbar: React.FC = () => {
   const { mutateAsync: logout } = useLogoutUser();
 
   if (auth.status === "loading") {
-    return <nav className="section h-24 w-full shrink-0 hr:hidden" />;
+    return <nav className="section topbar" />;
   }
 
   return (
     <nav className="topbar">
-      <Orb orientation="top" />
+      <Orb orientation="top" grain />
       <div className="flex flex-1 flex-col gap-2">
         <div className="flex gap-2">
           {auth.status === "authenticated" ? (
@@ -150,7 +150,7 @@ const Navbar: React.FC = () => {
 
           <Drawer open={open} onOpenChange={(o) => setOpen(o)}>
             <DrawerTrigger asChild>
-              <Button variant="outline" className="button-accent">
+              <Button variant="outline" className="button-accent md:flex-1">
                 Menu
               </Button>
             </DrawerTrigger>

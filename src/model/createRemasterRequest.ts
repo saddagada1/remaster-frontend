@@ -5,7 +5,7 @@
  * OpenAPI spec version: v0
  */
 
-export interface RemasterRequest {
+export interface CreateRemasterRequest {
   description?: string;
   duration: number;
   key: number;

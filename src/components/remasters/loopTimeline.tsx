@@ -107,7 +107,7 @@ const LoopTimeline: React.FC<LoopTimelineProps> = ({
       <div
         ref={scrollContainer}
         className={cn(
-          "relative h-16 rounded-md hr:h-24",
+          "relative h-16 rounded-md md:h-24",
           state.isPlaying ? "overflow-hidden" : "overflow-x-scroll",
         )}
       >

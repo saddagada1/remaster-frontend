@@ -4,20 +4,23 @@ import { Button } from "../ui/button";
 import { ScrollArea } from "../ui/scroll-area";
 import { cn } from "@/lib/utils";
 import RemasterForm from "./remasterForm";
-import { useAppSelector } from "@/lib/redux/hooks";
+import { useAppDispatch, useAppSelector } from "@/lib/redux/hooks";
+import ConfirmModal from "./confirmModal";
+import { setMetadata } from "@/lib/redux/slices/remasterSlice";
 
 const EditRemasterModal: React.FC<HTMLAttributes<HTMLButtonElement>> = ({
   className,
   ...props
 }) => {
   const metadata = useAppSelector((store) => store.remaster.metadata);
+  const dispatch = useAppDispatch();
   const [open, setOpen] = useState(false);
 
   if (!metadata) return null;
 
   return (
     <>
-      <Dialog modal={false} open={open} onOpenChange={setOpen}>
+      <Dialog open={open} onOpenChange={setOpen}>
         <DialogTrigger asChild>
           <Button
             {...props}
@@ -27,18 +30,37 @@ const EditRemasterModal: React.FC<HTMLAttributes<HTMLButtonElement>> = ({
             Edit
           </Button>
         </DialogTrigger>
-        <DialogContent>
-          <h1 className="label">Edit Remaster</h1>
-          <ScrollArea className="h-[350px] hr:h-auto">
+        <DialogContent className="hr:max-w-[600px] ">
+          <ScrollArea className="h-[600px] hr:h-auto">
+            <h1 className="title mono mb-8 w-full pl-2 hr:pl-2">
+              Edit Remaster
+            </h1>
             <RemasterForm
               key={open ? 1 : 0}
               onFormSubmit={(values) => {
-                return;
+                dispatch(setMetadata({ ...metadata, ...values }));
+                setOpen(false);
               }}
               buttonLabel="Save"
               defaultValues={metadata}
-              className="mb-8 flex w-full flex-col gap-8 border-b pb-8"
-            />
+              className="mb-8 flex flex-col gap-8 lg:flex-row hr:px-2"
+            >
+              <ConfirmModal
+                message="This action cannot be undone. This will permanently
+                  delete your remaster and remove the data from our servers."
+                withTrigger
+                trigger={
+                  <Button variant="destructive" size="lg">
+                    Delete
+                  </Button>
+                }
+                confirmLabel="Delete"
+                onConfirm={() => {
+                  setOpen(false);
+                }}
+                confirmDestructive
+              />
+            </RemasterForm>
           </ScrollArea>
         </DialogContent>
       </Dialog>

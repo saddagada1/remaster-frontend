@@ -34,7 +34,7 @@ const UserMenu: React.FC<{ user: UserResponse }> = ({ user }) => {
       </DropdownMenuTrigger>
       <DropdownMenuContent className="mono w-56" align="end" forceMount>
         <DropdownMenuLabel className="ml-2">
-          <p className="text-sm">{user.name ?? user.username}</p>
+          <p className="mb-1 text-sm">{user.name ?? user.username}</p>
           <p className="p-accent font-normal">{user.email}</p>
         </DropdownMenuLabel>
         <DropdownMenuSeparator />

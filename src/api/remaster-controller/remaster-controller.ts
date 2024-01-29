@@ -17,11 +17,12 @@ import type {
   UseQueryResult,
 } from "@tanstack/react-query";
 import type {
+  CreateRemasterRequest,
   GetAllRemastersByUserIdParams,
   GetAllUserRemastersParams,
   PageResponseRemasterResponse,
-  RemasterRequest,
   RemasterResponse,
+  UpdateRemasterRequest,
 } from "../../model";
 import { customInstance } from "../../lib/axios";
 import type { BodyType } from "../../lib/axios";
@@ -193,12 +194,76 @@ export const useGetAllUserRemasters = <
   return query;
 };
 
-export const createRemaster = (remasterRequest: BodyType<RemasterRequest>) => {
+export const updateRemaster = (
+  updateRemasterRequest: BodyType<UpdateRemasterRequest>,
+) => {
+  return customInstance<RemasterResponse>({
+    url: `/user/remaster`,
+    method: "PUT",
+    headers: { "Content-Type": "application/json" },
+    data: updateRemasterRequest,
+  });
+};
+
+export const getUpdateRemasterMutationOptions = <
+  TError = unknown,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof updateRemaster>>,
+    TError,
+    { data: BodyType<UpdateRemasterRequest> },
+    TContext
+  >;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof updateRemaster>>,
+  TError,
+  { data: BodyType<UpdateRemasterRequest> },
+  TContext
+> => {
+  const { mutation: mutationOptions } = options ?? {};
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof updateRemaster>>,
+    { data: BodyType<UpdateRemasterRequest> }
+  > = (props) => {
+    const { data } = props ?? {};
+
+    return updateRemaster(data);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type UpdateRemasterMutationResult = NonNullable<
+  Awaited<ReturnType<typeof updateRemaster>>
+>;
+export type UpdateRemasterMutationBody = BodyType<UpdateRemasterRequest>;
+export type UpdateRemasterMutationError = unknown;
+
+export const useUpdateRemaster = <
+  TError = unknown,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof updateRemaster>>,
+    TError,
+    { data: BodyType<UpdateRemasterRequest> },
+    TContext
+  >;
+}) => {
+  const mutationOptions = getUpdateRemasterMutationOptions(options);
+
+  return useMutation(mutationOptions);
+};
+export const createRemaster = (
+  createRemasterRequest: BodyType<CreateRemasterRequest>,
+) => {
   return customInstance<RemasterResponse>({
     url: `/user/remaster`,
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    data: remasterRequest,
+    data: createRemasterRequest,
   });
 };
 
@@ -209,20 +274,20 @@ export const getCreateRemasterMutationOptions = <
   mutation?: UseMutationOptions<
     Awaited<ReturnType<typeof createRemaster>>,
     TError,
-    { data: BodyType<RemasterRequest> },
+    { data: BodyType<CreateRemasterRequest> },
     TContext
   >;
 }): UseMutationOptions<
   Awaited<ReturnType<typeof createRemaster>>,
   TError,
-  { data: BodyType<RemasterRequest> },
+  { data: BodyType<CreateRemasterRequest> },
   TContext
 > => {
   const { mutation: mutationOptions } = options ?? {};
 
   const mutationFn: MutationFunction<
     Awaited<ReturnType<typeof createRemaster>>,
-    { data: BodyType<RemasterRequest> }
+    { data: BodyType<CreateRemasterRequest> }
   > = (props) => {
     const { data } = props ?? {};
 
@@ -235,7 +300,7 @@ export const getCreateRemasterMutationOptions = <
 export type CreateRemasterMutationResult = NonNullable<
   Awaited<ReturnType<typeof createRemaster>>
 >;
-export type CreateRemasterMutationBody = BodyType<RemasterRequest>;
+export type CreateRemasterMutationBody = BodyType<CreateRemasterRequest>;
 export type CreateRemasterMutationError = unknown;
 
 export const useCreateRemaster = <
@@ -245,7 +310,7 @@ export const useCreateRemaster = <
   mutation?: UseMutationOptions<
     Awaited<ReturnType<typeof createRemaster>>,
     TError,
-    { data: BodyType<RemasterRequest> },
+    { data: BodyType<CreateRemasterRequest> },
     TContext
   >;
 }) => {

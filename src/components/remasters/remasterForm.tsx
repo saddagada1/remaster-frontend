@@ -46,12 +46,14 @@ interface RemasterFormProps extends HTMLAttributes<HTMLDivElement> {
   ) => void | Promise<void>;
   buttonLabel: string;
   defaultValues?: z.infer<typeof formSchema> & { duration: number };
+  children?: React.ReactNode;
 }
 
 const RemasterForm: React.FC<RemasterFormProps> = ({
   onFormSubmit,
   buttonLabel,
   defaultValues,
+  children,
   ...props
 }) => {
   const [duration, setDuration] = useState<null | number>(
@@ -64,7 +66,7 @@ const RemasterForm: React.FC<RemasterFormProps> = ({
   return (
     <Form {...form}>
       <form
-        className="mb-8 w-full max-w-[600px] px-2 text-right hr:px-0"
+        className="w-full max-w-[600px] px-2 text-right md:px-0"
         // eslint-disable-next-line @typescript-eslint/no-misused-promises
         onSubmit={form.handleSubmit((values) => {
           if (!duration) {
@@ -77,7 +79,7 @@ const RemasterForm: React.FC<RemasterFormProps> = ({
         })}
       >
         <div {...props}>
-          <div className="space-y-8 hr:w-1/2">
+          <div className="space-y-8 md:w-1/2">
             <div className="flex aspect-video items-center justify-center overflow-hidden rounded-md border border-input">
               {!form.getValues().url ? (
                 <p className="mono p-accent">Preview</p>
@@ -148,7 +150,7 @@ const RemasterForm: React.FC<RemasterFormProps> = ({
               )}
             />
           </div>
-          <div className="space-y-8 hr:w-1/2">
+          <div className="space-y-8 md:w-1/2">
             <FormField
               control={form.control}
               name="key"
@@ -301,13 +303,16 @@ const RemasterForm: React.FC<RemasterFormProps> = ({
             />
           </div>
         </div>
-        {form.formState.isSubmitting ? (
-          <ButtonLoading className="text-sm" size="lg" />
-        ) : (
-          <Button type="submit" className="text-sm" size="lg">
-            {buttonLabel}
-          </Button>
-        )}
+        <div className="flex gap-2">
+          {children}
+          {form.formState.isSubmitting ? (
+            <ButtonLoading size="lg" />
+          ) : (
+            <Button type="submit" size="lg">
+              {buttonLabel}
+            </Button>
+          )}
+        </div>
       </form>
     </Form>
   );

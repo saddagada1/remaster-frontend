@@ -80,40 +80,40 @@
     @apply rounded-md border border-input p-2;
   }
   .label {
-    @apply mono mb-2 w-full text-left text-xs leading-tight text-muted-foreground hr:mb-8 hr:text-sm;
+    @apply mono mb-2 w-full text-left text-xs leading-tight text-muted-foreground md:mb-4 xl:mb-8 xl:text-sm;
   }
   .button-accent {
     @apply !bg-background !text-foreground hover:!bg-background/80;
   }
   .logo {
-    @apply font-display text-5xl font-bold uppercase leading-none tracking-tight hr:text-6xl;
+    @apply font-display text-5xl font-bold uppercase leading-none tracking-tight xl:text-6xl;
   }
   .title {
-    @apply text-3xl font-bold leading-none tracking-tight hr:text-4xl;
+    @apply text-3xl font-bold leading-none tracking-tight xl:text-4xl;
   }
   .h1 {
-    @apply text-2xl font-bold leading-none tracking-tight hr:text-3xl;
+    @apply text-2xl font-bold leading-none tracking-tight xl:text-3xl;
   }
   .h2 {
-    @apply text-xl font-medium leading-none tracking-tight hr:text-2xl;
+    @apply text-xl font-medium leading-none tracking-tight xl:text-2xl;
   }
   .h3 {
-    @apply font-medium leading-none tracking-tight hr:text-lg;
+    @apply font-medium leading-none tracking-tight xl:text-lg;
   }
   .p {
-    @apply font-sans text-sm normal-case leading-none tracking-tight hr:text-base hr:font-medium;
+    @apply font-sans text-sm normal-case leading-none tracking-tight xl:text-base xl:font-medium;
   }
   .p-accent {
-    @apply text-xs leading-none tracking-tight text-muted-foreground;
+    @apply text-xs tracking-tight text-muted-foreground;
   }
   .mono {
     @apply font-mono uppercase;
   }
   .sidebar {
-    @apply mono hidden h-full w-[300px] shrink-0 flex-col justify-end gap-2 hr:flex;
+    @apply mono hidden h-full shrink-0 flex-col justify-end gap-2 md:w-[200px] xl:w-[300px] hr:flex;
   }
   .topbar {
-    @apply mono flex h-[98px] w-full shrink-0 gap-2 hr:hidden;
+    @apply mono flex h-[98px] w-full shrink-0 gap-2 md:h-[106px] hr:hidden;
   }
 }
 

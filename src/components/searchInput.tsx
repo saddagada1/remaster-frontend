@@ -44,11 +44,11 @@ const SearchInput: React.FC<SearchInputProps> = ({ ...FormHTMLAtrributes }) => {
               <FormControl>
                 <>
                   <div className="flex items-center justify-center pl-2">
-                    <MagnifyingGlassIcon className="h-5 w-5 hr:h-6 hr:w-6" />
+                    <MagnifyingGlassIcon className="h-5 w-5 xl:h-6 xl:w-6" />
                   </div>
                   <Input
                     placeholder="Search for something...anything"
-                    className="mono h-full rounded-none border-0 text-xs shadow-none focus-visible:ring-0 hr:text-sm"
+                    className="mono h-full rounded-none border-0 text-xs shadow-none focus-visible:ring-0 xl:text-sm"
                     autoComplete="off"
                     {...field}
                   />

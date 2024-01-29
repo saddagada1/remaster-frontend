@@ -6,7 +6,7 @@ import { cn } from "@/lib/utils";
 import { ReloadIcon } from "@radix-ui/react-icons";
 
 const buttonVariants = cva(
-  "inline-flex items-center justify-center whitespace-nowrap mono rounded-md text-xs hr:text-sm font-medium focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50",
+  "inline-flex items-center justify-center whitespace-nowrap mono rounded-md text-xs xl:text-sm font-medium focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50",
   {
     variants: {
       variant: {

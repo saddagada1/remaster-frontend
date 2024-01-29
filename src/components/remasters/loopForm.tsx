@@ -113,10 +113,10 @@ const LoopForm: React.FC<LoopFormProps> = ({
           )}
         />
         <div className="flex gap-2">
+          {children}
           <Button size="lg" type="submit">
             {buttonLabel}
           </Button>
-          {children}
         </div>
       </form>
     </Form>

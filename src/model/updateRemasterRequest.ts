@@ -4,10 +4,8 @@
  * OpenAPI definition
  * OpenAPI spec version: v0
  */
-import type { BasicUserResponse } from "./basicUserResponse";
 
-export interface RemasterResponse {
-  createdAt: string;
+export interface UpdateRemasterRequest {
   description?: string;
   duration: number;
   id: string;
@@ -18,7 +16,5 @@ export interface RemasterResponse {
   tempo: number;
   timeSignature: number;
   tuning: number;
-  updatedAt: string;
   url: string;
-  user: BasicUserResponse;
 }

@@ -13,7 +13,7 @@ const CreateLoopModal: React.FC<CreateLoopModalProps> = ({ ...props }) => {
 
   return (
     <>
-      <Dialog modal={false} open={open} onOpenChange={(o) => setOpen(o)}>
+      <Dialog open={open} onOpenChange={(o) => setOpen(o)}>
         <DialogTrigger asChild>
           <Button {...props} variant="outline">
             Create

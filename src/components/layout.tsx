@@ -21,7 +21,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
       </Head>
       <div
         style={{ maxWidth: width, maxHeight: height }}
-        className="flex h-screen w-screen flex-col gap-2 p-2 font-sans lg:flex-row"
+        className="flex h-screen w-screen flex-col gap-2 p-2 font-sans hr:flex-row"
       >
         {router.pathname.includes("editor") ||
         router.pathname.includes("remaster") ? (

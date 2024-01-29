@@ -34,7 +34,7 @@ const Profile: NextPage = ({}) => {
       <Head>
         <title>Remaster - Profile</title>
       </Head>
-      <main className="flex flex-1 flex-col-reverse justify-start gap-2 hr:flex-row">
+      <main className="flex flex-1 flex-col-reverse justify-start gap-2 md:flex-row">
         <InfinitePagination
           lastItem={lastItem}
           onLastItem={() => void fetchNextPage()}

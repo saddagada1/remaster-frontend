@@ -23,7 +23,7 @@ const EditLoopModal: React.FC<EditLoopModalProps> = ({
 
   return (
     <>
-      <Dialog modal={false} open={open} onOpenChange={(o) => setOpen(o)}>
+      <Dialog open={open} onOpenChange={(o) => setOpen(o)}>
         <DialogTrigger asChild>
           <Button variant="link" {...props} className={cn("h-fit", className)}>
             <Pencil2Icon className="h-5 w-5" />

@@ -7,12 +7,13 @@
 
 export * from "./authenticationResponse";
 export * from "./basicUserResponse";
+export * from "./createRemasterRequest";
 export * from "./getAllRemastersByUserIdParams";
 export * from "./getAllUserRemastersParams";
 export * from "./loginRequest";
 export * from "./pageResponseRemasterResponse";
 export * from "./registerRequest";
-export * from "./remasterRequest";
 export * from "./remasterResponse";
+export * from "./updateRemasterRequest";
 export * from "./userResponse";
 export * from "./userResponseRole";

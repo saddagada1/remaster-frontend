@@ -34,6 +34,7 @@ export interface Metadata {
   tempo: number;
   timeSignature: number;
   tuning: number;
+  userId: string;
 }
 
 export interface Tab {

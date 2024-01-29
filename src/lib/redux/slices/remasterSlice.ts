@@ -10,6 +10,7 @@ interface RemasterState {
   playbackPosition: number;
   playingLoop: Loop | null;
   repeatPlayingLoop: boolean;
+  hasChanges: boolean;
 }
 
 const initialState: RemasterState = {
@@ -17,17 +18,25 @@ const initialState: RemasterState = {
   loops: [],
   isPlaying: false,
   isScrubbing: false,
-  volume: 0.0,
+  volume: 0.5,
   playbackPosition: 0.0,
   playingLoop: null,
   repeatPlayingLoop: false,
+  hasChanges: false,
 };
 
 const remasterSlice = createSlice({
   name: "remaster",
   initialState,
   reducers: {
-    initMetadata(state, action: PayloadAction<Metadata>) {
+    initRemaster(
+      state,
+      action: PayloadAction<{ loops: Loop[]; metadata: Metadata }>,
+    ) {
+      state.loops = action.payload.loops;
+      state.metadata = action.payload.metadata;
+    },
+    setMetadata(state, action: PayloadAction<Metadata>) {
       state.metadata = action.payload;
     },
     setLoops(state, action: PayloadAction<Loop[]>) {
@@ -50,6 +59,9 @@ const remasterSlice = createSlice({
     },
     setRepeatingLoop(state, action: PayloadAction<boolean>) {
       state.repeatPlayingLoop = action.payload;
+    },
+    setHasChanges(state, action: PayloadAction<boolean>) {
+      state.hasChanges = action.payload;
     },
     resizeLoop(
       state,
@@ -176,11 +188,22 @@ const remasterSlice = createSlice({
 
       state.playingLoop.composition = action.payload;
     },
+    resetRemaster(state) {
+      state.metadata = null;
+      state.loops = [];
+      state.isPlaying = false;
+      state.isScrubbing = false;
+      state.playbackPosition = 0.0;
+      state.playingLoop = null;
+      state.repeatPlayingLoop = false;
+      state.hasChanges = false;
+    },
   },
 });
 
 export const {
-  initMetadata,
+  initRemaster,
+  setMetadata,
   setLoops,
   setPlaybackPosition,
   setIsPlaying,
@@ -188,12 +211,14 @@ export const {
   setVolume,
   setPlayingLoop,
   setRepeatingLoop,
+  setHasChanges,
   resizeLoop,
   createLoop,
   handlePlayingLoop,
   updateLoop,
   deleteLoop,
   updateComposition,
+  resetRemaster,
 } = remasterSlice.actions;
 
 export default remasterSlice.reducer;
