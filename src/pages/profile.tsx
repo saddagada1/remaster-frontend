@@ -42,7 +42,7 @@ const Profile: NextPage = ({}) => {
           className="flex-1"
         >
           {remasters && remasters.length > 0 ? (
-            <div className="grid grid-flow-row gap-2 hr:grid-cols-4">
+            <div className="grid grid-flow-row gap-2 md:grid-cols-2 2xl:grid-cols-3">
               {remasters?.map((remaster, index) => (
                 <RemasterCard
                   ref={
@@ -56,7 +56,7 @@ const Profile: NextPage = ({}) => {
               ))}
             </div>
           ) : (
-            !isLoading && <NoData>No sloops have been made :(</NoData>
+            !isLoading && <NoData>No remasters have been made :(</NoData>
           )}
         </InfinitePagination>
         <UserLayout user={user} remasterCount={1} />

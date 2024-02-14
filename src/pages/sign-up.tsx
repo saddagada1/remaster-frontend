@@ -19,6 +19,8 @@ import { checkIfApiError, handleApiError, trimmedString } from "@/lib/utils";
 import { useRegisterUser } from "@/api/authentication-controller/authentication-controller";
 import { useAppDispatch } from "@/lib/redux/hooks";
 import { setAuthState } from "@/lib/redux/slices/authSlice";
+import { useElementSize } from "usehooks-ts";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 const formSchema = z
   .object({
@@ -162,24 +164,32 @@ const SignUpForm: React.FC = () => {
 };
 
 const SignUp: NextPage = ({}) => {
+  const [container, { height }] = useElementSize();
   return (
     <>
       <Head>
         <title>Remaster - Sign Up</title>
       </Head>
-      <main className="section flex h-full flex-col items-center justify-center">
-        <h1 className="title mono mb-8 w-full max-w-[400px] pl-2 hr:pl-0">
-          Sign Up
-        </h1>
-        <SignUpForm />
-        <Button
-          variant="link"
-          className="mono h-fit p-0 text-xs font-normal hr:text-sm"
-          asChild
-        >
-          <Link href="/login">Already have an account? Login!</Link>
-        </Button>
-      </main>
+      <div className="section h-full">
+        <ScrollArea ref={container} className="h-full">
+          <main
+            style={{ minHeight: height }}
+            className="flex flex-col items-center justify-center pb-8 lg:pb-0"
+          >
+            <h1 className="title mono my-8 w-full max-w-[400px] pl-2 hr:pl-0">
+              Sign Up
+            </h1>
+            <SignUpForm />
+            <Button
+              variant="link"
+              className="mono h-fit p-0 text-xs font-normal hr:text-sm"
+              asChild
+            >
+              <Link href="/login">Already have an account? Login!</Link>
+            </Button>
+          </main>
+        </ScrollArea>
+      </div>
     </>
   );
 };

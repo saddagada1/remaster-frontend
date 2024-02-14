@@ -7,6 +7,17 @@
 import { faker } from "@faker-js/faker";
 import { HttpResponse, delay, http } from "msw";
 
+export const getUpdateUserMock = () => ({
+  bio: faker.helpers.arrayElement([faker.word.sample(), undefined]),
+  email: faker.word.sample(),
+  id: faker.string.uuid(),
+  image: faker.helpers.arrayElement([faker.word.sample(), undefined]),
+  name: faker.helpers.arrayElement([faker.word.sample(), undefined]),
+  role: faker.helpers.arrayElement(["USER", "ADMIN"] as const),
+  username: faker.word.sample(),
+  verified: faker.datatype.boolean(),
+});
+
 export const getGetUserByUsernameMock = () => ({
   bio: faker.helpers.arrayElement([faker.word.sample(), undefined]),
   email: faker.word.sample(),
@@ -18,10 +29,45 @@ export const getGetUserByUsernameMock = () => ({
   verified: faker.datatype.boolean(),
 });
 
+export const getSearchUsersMock = () => ({
+  items: Array.from(
+    { length: faker.number.int({ min: 1, max: 10 }) },
+    (_, i) => i + 1,
+  ).map(() => ({
+    bio: faker.helpers.arrayElement([faker.word.sample(), undefined]),
+    email: faker.word.sample(),
+    id: faker.string.uuid(),
+    image: faker.helpers.arrayElement([faker.word.sample(), undefined]),
+    name: faker.helpers.arrayElement([faker.word.sample(), undefined]),
+    role: faker.helpers.arrayElement(["USER", "ADMIN"] as const),
+    username: faker.word.sample(),
+    verified: faker.datatype.boolean(),
+  })),
+  next: faker.helpers.arrayElement([faker.string.uuid(), undefined]),
+});
+
 export const getUserControllerMock = () => [
+  http.put("*/user", async () => {
+    await delay(1000);
+    return new HttpResponse(JSON.stringify(getUpdateUserMock()), {
+      status: 200,
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+  }),
   http.get("*/open/:username", async () => {
     await delay(1000);
     return new HttpResponse(JSON.stringify(getGetUserByUsernameMock()), {
+      status: 200,
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+  }),
+  http.get("*/open/search", async () => {
+    await delay(1000);
+    return new HttpResponse(JSON.stringify(getSearchUsersMock()), {
       status: 200,
       headers: {
         "Content-Type": "application/json",

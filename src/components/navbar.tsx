@@ -30,9 +30,7 @@ const NavButton: React.FC<NavButtonProps> = ({ href, label, description }) => {
       )}
     >
       <Link href={href} className="flex flex-col space-y-2">
-        <p className="w-full text-xs font-medium tracking-tight xl:text-sm">
-          {label}
-        </p>
+        <p className="w-full font-medium tracking-tight">{label}</p>
         <p className="p-accent w-full truncate">{description}</p>
       </Link>
     </Button>

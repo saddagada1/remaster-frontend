@@ -20,7 +20,7 @@ const Create: NextPage = ({}) => {
         <ScrollArea ref={container} className="h-full">
           <main
             style={{ minHeight: height }}
-            className="flex flex-col items-center pb-8 md:justify-center md:pb-0"
+            className="flex flex-col items-center pb-8 md:justify-center lg:pb-0"
           >
             <h1 className="title mono my-8 w-full max-w-[600px] pl-2 hr:pl-0">
               Create

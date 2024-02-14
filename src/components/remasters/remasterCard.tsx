@@ -1,41 +1,42 @@
 import { cn, getRelativeTime } from "@/lib/utils";
 import { type RemasterResponse } from "@/model";
-import { type RefObject, type HTMLAttributes } from "react";
+import { type HTMLAttributes, forwardRef } from "react";
 import ReactPlayer from "react-player";
 import { Button } from "../ui/button";
-import { useRouter } from "next/router";
+import Link from "next/link";
 
 interface RemasterCardProps extends HTMLAttributes<HTMLDivElement> {
   remaster: RemasterResponse;
-  ref?: RefObject<HTMLDivElement>;
 }
 
-const RemasterCard: React.FC<RemasterCardProps> = ({
-  remaster,
-  ref,
-  className,
-  ...props
-}) => {
-  const router = useRouter();
-  return (
-    <div {...props} ref={ref} className={cn("flex flex-col gap-2", className)}>
-      <div className="relative aspect-video overflow-hidden rounded-md border border-input">
-        <ReactPlayer url={remaster.url} light width="100%" height="100%" />
-      </div>
-      <Button
-        variant="outline"
-        className="flex h-fit flex-col items-stretch justify-between gap-2 p-2 text-left"
-        onClick={() => void router.push(`/remaster/${remaster.id}`)}
+const RemasterCard = forwardRef<HTMLDivElement, RemasterCardProps>(
+  ({ remaster, className, ...props }, ref) => {
+    return (
+      <div
+        {...props}
+        ref={ref}
+        className={cn(
+          "relative aspect-video overflow-hidden rounded-md border border-input",
+          className,
+        )}
       >
-        <h1 className="p truncate text-base">{remaster.name}</h1>
-        <div className="flex items-center">
-          <p className="p-accent flex-1 truncate font-sans text-sm normal-case">{`@${remaster.user.username}`}</p>
-          <p className="p-accent font-sans text-sm normal-case">
-            {getRelativeTime(new Date(remaster.updatedAt))}
+        <ReactPlayer url={remaster.url} light width="100%" height="100%" />
+        <div className="absolute top-0 h-full w-full bg-gradient-to-b from-black via-transparent to-black" />
+        <div className="absolute left-4 top-4">
+          <p className="p mono text-muted-foreground">
+            {`@${remaster.user.username} - ${getRelativeTime(
+              new Date(remaster.updatedAt),
+            )}`}
           </p>
+          <h1 className="h1 mono line-clamp-2 text-white">{remaster.name}</h1>
         </div>
-      </Button>
-    </div>
-  );
-};
+        <Button className="absolute bottom-4 right-4" asChild>
+          <Link href={`/remaster/${remaster.id}`}>Play</Link>
+        </Button>
+      </div>
+    );
+  },
+);
+RemasterCard.displayName = "RemasterCard";
+
 export default RemasterCard;

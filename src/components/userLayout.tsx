@@ -13,14 +13,14 @@ interface UserLayoutProps {
 const UserLayout: React.FC<UserLayoutProps> = ({ user, remasterCount }) => {
   if (!user) {
     return (
-      <div className="section flex h-[300px] w-full shrink-0 flex-col justify-end gap-2 md:h-full md:w-[200px] xl:w-[300px]" />
+      <div className="section flex h-[300px] w-full shrink-0 flex-col justify-end gap-2 md:h-full md:w-[200px] 2xl:w-[250px]" />
     );
   }
   return (
-    <div className="flex w-full shrink-0 flex-col justify-end gap-2 md:w-[200px] xl:w-[300px]">
+    <div className="flex w-full shrink-0 flex-col justify-end gap-2 md:w-[200px] 2xl:w-[250px]">
       <div className="flex gap-2 md:flex-col">
         <div className="section">
-          <SafeImage url={user.image} alt={user.name ?? user.username} />
+          <SafeImage url={user.image} alt={user.name ?? user.username} grain />
         </div>
         <div className="flex min-w-[45%] flex-col gap-2">
           <div className="section flex flex-1 flex-col justify-between">

@@ -3,7 +3,7 @@ import z from "zod";
 import { useForm } from "react-hook-form";
 import { Input } from "./ui/input";
 import { type FormHTMLAttributes } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter } from "next/router";
 import { Form, FormControl, FormField, FormItem } from "./ui/form";
 import { cn } from "@/lib/utils";
 import { MagnifyingGlassIcon } from "@radix-ui/react-icons";
@@ -25,7 +25,13 @@ const SearchInput: React.FC<SearchInputProps> = ({ ...FormHTMLAtrributes }) => {
   });
 
   const onSubmit = (values: z.infer<typeof formSchema>) => {
-    router.push(`/search?q=${values.query}`);
+    if (router.asPath.includes("search")) {
+      void router.push(
+        `/search?q=${values.query}&type=${router.query.type as string}`,
+      );
+    } else {
+      void router.push(`/search?q=${values.query}&type=remasters`);
+    }
   };
 
   return (

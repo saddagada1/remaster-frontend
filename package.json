@@ -33,6 +33,8 @@
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.0.0",
     "dayjs": "^1.11.10",
+    "embla-carousel-autoplay": "^8.0.0-rc21",
+    "embla-carousel-react": "^8.0.0-rc21",
     "gsap": "^3.12.4",
     "msw": "^2.0.11",
     "next": "^14.0.3",

@@ -50,7 +50,7 @@ const User: NextPage = ({}) => {
       <Head>
         <title>Remaster - {router.query.username as string}</title>
       </Head>
-      <main className="flex flex-1 flex-col-reverse justify-start gap-2 hr:flex-row">
+      <main className="flex flex-1 flex-col-reverse justify-start gap-2 md:flex-row">
         <InfinitePagination
           lastItem={lastItem}
           onLastItem={() => void fetchNextPage()}
@@ -58,7 +58,7 @@ const User: NextPage = ({}) => {
           className="flex-1"
         >
           {remasters && remasters.length > 0 ? (
-            <div className="grid grid-flow-row gap-2 hr:grid-cols-4">
+            <div className="grid grid-flow-row gap-2 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
               {remasters?.map((remaster, index) => (
                 <RemasterCard
                   ref={
@@ -72,7 +72,9 @@ const User: NextPage = ({}) => {
               ))}
             </div>
           ) : (
-            !fetchingRemasters && <NoData>No sloops have been made :(</NoData>
+            !fetchingRemasters && (
+              <NoData>No remasters have been made :(</NoData>
+            )
           )}
         </InfinitePagination>
         <UserLayout user={user?.data} remasterCount={1} />

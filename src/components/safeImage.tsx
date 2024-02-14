@@ -8,12 +8,14 @@ interface SafeImageProps extends HTMLAttributes<HTMLDivElement> {
   url?: string | null;
   alt?: string;
   square?: boolean;
+  grain?: boolean;
 }
 
 const SafeImage: React.FC<SafeImageProps> = ({
   url,
   alt,
   square,
+  grain,
   className,
   ...props
 }) => {
@@ -37,11 +39,14 @@ const SafeImage: React.FC<SafeImageProps> = ({
           onError={() => setError(true)}
         />
       ) : (
-        <Gradient
-          colours={Object.values(pitchClassColours).filter(
-            (_, i) => i % 2 !== 0,
-          )}
-        />
+        <>
+          <Gradient
+            colours={Object.values(pitchClassColours).filter(
+              (_, i) => i % 2 !== 0,
+            )}
+          />
+          {grain && <div className="anim-grain opacity-10 mix-blend-overlay" />}
+        </>
       )}
     </div>
   );

@@ -22,6 +22,7 @@ import type {
   GetAllUserRemastersParams,
   PageResponseRemasterResponse,
   RemasterResponse,
+  SearchRemastersParams,
   UpdateRemasterRequest,
 } from "../../model";
 import { customInstance } from "../../lib/axios";
@@ -590,6 +591,166 @@ export const useGetRemaster = <
   },
 ): UseQueryResult<TData, TError> & { queryKey: QueryKey } => {
   const queryOptions = getGetRemasterQueryOptions(id, options);
+
+  const query = useQuery(queryOptions) as UseQueryResult<TData, TError> & {
+    queryKey: QueryKey;
+  };
+
+  query.queryKey = queryOptions.queryKey;
+
+  return query;
+};
+
+export const searchRemasters = (
+  params: SearchRemastersParams,
+  signal?: AbortSignal,
+) => {
+  return customInstance<PageResponseRemasterResponse>({
+    url: `/open/remaster/search`,
+    method: "GET",
+    params,
+    signal,
+  });
+};
+
+export const getSearchRemastersQueryKey = (params: SearchRemastersParams) => {
+  return [`/open/remaster/search`, ...(params ? [params] : [])] as const;
+};
+
+export const getSearchRemastersInfiniteQueryOptions = <
+  TData = InfiniteData<
+    Awaited<ReturnType<typeof searchRemasters>>,
+    SearchRemastersParams["cursor"]
+  >,
+  TError = unknown,
+>(
+  params: SearchRemastersParams,
+  options?: {
+    query?: Partial<
+      UseInfiniteQueryOptions<
+        Awaited<ReturnType<typeof searchRemasters>>,
+        TError,
+        TData,
+        Awaited<ReturnType<typeof searchRemasters>>,
+        QueryKey,
+        SearchRemastersParams["cursor"]
+      >
+    >;
+  },
+) => {
+  const { query: queryOptions } = options ?? {};
+
+  const queryKey = queryOptions?.queryKey ?? getSearchRemastersQueryKey(params);
+
+  const queryFn: QueryFunction<
+    Awaited<ReturnType<typeof searchRemasters>>,
+    QueryKey,
+    SearchRemastersParams["cursor"]
+  > = ({ signal, pageParam }) =>
+    searchRemasters(
+      { ...params, cursor: pageParam || params?.["cursor"] },
+      signal,
+    );
+
+  return { queryKey, queryFn, ...queryOptions } as UseInfiniteQueryOptions<
+    Awaited<ReturnType<typeof searchRemasters>>,
+    TError,
+    TData,
+    Awaited<ReturnType<typeof searchRemasters>>,
+    QueryKey,
+    SearchRemastersParams["cursor"]
+  > & { queryKey: QueryKey };
+};
+
+export type SearchRemastersInfiniteQueryResult = NonNullable<
+  Awaited<ReturnType<typeof searchRemasters>>
+>;
+export type SearchRemastersInfiniteQueryError = unknown;
+
+export const useSearchRemastersInfinite = <
+  TData = InfiniteData<
+    Awaited<ReturnType<typeof searchRemasters>>,
+    SearchRemastersParams["cursor"]
+  >,
+  TError = unknown,
+>(
+  params: SearchRemastersParams,
+  options?: {
+    query?: Partial<
+      UseInfiniteQueryOptions<
+        Awaited<ReturnType<typeof searchRemasters>>,
+        TError,
+        TData,
+        Awaited<ReturnType<typeof searchRemasters>>,
+        QueryKey,
+        SearchRemastersParams["cursor"]
+      >
+    >;
+  },
+): UseInfiniteQueryResult<TData, TError> & { queryKey: QueryKey } => {
+  const queryOptions = getSearchRemastersInfiniteQueryOptions(params, options);
+
+  const query = useInfiniteQuery(queryOptions) as UseInfiniteQueryResult<
+    TData,
+    TError
+  > & { queryKey: QueryKey };
+
+  query.queryKey = queryOptions.queryKey;
+
+  return query;
+};
+
+export const getSearchRemastersQueryOptions = <
+  TData = Awaited<ReturnType<typeof searchRemasters>>,
+  TError = unknown,
+>(
+  params: SearchRemastersParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof searchRemasters>>,
+        TError,
+        TData
+      >
+    >;
+  },
+) => {
+  const { query: queryOptions } = options ?? {};
+
+  const queryKey = queryOptions?.queryKey ?? getSearchRemastersQueryKey(params);
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof searchRemasters>>> = ({
+    signal,
+  }) => searchRemasters(params, signal);
+
+  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
+    Awaited<ReturnType<typeof searchRemasters>>,
+    TError,
+    TData
+  > & { queryKey: QueryKey };
+};
+
+export type SearchRemastersQueryResult = NonNullable<
+  Awaited<ReturnType<typeof searchRemasters>>
+>;
+export type SearchRemastersQueryError = unknown;
+
+export const useSearchRemasters = <
+  TData = Awaited<ReturnType<typeof searchRemasters>>,
+  TError = unknown,
+>(
+  params: SearchRemastersParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof searchRemasters>>,
+        TError,
+        TData
+      >
+    >;
+  },
+): UseQueryResult<TData, TError> & { queryKey: QueryKey } => {
+  const queryOptions = getSearchRemastersQueryOptions(params, options);
 
   const query = useQuery(queryOptions) as UseQueryResult<TData, TError> & {
     queryKey: QueryKey;

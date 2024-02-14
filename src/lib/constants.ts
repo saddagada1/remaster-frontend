@@ -1,6 +1,6 @@
 import { type Tuning } from "./types";
 
-export const privatePaths = ["/profile", "/create", "/editor"];
+export const privatePaths = ["/profile", "/create", "/editor", "/settings"];
 export const authPaths = ["/login", "/sign-up"];
 
 export const tuning: Record<number, Tuning> = {

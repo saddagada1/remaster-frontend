@@ -31,7 +31,7 @@ const formSchema = z.object({
   name: z
     .string()
     .min(1, { message: "Required" })
-    .max(20, { message: "Max 20 Chars" }),
+    .max(40, { message: "Max 40 Chars" }),
   description: z.string().max(500).optional(),
   key: z.number().min(0).max(11),
   mode: z.number().min(0).max(1),
@@ -79,7 +79,7 @@ const RemasterForm: React.FC<RemasterFormProps> = ({
         })}
       >
         <div {...props}>
-          <div className="space-y-8 md:w-1/2">
+          <div className="space-y-8 lg:w-1/2">
             <div className="flex aspect-video items-center justify-center overflow-hidden rounded-md border border-input">
               {!form.getValues().url ? (
                 <p className="mono p-accent">Preview</p>
@@ -150,7 +150,7 @@ const RemasterForm: React.FC<RemasterFormProps> = ({
               )}
             />
           </div>
-          <div className="space-y-8 md:w-1/2">
+          <div className="space-y-8 lg:w-1/2">
             <FormField
               control={form.control}
               name="key"
