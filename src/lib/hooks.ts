@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { useAppDispatch, useAppSelector } from "./redux/hooks";
 import { useUpdateRemaster } from "@/api/remaster-controller/remaster-controller";
 import { toast } from "sonner";
-import { setHasChanges } from "./redux/slices/remasterSlice";
+import { resetRemaster, setHasChanges } from "./redux/slices/remasterSlice";
 
 export const useSaveRemaster = () => {
   const router = useRouter();
@@ -34,7 +34,7 @@ export const useSaveRemaster = () => {
   };
 
   useEffect(() => {
-    if (!remaster.metadata) return;
+    if (!remaster.metadata || !router.pathname.includes("editor")) return;
     const currentState = { ...remaster.metadata, loops: remaster.loops };
     if (JSON.stringify(currentSave) !== JSON.stringify(currentState)) {
       dispatch(setHasChanges(true));
@@ -45,7 +45,10 @@ export const useSaveRemaster = () => {
 
   useEffect(() => {
     const routeChangeStart = (url: string) => {
-      if (!remaster.hasChanges) return;
+      if (!remaster.hasChanges) {
+        dispatch(resetRemaster());
+        return;
+      }
       setRoute(url);
       throw "Aborting route change. You can safely ignore this error.";
     };

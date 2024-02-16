@@ -75,7 +75,10 @@ const Editor: NextPage = ({}) => {
           timeSignature: remaster.data.timeSignature,
           tuning: remaster.data.tuning,
           userId: remaster.data.user.id,
+          totalPlays: remaster.data.totalPlays,
+          totalLikes: remaster.data.totalLikes,
         },
+        likedBySessionUser: !!remaster.data.likedBySessionUser,
       }),
     );
   }, [remaster]);

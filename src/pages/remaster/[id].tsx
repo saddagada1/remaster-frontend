@@ -1,4 +1,7 @@
-import { useGetRemaster } from "@/api/remaster-controller/remaster-controller";
+import {
+  useCreateOrUpdateRemasterPlays,
+  useGetRemaster,
+} from "@/api/remaster-controller/remaster-controller";
 import Loading from "@/components/loading";
 import AudioTimeline from "@/components/remasters/audioTimeline";
 import LoopTimeline from "@/components/remasters/loopTimeline";
@@ -8,6 +11,7 @@ import { mode, pitchClass, timeSignature, tuning } from "@/lib/constants";
 import { useAppDispatch, useAppSelector } from "@/lib/redux/hooks";
 import {
   handlePlayingLoop,
+  incrementTotalPlays,
   initRemaster,
   setIsPlaying,
   setPlaybackPosition,
@@ -26,17 +30,24 @@ const Remaster: NextPage = ({}) => {
   const [container, { width }] = useElementSize();
   const router = useRouter();
   const state = useAppSelector((state) => state.remaster);
+  const auth = useAppSelector((state) => state.auth);
   const dispatch = useAppDispatch();
+  const { mutateAsync: updatePlay, isSuccess } =
+    useCreateOrUpdateRemasterPlays();
   const {
     data: remaster,
     isLoading,
     isRefetching,
     error,
-  } = useGetRemaster(router.query.id as string, {
-    query: {
-      enabled: typeof router.query.id === "string",
+  } = useGetRemaster(
+    router.query.id as string,
+    { userId: auth.credentials?.user.id },
+    {
+      query: {
+        enabled: typeof router.query.id === "string",
+      },
     },
-  });
+  );
   const player = useRef<ReactPlayer>(null!);
 
   const seek = (position: number) => {
@@ -75,10 +86,37 @@ const Remaster: NextPage = ({}) => {
           timeSignature: remaster.data.timeSignature,
           tuning: remaster.data.tuning,
           userId: remaster.data.user.id,
+          totalPlays: remaster.data.totalPlays,
+          totalLikes: remaster.data.totalLikes,
         },
+        likedBySessionUser: !!remaster.data.likedBySessionUser,
       }),
     );
   }, [remaster]);
+
+  useEffect(() => {
+    if (state.metadata === null || isSuccess) return;
+
+    const handleCreateOrUpdatePlay = async () => {
+      if (state.metadata === null || isSuccess) return;
+      try {
+        await updatePlay({
+          params: { id: state.metadata.id, userId: auth.credentials?.user.id },
+        });
+        dispatch(incrementTotalPlays());
+      } catch (error) {
+        return;
+      }
+    };
+
+    const timeout = setTimeout(() => {
+      void handleCreateOrUpdatePlay();
+    }, 5000);
+
+    return () => {
+      clearTimeout(timeout);
+    };
+  }, [state.metadata]);
 
   if (isLoading || state.metadata === null) {
     return <Loading />;

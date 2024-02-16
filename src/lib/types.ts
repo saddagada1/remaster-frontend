@@ -35,6 +35,8 @@ export interface Metadata {
   timeSignature: number;
   tuning: number;
   userId: string;
+  totalPlays: number;
+  totalLikes: number;
 }
 
 export interface Tab {

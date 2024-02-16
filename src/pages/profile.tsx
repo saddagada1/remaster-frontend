@@ -66,7 +66,7 @@ const Profile: NextPage = ({}) => {
             <SimpleLoading />
           </div>
         )}
-        <UserLayout user={user} remasterCount={1} />
+        <UserLayout user={user} />
       </main>
     </>
   );

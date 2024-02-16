@@ -1,6 +1,8 @@
 import { useCreateRemaster } from "@/api/remaster-controller/remaster-controller";
 import RemasterForm from "@/components/remasters/remasterForm";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { useAppDispatch } from "@/lib/redux/hooks";
+import { incrementTotalRemasters } from "@/lib/redux/slices/authSlice";
 import { handleApiError } from "@/lib/utils";
 import type { NextPage } from "next";
 import Head from "next/head";
@@ -10,6 +12,7 @@ import { useElementSize } from "usehooks-ts";
 const Create: NextPage = ({}) => {
   const [container, { height }] = useElementSize();
   const { mutateAsync: createRemaster, isPending } = useCreateRemaster();
+  const dispatch = useAppDispatch();
   const router = useRouter();
   return (
     <>
@@ -42,6 +45,7 @@ const Create: NextPage = ({}) => {
               onFormSubmit={async (values) => {
                 try {
                   const remaster = await createRemaster({ data: values });
+                  dispatch(incrementTotalRemasters());
                   void router.replace(`/editor/${remaster.data.id}`);
                 } catch (error) {
                   handleApiError(error);

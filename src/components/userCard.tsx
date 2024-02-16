@@ -25,10 +25,10 @@ const UserCard = forwardRef<HTMLDivElement, UserCardProps>(
         </div>
         <div className="flex flex-1 flex-col items-end bg-accent/50 p-2">
           <div className="w-full flex-1 pl-2">
-            <p className="p mono mb-1 text-muted-foreground">
+            <p className="p mono mb-1 text-muted-foreground 2xl:text-sm 2xl:font-normal">
               {!!user.name ? `@${user.username}` : `User`}
             </p>
-            <h1 className="h1 mono line-clamp-2 text-white ">
+            <h1 className="h2 mono line-clamp-2 text-white">
               {!!user.name ? user.name : `@${user.username}`}
             </h1>
           </div>

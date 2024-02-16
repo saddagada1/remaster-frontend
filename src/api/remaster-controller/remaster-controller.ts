@@ -17,12 +17,17 @@ import type {
   UseQueryResult,
 } from "@tanstack/react-query";
 import type {
+  CreateOrUpdateRemasterPlaysParams,
   CreateRemasterRequest,
+  DeleteRemasterParams,
   GetAllRemastersByUserIdParams,
   GetAllUserRemastersParams,
+  GetRemasterParams,
+  LikeRemasterParams,
   PageResponseRemasterResponse,
   RemasterResponse,
   SearchRemastersParams,
+  UnlikeRemasterParams,
   UpdateRemasterRequest,
 } from "../../model";
 import { customInstance } from "../../lib/axios";
@@ -319,6 +324,245 @@ export const useCreateRemaster = <
 
   return useMutation(mutationOptions);
 };
+export const deleteRemaster = (params: DeleteRemasterParams) => {
+  return customInstance<string>({
+    url: `/user/remaster`,
+    method: "DELETE",
+    params,
+  });
+};
+
+export const getDeleteRemasterMutationOptions = <
+  TError = unknown,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof deleteRemaster>>,
+    TError,
+    { params: DeleteRemasterParams },
+    TContext
+  >;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof deleteRemaster>>,
+  TError,
+  { params: DeleteRemasterParams },
+  TContext
+> => {
+  const { mutation: mutationOptions } = options ?? {};
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof deleteRemaster>>,
+    { params: DeleteRemasterParams }
+  > = (props) => {
+    const { params } = props ?? {};
+
+    return deleteRemaster(params);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type DeleteRemasterMutationResult = NonNullable<
+  Awaited<ReturnType<typeof deleteRemaster>>
+>;
+
+export type DeleteRemasterMutationError = unknown;
+
+export const useDeleteRemaster = <
+  TError = unknown,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof deleteRemaster>>,
+    TError,
+    { params: DeleteRemasterParams },
+    TContext
+  >;
+}) => {
+  const mutationOptions = getDeleteRemasterMutationOptions(options);
+
+  return useMutation(mutationOptions);
+};
+export const unlikeRemaster = (params: UnlikeRemasterParams) => {
+  return customInstance<string>({
+    url: `/user/remaster/unlike`,
+    method: "POST",
+    params,
+  });
+};
+
+export const getUnlikeRemasterMutationOptions = <
+  TError = unknown,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof unlikeRemaster>>,
+    TError,
+    { params: UnlikeRemasterParams },
+    TContext
+  >;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof unlikeRemaster>>,
+  TError,
+  { params: UnlikeRemasterParams },
+  TContext
+> => {
+  const { mutation: mutationOptions } = options ?? {};
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof unlikeRemaster>>,
+    { params: UnlikeRemasterParams }
+  > = (props) => {
+    const { params } = props ?? {};
+
+    return unlikeRemaster(params);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type UnlikeRemasterMutationResult = NonNullable<
+  Awaited<ReturnType<typeof unlikeRemaster>>
+>;
+
+export type UnlikeRemasterMutationError = unknown;
+
+export const useUnlikeRemaster = <
+  TError = unknown,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof unlikeRemaster>>,
+    TError,
+    { params: UnlikeRemasterParams },
+    TContext
+  >;
+}) => {
+  const mutationOptions = getUnlikeRemasterMutationOptions(options);
+
+  return useMutation(mutationOptions);
+};
+export const likeRemaster = (params: LikeRemasterParams) => {
+  return customInstance<string>({
+    url: `/user/remaster/like`,
+    method: "POST",
+    params,
+  });
+};
+
+export const getLikeRemasterMutationOptions = <
+  TError = unknown,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof likeRemaster>>,
+    TError,
+    { params: LikeRemasterParams },
+    TContext
+  >;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof likeRemaster>>,
+  TError,
+  { params: LikeRemasterParams },
+  TContext
+> => {
+  const { mutation: mutationOptions } = options ?? {};
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof likeRemaster>>,
+    { params: LikeRemasterParams }
+  > = (props) => {
+    const { params } = props ?? {};
+
+    return likeRemaster(params);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type LikeRemasterMutationResult = NonNullable<
+  Awaited<ReturnType<typeof likeRemaster>>
+>;
+
+export type LikeRemasterMutationError = unknown;
+
+export const useLikeRemaster = <
+  TError = unknown,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof likeRemaster>>,
+    TError,
+    { params: LikeRemasterParams },
+    TContext
+  >;
+}) => {
+  const mutationOptions = getLikeRemasterMutationOptions(options);
+
+  return useMutation(mutationOptions);
+};
+export const createOrUpdateRemasterPlays = (
+  params: CreateOrUpdateRemasterPlaysParams,
+) => {
+  return customInstance<string>({
+    url: `/open/remaster/play`,
+    method: "POST",
+    params,
+  });
+};
+
+export const getCreateOrUpdateRemasterPlaysMutationOptions = <
+  TError = unknown,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof createOrUpdateRemasterPlays>>,
+    TError,
+    { params: CreateOrUpdateRemasterPlaysParams },
+    TContext
+  >;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof createOrUpdateRemasterPlays>>,
+  TError,
+  { params: CreateOrUpdateRemasterPlaysParams },
+  TContext
+> => {
+  const { mutation: mutationOptions } = options ?? {};
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof createOrUpdateRemasterPlays>>,
+    { params: CreateOrUpdateRemasterPlaysParams }
+  > = (props) => {
+    const { params } = props ?? {};
+
+    return createOrUpdateRemasterPlays(params);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type CreateOrUpdateRemasterPlaysMutationResult = NonNullable<
+  Awaited<ReturnType<typeof createOrUpdateRemasterPlays>>
+>;
+
+export type CreateOrUpdateRemasterPlaysMutationError = unknown;
+
+export const useCreateOrUpdateRemasterPlays = <
+  TError = unknown,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof createOrUpdateRemasterPlays>>,
+    TError,
+    { params: CreateOrUpdateRemasterPlaysParams },
+    TContext
+  >;
+}) => {
+  const mutationOptions =
+    getCreateOrUpdateRemasterPlaysMutationOptions(options);
+
+  return useMutation(mutationOptions);
+};
 export const getUserRemaster = (id: string, signal?: AbortSignal) => {
   return customInstance<RemasterResponse>({
     url: `/user/remaster/${id}`,
@@ -464,40 +708,62 @@ export const useGetUserRemaster = <
   return query;
 };
 
-export const getRemaster = (id: string, signal?: AbortSignal) => {
+export const getRemaster = (
+  id: string,
+  params?: GetRemasterParams,
+  signal?: AbortSignal,
+) => {
   return customInstance<RemasterResponse>({
     url: `/open/remaster/${id}`,
     method: "GET",
+    params,
     signal,
   });
 };
 
-export const getGetRemasterQueryKey = (id: string) => {
-  return [`/open/remaster/${id}`] as const;
+export const getGetRemasterQueryKey = (
+  id: string,
+  params?: GetRemasterParams,
+) => {
+  return [`/open/remaster/${id}`, ...(params ? [params] : [])] as const;
 };
 
 export const getGetRemasterInfiniteQueryOptions = <
-  TData = InfiniteData<Awaited<ReturnType<typeof getRemaster>>>,
+  TData = InfiniteData<
+    Awaited<ReturnType<typeof getRemaster>>,
+    GetRemasterParams["cursor"]
+  >,
   TError = unknown,
 >(
   id: string,
+  params?: GetRemasterParams,
   options?: {
     query?: Partial<
       UseInfiniteQueryOptions<
         Awaited<ReturnType<typeof getRemaster>>,
         TError,
-        TData
+        TData,
+        Awaited<ReturnType<typeof getRemaster>>,
+        QueryKey,
+        GetRemasterParams["cursor"]
       >
     >;
   },
 ) => {
   const { query: queryOptions } = options ?? {};
 
-  const queryKey = queryOptions?.queryKey ?? getGetRemasterQueryKey(id);
+  const queryKey = queryOptions?.queryKey ?? getGetRemasterQueryKey(id, params);
 
-  const queryFn: QueryFunction<Awaited<ReturnType<typeof getRemaster>>> = ({
-    signal,
-  }) => getRemaster(id, signal);
+  const queryFn: QueryFunction<
+    Awaited<ReturnType<typeof getRemaster>>,
+    QueryKey,
+    GetRemasterParams["cursor"]
+  > = ({ signal, pageParam }) =>
+    getRemaster(
+      id,
+      { ...params, cursor: pageParam || params?.["cursor"] },
+      signal,
+    );
 
   return {
     queryKey,
@@ -507,7 +773,10 @@ export const getGetRemasterInfiniteQueryOptions = <
   } as UseInfiniteQueryOptions<
     Awaited<ReturnType<typeof getRemaster>>,
     TError,
-    TData
+    TData,
+    Awaited<ReturnType<typeof getRemaster>>,
+    QueryKey,
+    GetRemasterParams["cursor"]
   > & { queryKey: QueryKey };
 };
 
@@ -517,21 +786,28 @@ export type GetRemasterInfiniteQueryResult = NonNullable<
 export type GetRemasterInfiniteQueryError = unknown;
 
 export const useGetRemasterInfinite = <
-  TData = InfiniteData<Awaited<ReturnType<typeof getRemaster>>>,
+  TData = InfiniteData<
+    Awaited<ReturnType<typeof getRemaster>>,
+    GetRemasterParams["cursor"]
+  >,
   TError = unknown,
 >(
   id: string,
+  params?: GetRemasterParams,
   options?: {
     query?: Partial<
       UseInfiniteQueryOptions<
         Awaited<ReturnType<typeof getRemaster>>,
         TError,
-        TData
+        TData,
+        Awaited<ReturnType<typeof getRemaster>>,
+        QueryKey,
+        GetRemasterParams["cursor"]
       >
     >;
   },
 ): UseInfiniteQueryResult<TData, TError> & { queryKey: QueryKey } => {
-  const queryOptions = getGetRemasterInfiniteQueryOptions(id, options);
+  const queryOptions = getGetRemasterInfiniteQueryOptions(id, params, options);
 
   const query = useInfiniteQuery(queryOptions) as UseInfiniteQueryResult<
     TData,
@@ -548,6 +824,7 @@ export const getGetRemasterQueryOptions = <
   TError = unknown,
 >(
   id: string,
+  params?: GetRemasterParams,
   options?: {
     query?: Partial<
       UseQueryOptions<Awaited<ReturnType<typeof getRemaster>>, TError, TData>
@@ -556,11 +833,11 @@ export const getGetRemasterQueryOptions = <
 ) => {
   const { query: queryOptions } = options ?? {};
 
-  const queryKey = queryOptions?.queryKey ?? getGetRemasterQueryKey(id);
+  const queryKey = queryOptions?.queryKey ?? getGetRemasterQueryKey(id, params);
 
   const queryFn: QueryFunction<Awaited<ReturnType<typeof getRemaster>>> = ({
     signal,
-  }) => getRemaster(id, signal);
+  }) => getRemaster(id, params, signal);
 
   return {
     queryKey,
@@ -584,13 +861,14 @@ export const useGetRemaster = <
   TError = unknown,
 >(
   id: string,
+  params?: GetRemasterParams,
   options?: {
     query?: Partial<
       UseQueryOptions<Awaited<ReturnType<typeof getRemaster>>, TError, TData>
     >;
   },
 ): UseQueryResult<TData, TError> & { queryKey: QueryKey } => {
-  const queryOptions = getGetRemasterQueryOptions(id, options);
+  const queryOptions = getGetRemasterQueryOptions(id, params, options);
 
   const query = useQuery(queryOptions) as UseQueryResult<TData, TError> & {
     queryKey: QueryKey;

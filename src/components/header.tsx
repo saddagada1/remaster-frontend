@@ -13,8 +13,10 @@ import {
 import { type UserResponse } from "@/model";
 import { useLogoutUser } from "@/api/authentication-controller/authentication-controller";
 import { useAppSelector } from "@/lib/redux/hooks";
+import { useRouter } from "next/router";
 
 const UserMenu: React.FC<{ user: UserResponse }> = ({ user }) => {
+  const router = useRouter();
   const { mutateAsync: logout } = useLogoutUser();
 
   return (
@@ -55,7 +57,10 @@ const UserMenu: React.FC<{ user: UserResponse }> = ({ user }) => {
         <DropdownMenuSeparator />
         <DropdownMenuItem>
           <Button
-            onClick={() => void logout()}
+            onClick={async () => {
+              await logout();
+              router.reload();
+            }}
             variant="ghost"
             className="mono w-full justify-start hover:bg-destructive hover:text-background"
           >

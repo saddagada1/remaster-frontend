@@ -12,11 +12,14 @@ export interface RemasterResponse {
   duration: number;
   id: string;
   key: number;
+  likedBySessionUser?: boolean;
   loops: string;
   mode: number;
   name: string;
   tempo: number;
   timeSignature: number;
+  totalLikes: number;
+  totalPlays: number;
   tuning: number;
   updatedAt: string;
   url: string;

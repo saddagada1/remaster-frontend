@@ -10,12 +10,15 @@ import { useMemo, useRef } from "react";
 import { defaultPaginationLimit } from "@/lib/constants";
 import InfinitePagination from "@/components/infinitePagination";
 import NoData from "@/components/noData";
+import { useAppSelector } from "@/lib/redux/hooks";
 
 const User: NextPage = ({}) => {
   const lastItem = useRef<HTMLDivElement>(null!);
   const router = useRouter();
+  const auth = useAppSelector((state) => state.auth);
   const { data: user, isLoading: fetchingUser } = useGetUserByUsername(
     router.query.username as string,
+    { userId: auth.credentials?.user.id },
     {
       query: {
         enabled: typeof router.query.username === "string",
@@ -73,13 +76,15 @@ const User: NextPage = ({}) => {
             </div>
           </InfinitePagination>
         ) : !fetchingRemasters ? (
-          <NoData>No remasters have been made :(</NoData>
+          <NoData className="section h-full">
+            No remasters have been made :(
+          </NoData>
         ) : (
-          <div className="flex-1">
+          <div className="section flex flex-1 items-center justify-center">
             <SimpleLoading />
           </div>
         )}
-        <UserLayout user={user?.data} remasterCount={1} />
+        <UserLayout user={user?.data} />
       </main>
     </>
   );

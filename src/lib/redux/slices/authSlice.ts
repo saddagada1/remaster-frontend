@@ -38,6 +38,22 @@ const authSlice = createSlice({
         user: { ...state.credentials.user, verified: action.payload },
       };
     },
+    incrementTotalRemasters(state) {
+      if (!state.credentials) return;
+      state.credentials.user.totalRemasters += 1;
+    },
+    decrementTotalRemasters(state) {
+      if (!state.credentials) return;
+      state.credentials.user.totalRemasters -= 1;
+    },
+    incrementTotalFollowing(state) {
+      if (!state.credentials) return;
+      state.credentials.user.totalFollowing += 1;
+    },
+    decrementTotalFollowing(state) {
+      if (!state.credentials) return;
+      state.credentials.user.totalFollowing -= 1;
+    },
     resetAuthState(state) {
       (state.status = "unauthenticated"),
         (state.credentials = initialState.credentials);
@@ -45,7 +61,15 @@ const authSlice = createSlice({
   },
 });
 
-export const { setAuthState, setUser, setVerified, resetAuthState } =
-  authSlice.actions;
+export const {
+  setAuthState,
+  setUser,
+  setVerified,
+  incrementTotalRemasters,
+  decrementTotalRemasters,
+  incrementTotalFollowing,
+  decrementTotalFollowing,
+  resetAuthState,
+} = authSlice.actions;
 
 export default authSlice.reducer;

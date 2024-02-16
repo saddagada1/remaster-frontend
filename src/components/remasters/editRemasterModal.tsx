@@ -2,18 +2,24 @@ import { useState, type HTMLAttributes } from "react";
 import { Dialog, DialogContent, DialogTrigger } from "../ui/dialog";
 import { Button } from "../ui/button";
 import { ScrollArea } from "../ui/scroll-area";
-import { cn } from "@/lib/utils";
+import { cn, handleApiError } from "@/lib/utils";
 import RemasterForm from "./remasterForm";
 import { useAppDispatch, useAppSelector } from "@/lib/redux/hooks";
 import ConfirmModal from "./confirmModal";
 import { setMetadata } from "@/lib/redux/slices/remasterSlice";
+import { useDeleteRemaster } from "@/api/remaster-controller/remaster-controller";
+import { decrementTotalRemasters } from "@/lib/redux/slices/authSlice";
+import { useRouter } from "next/router";
+import { toast } from "sonner";
 
 const EditRemasterModal: React.FC<HTMLAttributes<HTMLButtonElement>> = ({
   className,
   ...props
 }) => {
+  const { mutateAsync: deleteRemaster } = useDeleteRemaster();
   const metadata = useAppSelector((store) => store.remaster.metadata);
   const dispatch = useAppDispatch();
+  const router = useRouter();
   const [open, setOpen] = useState(false);
 
   if (!metadata) return null;
@@ -25,7 +31,10 @@ const EditRemasterModal: React.FC<HTMLAttributes<HTMLButtonElement>> = ({
           <Button
             {...props}
             variant="outline"
-            className={cn("flex-1", className)}
+            className={cn(
+              "flex-1 bg-background hover:bg-background/75",
+              className,
+            )}
           >
             Edit
           </Button>
@@ -55,7 +64,17 @@ const EditRemasterModal: React.FC<HTMLAttributes<HTMLButtonElement>> = ({
                   </Button>
                 }
                 confirmLabel="Delete"
-                onConfirm={() => {
+                onConfirm={async () => {
+                  try {
+                    const pending = toast.loading("Deleting...Please wait");
+                    await deleteRemaster({ params: { id: metadata.id } });
+                    toast.dismiss(pending);
+                    dispatch(decrementTotalRemasters());
+                    toast.success("Success! Your remaster has been deleted.");
+                    void router.replace("/profile");
+                  } catch (error) {
+                    handleApiError(error);
+                  }
                   setOpen(false);
                 }}
                 confirmDestructive

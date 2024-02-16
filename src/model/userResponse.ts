@@ -9,10 +9,14 @@ import type { UserResponseRole } from "./userResponseRole";
 export interface UserResponse {
   bio?: string;
   email: string;
+  followedBySessionUser?: boolean;
   id: string;
   image?: string;
   name?: string;
   role: UserResponseRole;
+  totalFollowers: number;
+  totalFollowing: number;
+  totalRemasters: number;
   username: string;
   verified: boolean;
 }

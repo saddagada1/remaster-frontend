@@ -17,11 +17,17 @@ export const getGetAllUserRemastersMock = () => ({
     duration: faker.number.int({ min: undefined, max: undefined }),
     id: faker.string.uuid(),
     key: faker.number.int({ min: undefined, max: undefined }),
+    likedBySessionUser: faker.helpers.arrayElement([
+      faker.datatype.boolean(),
+      undefined,
+    ]),
     loops: faker.word.sample(),
     mode: faker.number.int({ min: undefined, max: undefined }),
     name: faker.word.sample(),
     tempo: faker.number.int({ min: undefined, max: undefined }),
     timeSignature: faker.number.int({ min: undefined, max: undefined }),
+    totalLikes: faker.number.int({ min: undefined, max: undefined }),
+    totalPlays: faker.number.int({ min: undefined, max: undefined }),
     tuning: faker.number.int({ min: undefined, max: undefined }),
     updatedAt: `${faker.date.past().toISOString().split(".")[0]}Z`,
     url: faker.word.sample(),
@@ -36,11 +42,17 @@ export const getUpdateRemasterMock = () => ({
   duration: faker.number.int({ min: undefined, max: undefined }),
   id: faker.string.uuid(),
   key: faker.number.int({ min: undefined, max: undefined }),
+  likedBySessionUser: faker.helpers.arrayElement([
+    faker.datatype.boolean(),
+    undefined,
+  ]),
   loops: faker.word.sample(),
   mode: faker.number.int({ min: undefined, max: undefined }),
   name: faker.word.sample(),
   tempo: faker.number.int({ min: undefined, max: undefined }),
   timeSignature: faker.number.int({ min: undefined, max: undefined }),
+  totalLikes: faker.number.int({ min: undefined, max: undefined }),
+  totalPlays: faker.number.int({ min: undefined, max: undefined }),
   tuning: faker.number.int({ min: undefined, max: undefined }),
   updatedAt: `${faker.date.past().toISOString().split(".")[0]}Z`,
   url: faker.word.sample(),
@@ -53,16 +65,30 @@ export const getCreateRemasterMock = () => ({
   duration: faker.number.int({ min: undefined, max: undefined }),
   id: faker.string.uuid(),
   key: faker.number.int({ min: undefined, max: undefined }),
+  likedBySessionUser: faker.helpers.arrayElement([
+    faker.datatype.boolean(),
+    undefined,
+  ]),
   loops: faker.word.sample(),
   mode: faker.number.int({ min: undefined, max: undefined }),
   name: faker.word.sample(),
   tempo: faker.number.int({ min: undefined, max: undefined }),
   timeSignature: faker.number.int({ min: undefined, max: undefined }),
+  totalLikes: faker.number.int({ min: undefined, max: undefined }),
+  totalPlays: faker.number.int({ min: undefined, max: undefined }),
   tuning: faker.number.int({ min: undefined, max: undefined }),
   updatedAt: `${faker.date.past().toISOString().split(".")[0]}Z`,
   url: faker.word.sample(),
   user: { id: faker.string.uuid(), username: faker.word.sample() },
 });
+
+export const getDeleteRemasterMock = () => faker.word.sample();
+
+export const getUnlikeRemasterMock = () => faker.word.sample();
+
+export const getLikeRemasterMock = () => faker.word.sample();
+
+export const getCreateOrUpdateRemasterPlaysMock = () => faker.word.sample();
 
 export const getGetUserRemasterMock = () => ({
   createdAt: `${faker.date.past().toISOString().split(".")[0]}Z`,
@@ -70,11 +96,17 @@ export const getGetUserRemasterMock = () => ({
   duration: faker.number.int({ min: undefined, max: undefined }),
   id: faker.string.uuid(),
   key: faker.number.int({ min: undefined, max: undefined }),
+  likedBySessionUser: faker.helpers.arrayElement([
+    faker.datatype.boolean(),
+    undefined,
+  ]),
   loops: faker.word.sample(),
   mode: faker.number.int({ min: undefined, max: undefined }),
   name: faker.word.sample(),
   tempo: faker.number.int({ min: undefined, max: undefined }),
   timeSignature: faker.number.int({ min: undefined, max: undefined }),
+  totalLikes: faker.number.int({ min: undefined, max: undefined }),
+  totalPlays: faker.number.int({ min: undefined, max: undefined }),
   tuning: faker.number.int({ min: undefined, max: undefined }),
   updatedAt: `${faker.date.past().toISOString().split(".")[0]}Z`,
   url: faker.word.sample(),
@@ -87,11 +119,17 @@ export const getGetRemasterMock = () => ({
   duration: faker.number.int({ min: undefined, max: undefined }),
   id: faker.string.uuid(),
   key: faker.number.int({ min: undefined, max: undefined }),
+  likedBySessionUser: faker.helpers.arrayElement([
+    faker.datatype.boolean(),
+    undefined,
+  ]),
   loops: faker.word.sample(),
   mode: faker.number.int({ min: undefined, max: undefined }),
   name: faker.word.sample(),
   tempo: faker.number.int({ min: undefined, max: undefined }),
   timeSignature: faker.number.int({ min: undefined, max: undefined }),
+  totalLikes: faker.number.int({ min: undefined, max: undefined }),
+  totalPlays: faker.number.int({ min: undefined, max: undefined }),
   tuning: faker.number.int({ min: undefined, max: undefined }),
   updatedAt: `${faker.date.past().toISOString().split(".")[0]}Z`,
   url: faker.word.sample(),
@@ -108,11 +146,17 @@ export const getSearchRemastersMock = () => ({
     duration: faker.number.int({ min: undefined, max: undefined }),
     id: faker.string.uuid(),
     key: faker.number.int({ min: undefined, max: undefined }),
+    likedBySessionUser: faker.helpers.arrayElement([
+      faker.datatype.boolean(),
+      undefined,
+    ]),
     loops: faker.word.sample(),
     mode: faker.number.int({ min: undefined, max: undefined }),
     name: faker.word.sample(),
     tempo: faker.number.int({ min: undefined, max: undefined }),
     timeSignature: faker.number.int({ min: undefined, max: undefined }),
+    totalLikes: faker.number.int({ min: undefined, max: undefined }),
+    totalPlays: faker.number.int({ min: undefined, max: undefined }),
     tuning: faker.number.int({ min: undefined, max: undefined }),
     updatedAt: `${faker.date.past().toISOString().split(".")[0]}Z`,
     url: faker.word.sample(),
@@ -131,11 +175,17 @@ export const getGetAllRemastersByUserIdMock = () => ({
     duration: faker.number.int({ min: undefined, max: undefined }),
     id: faker.string.uuid(),
     key: faker.number.int({ min: undefined, max: undefined }),
+    likedBySessionUser: faker.helpers.arrayElement([
+      faker.datatype.boolean(),
+      undefined,
+    ]),
     loops: faker.word.sample(),
     mode: faker.number.int({ min: undefined, max: undefined }),
     name: faker.word.sample(),
     tempo: faker.number.int({ min: undefined, max: undefined }),
     timeSignature: faker.number.int({ min: undefined, max: undefined }),
+    totalLikes: faker.number.int({ min: undefined, max: undefined }),
+    totalPlays: faker.number.int({ min: undefined, max: undefined }),
     tuning: faker.number.int({ min: undefined, max: undefined }),
     updatedAt: `${faker.date.past().toISOString().split(".")[0]}Z`,
     url: faker.word.sample(),
@@ -171,6 +221,45 @@ export const getRemasterControllerMock = () => [
         "Content-Type": "application/json",
       },
     });
+  }),
+  http.delete("*/user/remaster", async () => {
+    await delay(1000);
+    return new HttpResponse(JSON.stringify(getDeleteRemasterMock()), {
+      status: 200,
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+  }),
+  http.post("*/user/remaster/unlike", async () => {
+    await delay(1000);
+    return new HttpResponse(JSON.stringify(getUnlikeRemasterMock()), {
+      status: 200,
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+  }),
+  http.post("*/user/remaster/like", async () => {
+    await delay(1000);
+    return new HttpResponse(JSON.stringify(getLikeRemasterMock()), {
+      status: 200,
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+  }),
+  http.post("*/open/remaster/play", async () => {
+    await delay(1000);
+    return new HttpResponse(
+      JSON.stringify(getCreateOrUpdateRemasterPlaysMock()),
+      {
+        status: 200,
+        headers: {
+          "Content-Type": "application/json",
+        },
+      },
+    );
   }),
   http.get("*/user/remaster/:id", async () => {
     await delay(1000);

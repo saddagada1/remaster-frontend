@@ -18,8 +18,11 @@ import type {
 } from "@tanstack/react-query";
 import type {
   AuthenticationResponse,
+  FollowUserParams,
+  GetUserByUsernameParams,
   PageResponseUserResponse,
   SearchUsersParams,
+  UnfollowUserParams,
   UpdateUserBody,
   UserResponse,
 } from "../../model";
@@ -89,156 +92,121 @@ export const useUpdateUser = <TError = unknown, TContext = unknown>(options?: {
 
   return useMutation(mutationOptions);
 };
-export const getUserByUsername = (username: string, signal?: AbortSignal) => {
-  return customInstance<UserResponse>({
-    url: `/open/${username}`,
-    method: "GET",
-    signal,
+export const unfollowUser = (params: UnfollowUserParams) => {
+  return customInstance<string>({
+    url: `/user/unfollow`,
+    method: "POST",
+    params,
   });
 };
 
-export const getGetUserByUsernameQueryKey = (username: string) => {
-  return [`/open/${username}`] as const;
-};
-
-export const getGetUserByUsernameInfiniteQueryOptions = <
-  TData = InfiniteData<Awaited<ReturnType<typeof getUserByUsername>>>,
+export const getUnfollowUserMutationOptions = <
   TError = unknown,
->(
-  username: string,
-  options?: {
-    query?: Partial<
-      UseInfiniteQueryOptions<
-        Awaited<ReturnType<typeof getUserByUsername>>,
-        TError,
-        TData
-      >
-    >;
-  },
-) => {
-  const { query: queryOptions } = options ?? {};
-
-  const queryKey =
-    queryOptions?.queryKey ?? getGetUserByUsernameQueryKey(username);
-
-  const queryFn: QueryFunction<
-    Awaited<ReturnType<typeof getUserByUsername>>
-  > = ({ signal }) => getUserByUsername(username, signal);
-
-  return {
-    queryKey,
-    queryFn,
-    enabled: !!username,
-    ...queryOptions,
-  } as UseInfiniteQueryOptions<
-    Awaited<ReturnType<typeof getUserByUsername>>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof unfollowUser>>,
     TError,
-    TData
-  > & { queryKey: QueryKey };
-};
+    { params: UnfollowUserParams },
+    TContext
+  >;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof unfollowUser>>,
+  TError,
+  { params: UnfollowUserParams },
+  TContext
+> => {
+  const { mutation: mutationOptions } = options ?? {};
 
-export type GetUserByUsernameInfiniteQueryResult = NonNullable<
-  Awaited<ReturnType<typeof getUserByUsername>>
->;
-export type GetUserByUsernameInfiniteQueryError = unknown;
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof unfollowUser>>,
+    { params: UnfollowUserParams }
+  > = (props) => {
+    const { params } = props ?? {};
 
-export const useGetUserByUsernameInfinite = <
-  TData = InfiniteData<Awaited<ReturnType<typeof getUserByUsername>>>,
-  TError = unknown,
->(
-  username: string,
-  options?: {
-    query?: Partial<
-      UseInfiniteQueryOptions<
-        Awaited<ReturnType<typeof getUserByUsername>>,
-        TError,
-        TData
-      >
-    >;
-  },
-): UseInfiniteQueryResult<TData, TError> & { queryKey: QueryKey } => {
-  const queryOptions = getGetUserByUsernameInfiniteQueryOptions(
-    username,
-    options,
-  );
-
-  const query = useInfiniteQuery(queryOptions) as UseInfiniteQueryResult<
-    TData,
-    TError
-  > & { queryKey: QueryKey };
-
-  query.queryKey = queryOptions.queryKey;
-
-  return query;
-};
-
-export const getGetUserByUsernameQueryOptions = <
-  TData = Awaited<ReturnType<typeof getUserByUsername>>,
-  TError = unknown,
->(
-  username: string,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<
-        Awaited<ReturnType<typeof getUserByUsername>>,
-        TError,
-        TData
-      >
-    >;
-  },
-) => {
-  const { query: queryOptions } = options ?? {};
-
-  const queryKey =
-    queryOptions?.queryKey ?? getGetUserByUsernameQueryKey(username);
-
-  const queryFn: QueryFunction<
-    Awaited<ReturnType<typeof getUserByUsername>>
-  > = ({ signal }) => getUserByUsername(username, signal);
-
-  return {
-    queryKey,
-    queryFn,
-    enabled: !!username,
-    ...queryOptions,
-  } as UseQueryOptions<
-    Awaited<ReturnType<typeof getUserByUsername>>,
-    TError,
-    TData
-  > & { queryKey: QueryKey };
-};
-
-export type GetUserByUsernameQueryResult = NonNullable<
-  Awaited<ReturnType<typeof getUserByUsername>>
->;
-export type GetUserByUsernameQueryError = unknown;
-
-export const useGetUserByUsername = <
-  TData = Awaited<ReturnType<typeof getUserByUsername>>,
-  TError = unknown,
->(
-  username: string,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<
-        Awaited<ReturnType<typeof getUserByUsername>>,
-        TError,
-        TData
-      >
-    >;
-  },
-): UseQueryResult<TData, TError> & { queryKey: QueryKey } => {
-  const queryOptions = getGetUserByUsernameQueryOptions(username, options);
-
-  const query = useQuery(queryOptions) as UseQueryResult<TData, TError> & {
-    queryKey: QueryKey;
+    return unfollowUser(params);
   };
 
-  query.queryKey = queryOptions.queryKey;
-
-  return query;
+  return { mutationFn, ...mutationOptions };
 };
 
+export type UnfollowUserMutationResult = NonNullable<
+  Awaited<ReturnType<typeof unfollowUser>>
+>;
+
+export type UnfollowUserMutationError = unknown;
+
+export const useUnfollowUser = <
+  TError = unknown,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof unfollowUser>>,
+    TError,
+    { params: UnfollowUserParams },
+    TContext
+  >;
+}) => {
+  const mutationOptions = getUnfollowUserMutationOptions(options);
+
+  return useMutation(mutationOptions);
+};
+export const followUser = (params: FollowUserParams) => {
+  return customInstance<string>({
+    url: `/user/follow`,
+    method: "POST",
+    params,
+  });
+};
+
+export const getFollowUserMutationOptions = <
+  TError = unknown,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof followUser>>,
+    TError,
+    { params: FollowUserParams },
+    TContext
+  >;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof followUser>>,
+  TError,
+  { params: FollowUserParams },
+  TContext
+> => {
+  const { mutation: mutationOptions } = options ?? {};
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof followUser>>,
+    { params: FollowUserParams }
+  > = (props) => {
+    const { params } = props ?? {};
+
+    return followUser(params);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type FollowUserMutationResult = NonNullable<
+  Awaited<ReturnType<typeof followUser>>
+>;
+
+export type FollowUserMutationError = unknown;
+
+export const useFollowUser = <TError = unknown, TContext = unknown>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof followUser>>,
+    TError,
+    { params: FollowUserParams },
+    TContext
+  >;
+}) => {
+  const mutationOptions = getFollowUserMutationOptions(options);
+
+  return useMutation(mutationOptions);
+};
 export const searchUsers = (
   params: SearchUsersParams,
   signal?: AbortSignal,
@@ -378,6 +346,195 @@ export const useSearchUsers = <
   },
 ): UseQueryResult<TData, TError> & { queryKey: QueryKey } => {
   const queryOptions = getSearchUsersQueryOptions(params, options);
+
+  const query = useQuery(queryOptions) as UseQueryResult<TData, TError> & {
+    queryKey: QueryKey;
+  };
+
+  query.queryKey = queryOptions.queryKey;
+
+  return query;
+};
+
+export const getUserByUsername = (
+  username: string,
+  params?: GetUserByUsernameParams,
+  signal?: AbortSignal,
+) => {
+  return customInstance<UserResponse>({
+    url: `/open/search/${username}`,
+    method: "GET",
+    params,
+    signal,
+  });
+};
+
+export const getGetUserByUsernameQueryKey = (
+  username: string,
+  params?: GetUserByUsernameParams,
+) => {
+  return [`/open/search/${username}`, ...(params ? [params] : [])] as const;
+};
+
+export const getGetUserByUsernameInfiniteQueryOptions = <
+  TData = InfiniteData<
+    Awaited<ReturnType<typeof getUserByUsername>>,
+    GetUserByUsernameParams["cursor"]
+  >,
+  TError = unknown,
+>(
+  username: string,
+  params?: GetUserByUsernameParams,
+  options?: {
+    query?: Partial<
+      UseInfiniteQueryOptions<
+        Awaited<ReturnType<typeof getUserByUsername>>,
+        TError,
+        TData,
+        Awaited<ReturnType<typeof getUserByUsername>>,
+        QueryKey,
+        GetUserByUsernameParams["cursor"]
+      >
+    >;
+  },
+) => {
+  const { query: queryOptions } = options ?? {};
+
+  const queryKey =
+    queryOptions?.queryKey ?? getGetUserByUsernameQueryKey(username, params);
+
+  const queryFn: QueryFunction<
+    Awaited<ReturnType<typeof getUserByUsername>>,
+    QueryKey,
+    GetUserByUsernameParams["cursor"]
+  > = ({ signal, pageParam }) =>
+    getUserByUsername(
+      username,
+      { ...params, cursor: pageParam || params?.["cursor"] },
+      signal,
+    );
+
+  return {
+    queryKey,
+    queryFn,
+    enabled: !!username,
+    ...queryOptions,
+  } as UseInfiniteQueryOptions<
+    Awaited<ReturnType<typeof getUserByUsername>>,
+    TError,
+    TData,
+    Awaited<ReturnType<typeof getUserByUsername>>,
+    QueryKey,
+    GetUserByUsernameParams["cursor"]
+  > & { queryKey: QueryKey };
+};
+
+export type GetUserByUsernameInfiniteQueryResult = NonNullable<
+  Awaited<ReturnType<typeof getUserByUsername>>
+>;
+export type GetUserByUsernameInfiniteQueryError = unknown;
+
+export const useGetUserByUsernameInfinite = <
+  TData = InfiniteData<
+    Awaited<ReturnType<typeof getUserByUsername>>,
+    GetUserByUsernameParams["cursor"]
+  >,
+  TError = unknown,
+>(
+  username: string,
+  params?: GetUserByUsernameParams,
+  options?: {
+    query?: Partial<
+      UseInfiniteQueryOptions<
+        Awaited<ReturnType<typeof getUserByUsername>>,
+        TError,
+        TData,
+        Awaited<ReturnType<typeof getUserByUsername>>,
+        QueryKey,
+        GetUserByUsernameParams["cursor"]
+      >
+    >;
+  },
+): UseInfiniteQueryResult<TData, TError> & { queryKey: QueryKey } => {
+  const queryOptions = getGetUserByUsernameInfiniteQueryOptions(
+    username,
+    params,
+    options,
+  );
+
+  const query = useInfiniteQuery(queryOptions) as UseInfiniteQueryResult<
+    TData,
+    TError
+  > & { queryKey: QueryKey };
+
+  query.queryKey = queryOptions.queryKey;
+
+  return query;
+};
+
+export const getGetUserByUsernameQueryOptions = <
+  TData = Awaited<ReturnType<typeof getUserByUsername>>,
+  TError = unknown,
+>(
+  username: string,
+  params?: GetUserByUsernameParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof getUserByUsername>>,
+        TError,
+        TData
+      >
+    >;
+  },
+) => {
+  const { query: queryOptions } = options ?? {};
+
+  const queryKey =
+    queryOptions?.queryKey ?? getGetUserByUsernameQueryKey(username, params);
+
+  const queryFn: QueryFunction<
+    Awaited<ReturnType<typeof getUserByUsername>>
+  > = ({ signal }) => getUserByUsername(username, params, signal);
+
+  return {
+    queryKey,
+    queryFn,
+    enabled: !!username,
+    ...queryOptions,
+  } as UseQueryOptions<
+    Awaited<ReturnType<typeof getUserByUsername>>,
+    TError,
+    TData
+  > & { queryKey: QueryKey };
+};
+
+export type GetUserByUsernameQueryResult = NonNullable<
+  Awaited<ReturnType<typeof getUserByUsername>>
+>;
+export type GetUserByUsernameQueryError = unknown;
+
+export const useGetUserByUsername = <
+  TData = Awaited<ReturnType<typeof getUserByUsername>>,
+  TError = unknown,
+>(
+  username: string,
+  params?: GetUserByUsernameParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof getUserByUsername>>,
+        TError,
+        TData
+      >
+    >;
+  },
+): UseQueryResult<TData, TError> & { queryKey: QueryKey } => {
+  const queryOptions = getGetUserByUsernameQueryOptions(
+    username,
+    params,
+    options,
+  );
 
   const query = useQuery(queryOptions) as UseQueryResult<TData, TError> & {
     queryKey: QueryKey;

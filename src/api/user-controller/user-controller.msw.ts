@@ -14,25 +14,25 @@ export const getUpdateUserMock = () => ({
   user: {
     bio: faker.helpers.arrayElement([faker.word.sample(), undefined]),
     email: faker.word.sample(),
+    followedBySessionUser: faker.helpers.arrayElement([
+      faker.datatype.boolean(),
+      undefined,
+    ]),
     id: faker.string.uuid(),
     image: faker.helpers.arrayElement([faker.word.sample(), undefined]),
     name: faker.helpers.arrayElement([faker.word.sample(), undefined]),
     role: faker.helpers.arrayElement(["USER", "ADMIN"] as const),
+    totalFollowers: faker.number.int({ min: undefined, max: undefined }),
+    totalFollowing: faker.number.int({ min: undefined, max: undefined }),
+    totalRemasters: faker.number.int({ min: undefined, max: undefined }),
     username: faker.word.sample(),
     verified: faker.datatype.boolean(),
   },
 });
 
-export const getGetUserByUsernameMock = () => ({
-  bio: faker.helpers.arrayElement([faker.word.sample(), undefined]),
-  email: faker.word.sample(),
-  id: faker.string.uuid(),
-  image: faker.helpers.arrayElement([faker.word.sample(), undefined]),
-  name: faker.helpers.arrayElement([faker.word.sample(), undefined]),
-  role: faker.helpers.arrayElement(["USER", "ADMIN"] as const),
-  username: faker.word.sample(),
-  verified: faker.datatype.boolean(),
-});
+export const getUnfollowUserMock = () => faker.word.sample();
+
+export const getFollowUserMock = () => faker.word.sample();
 
 export const getSearchUsersMock = () => ({
   items: Array.from(
@@ -41,14 +41,39 @@ export const getSearchUsersMock = () => ({
   ).map(() => ({
     bio: faker.helpers.arrayElement([faker.word.sample(), undefined]),
     email: faker.word.sample(),
+    followedBySessionUser: faker.helpers.arrayElement([
+      faker.datatype.boolean(),
+      undefined,
+    ]),
     id: faker.string.uuid(),
     image: faker.helpers.arrayElement([faker.word.sample(), undefined]),
     name: faker.helpers.arrayElement([faker.word.sample(), undefined]),
     role: faker.helpers.arrayElement(["USER", "ADMIN"] as const),
+    totalFollowers: faker.number.int({ min: undefined, max: undefined }),
+    totalFollowing: faker.number.int({ min: undefined, max: undefined }),
+    totalRemasters: faker.number.int({ min: undefined, max: undefined }),
     username: faker.word.sample(),
     verified: faker.datatype.boolean(),
   })),
   next: faker.helpers.arrayElement([faker.string.uuid(), undefined]),
+});
+
+export const getGetUserByUsernameMock = () => ({
+  bio: faker.helpers.arrayElement([faker.word.sample(), undefined]),
+  email: faker.word.sample(),
+  followedBySessionUser: faker.helpers.arrayElement([
+    faker.datatype.boolean(),
+    undefined,
+  ]),
+  id: faker.string.uuid(),
+  image: faker.helpers.arrayElement([faker.word.sample(), undefined]),
+  name: faker.helpers.arrayElement([faker.word.sample(), undefined]),
+  role: faker.helpers.arrayElement(["USER", "ADMIN"] as const),
+  totalFollowers: faker.number.int({ min: undefined, max: undefined }),
+  totalFollowing: faker.number.int({ min: undefined, max: undefined }),
+  totalRemasters: faker.number.int({ min: undefined, max: undefined }),
+  username: faker.word.sample(),
+  verified: faker.datatype.boolean(),
 });
 
 export const getUserControllerMock = () => [
@@ -61,9 +86,18 @@ export const getUserControllerMock = () => [
       },
     });
   }),
-  http.get("*/open/:username", async () => {
+  http.post("*/user/unfollow", async () => {
     await delay(1000);
-    return new HttpResponse(JSON.stringify(getGetUserByUsernameMock()), {
+    return new HttpResponse(JSON.stringify(getUnfollowUserMock()), {
+      status: 200,
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+  }),
+  http.post("*/user/follow", async () => {
+    await delay(1000);
+    return new HttpResponse(JSON.stringify(getFollowUserMock()), {
       status: 200,
       headers: {
         "Content-Type": "application/json",
@@ -73,6 +107,15 @@ export const getUserControllerMock = () => [
   http.get("*/open/search", async () => {
     await delay(1000);
     return new HttpResponse(JSON.stringify(getSearchUsersMock()), {
+      status: 200,
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+  }),
+  http.get("*/open/search/:username", async () => {
+    await delay(1000);
+    return new HttpResponse(JSON.stringify(getGetUserByUsernameMock()), {
       status: 200,
       headers: {
         "Content-Type": "application/json",

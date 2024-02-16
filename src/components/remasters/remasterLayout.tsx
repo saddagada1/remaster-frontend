@@ -9,7 +9,17 @@ import Link from "next/link";
 import { env } from "@/env";
 import { useSaveRemaster } from "@/lib/hooks";
 import ConfirmModal from "./confirmModal";
-import { resetRemaster } from "@/lib/redux/slices/remasterSlice";
+import {
+  decrementTotalLikes,
+  incrementTotalLikes,
+  resetRemaster,
+  setLikedBySessionUser,
+} from "@/lib/redux/slices/remasterSlice";
+import {
+  useLikeRemaster,
+  useUnlikeRemaster,
+} from "@/api/remaster-controller/remaster-controller";
+import { handleApiError } from "@/lib/utils";
 
 const RemasterActions: React.FC = ({}) => {
   const router = useRouter();
@@ -17,6 +27,30 @@ const RemasterActions: React.FC = ({}) => {
   const user = useAppSelector((store) => store.auth.credentials?.user);
   const dispatch = useAppDispatch();
   const { handleSave, savingRemaster, route } = useSaveRemaster();
+  const { mutateAsync: like } = useLikeRemaster();
+  const { mutateAsync: unlike } = useUnlikeRemaster();
+
+  const handleLike = async () => {
+    if (!remaster.metadata) return;
+    try {
+      await like({ params: { id: remaster.metadata.id } });
+      dispatch(setLikedBySessionUser(true));
+      dispatch(incrementTotalLikes());
+    } catch (error) {
+      handleApiError(error);
+    }
+  };
+
+  const handleUnlike = async () => {
+    if (!remaster.metadata) return;
+    try {
+      await unlike({ params: { id: remaster.metadata.id } });
+      dispatch(setLikedBySessionUser(false));
+      dispatch(decrementTotalLikes());
+    } catch (error) {
+      handleApiError(error);
+    }
+  };
 
   return (
     <>
@@ -64,7 +98,7 @@ const RemasterActions: React.FC = ({}) => {
               toast.success("Copied!");
             }}
             variant="outline"
-            className="button-accent flex-1"
+            className="flex-1 bg-background hover:bg-background/75"
           >
             Share
           </Button>
@@ -73,7 +107,19 @@ const RemasterActions: React.FC = ({}) => {
               <Link href={`/editor/${remaster.metadata?.id}`}>Edit</Link>
             </Button>
           ) : (
-            <Button className="flex-1">Like</Button>
+            <Button
+              onClick={() => {
+                if (remaster.likedBySessionUser) {
+                  void handleUnlike();
+                } else {
+                  void handleLike();
+                }
+              }}
+              variant={remaster.likedBySessionUser ? "destructive" : "default"}
+              className="flex-1"
+            >
+              {remaster.likedBySessionUser ? "Unlike" : "Like"}
+            </Button>
           )}
         </>
       )}
@@ -92,9 +138,19 @@ const Topbar: React.FC = ({}) => {
     <nav className="topbar">
       <Orb orientation="top" />
       <div className="flex flex-1 flex-col gap-2">
-        <div className="section h-full">
-          <h1 className="label">Name</h1>
-          <p className="p truncate leading-none">{metadata.name}</p>
+        <div className="flex gap-2">
+          <div className="section h-full flex-1 overflow-hidden">
+            <h1 className="label">Name</h1>
+            <p className="p line-clamp-1 leading-none">{metadata.name}</p>
+          </div>
+          <div className="section">
+            <h1 className="label">Plays</h1>
+            <p className="p leading-none">{metadata.totalPlays}</p>
+          </div>
+          <div className="section">
+            <h1 className="label">Likes</h1>
+            <p className="p leading-none">{metadata.totalLikes}</p>
+          </div>
         </div>
         <div className="flex gap-2">
           <RemasterActions />
@@ -120,6 +176,14 @@ const Sidebar: React.FC = ({}) => {
       <div className="section">
         <h1 className="label">Name</h1>
         <p className="p">{metadata.name}</p>
+      </div>
+      <div className="section">
+        <h1 className="label">Plays</h1>
+        <p className="p">{metadata.totalPlays}</p>
+      </div>
+      <div className="section">
+        <h1 className="label">Likes</h1>
+        <p className="p">{metadata.totalLikes}</p>
       </div>
       <div className="section flex-1">
         <h1 className="label">Description</h1>

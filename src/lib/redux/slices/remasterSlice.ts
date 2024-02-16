@@ -4,6 +4,7 @@ import { type Metadata, type Loop } from "@/lib/types";
 interface RemasterState {
   metadata: Metadata | null;
   loops: Loop[];
+  likedBySessionUser: boolean;
   isPlaying: boolean;
   isScrubbing: boolean;
   volume: number;
@@ -16,6 +17,7 @@ interface RemasterState {
 const initialState: RemasterState = {
   metadata: null,
   loops: [],
+  likedBySessionUser: false,
   isPlaying: false,
   isScrubbing: false,
   volume: 0.5,
@@ -31,10 +33,15 @@ const remasterSlice = createSlice({
   reducers: {
     initRemaster(
       state,
-      action: PayloadAction<{ loops: Loop[]; metadata: Metadata }>,
+      action: PayloadAction<{
+        loops: Loop[];
+        metadata: Metadata;
+        likedBySessionUser: boolean;
+      }>,
     ) {
       state.loops = action.payload.loops;
       state.metadata = action.payload.metadata;
+      state.likedBySessionUser = action.payload.likedBySessionUser;
     },
     setMetadata(state, action: PayloadAction<Metadata>) {
       state.metadata = action.payload;
@@ -62,6 +69,21 @@ const remasterSlice = createSlice({
     },
     setHasChanges(state, action: PayloadAction<boolean>) {
       state.hasChanges = action.payload;
+    },
+    setLikedBySessionUser(state, action: PayloadAction<boolean>) {
+      state.likedBySessionUser = action.payload;
+    },
+    incrementTotalPlays(state) {
+      if (!state.metadata) return;
+      state.metadata.totalPlays += 1;
+    },
+    incrementTotalLikes(state) {
+      if (!state.metadata) return;
+      state.metadata.totalLikes += 1;
+    },
+    decrementTotalLikes(state) {
+      if (!state.metadata) return;
+      state.metadata.totalLikes -= 1;
     },
     resizeLoop(
       state,
@@ -212,6 +234,10 @@ export const {
   setPlayingLoop,
   setRepeatingLoop,
   setHasChanges,
+  setLikedBySessionUser,
+  incrementTotalPlays,
+  incrementTotalLikes,
+  decrementTotalLikes,
   resizeLoop,
   createLoop,
   handlePlayingLoop,

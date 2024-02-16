@@ -23,12 +23,12 @@ const RemasterCard = forwardRef<HTMLDivElement, RemasterCardProps>(
         <ReactPlayer url={remaster.url} light width="100%" height="100%" />
         <div className="absolute top-0 h-full w-full bg-gradient-to-b from-black via-transparent to-black" />
         <div className="absolute left-4 top-4">
-          <p className="p mono text-muted-foreground">
+          <p className="p mono text-muted-foreground 2xl:text-sm 2xl:font-normal">
             {`@${remaster.user.username} - ${getRelativeTime(
               new Date(remaster.updatedAt),
             )}`}
           </p>
-          <h1 className="h1 mono line-clamp-2 text-white">{remaster.name}</h1>
+          <h1 className="h2 mono line-clamp-2 text-white">{remaster.name}</h1>
         </div>
         <Button className="absolute bottom-4 right-4" asChild>
           <Link href={`/remaster/${remaster.id}`}>Play</Link>
