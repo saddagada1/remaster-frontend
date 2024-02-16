@@ -1,7 +1,7 @@
 import { useRef, type HTMLAttributes, type RefObject, useEffect } from "react";
 import { ScrollArea } from "./ui/scroll-area";
 import { useIntersectionObserver } from "usehooks-ts";
-import { ReloadIcon } from "@radix-ui/react-icons";
+import { SimpleLoading } from "./loading";
 
 interface InfinitePaginationProps extends HTMLAttributes<HTMLDivElement> {
   lastItem: RefObject<Element>;
@@ -30,12 +30,7 @@ const InfinitePagination: React.FC<InfinitePaginationProps> = ({
   return (
     <ScrollArea {...props} dir="ltr" ref={container}>
       {children}
-      {loading && (
-        <p className="p my-8 flex w-full items-center justify-center">
-          <ReloadIcon className="mr-2 h-4 w-4 animate-spin" />
-          Please wait
-        </p>
-      )}
+      {loading && <SimpleLoading />}
     </ScrollArea>
   );
 };

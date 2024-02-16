@@ -13,7 +13,7 @@ import {
 } from "./ui/form";
 import { Input } from "./ui/input";
 import { Textarea } from "./ui/textarea";
-import { useState, type HTMLAttributes } from "react";
+import { useMemo, useState, type HTMLAttributes } from "react";
 import Image from "next/image";
 import { toast } from "sonner";
 
@@ -38,25 +38,32 @@ const formSchema = z
 
 interface SettingsFormProps extends HTMLAttributes<HTMLDivElement> {
   onFormSubmit: (
-    values: z.infer<typeof formSchema> & { profileImageFile: File | null },
+    values: z.infer<typeof formSchema> & { profileImageFile: File | undefined },
   ) => void | Promise<void>;
   buttonLabel: string;
   defaultValues?: z.infer<typeof formSchema>;
-  children?: React.ReactNode;
+  isSubmitting?: boolean;
 }
 
 const SettingsForm: React.FC<SettingsFormProps> = ({
   onFormSubmit,
   buttonLabel,
   defaultValues,
-  children,
+  isSubmitting,
   ...props
 }) => {
-  const [profileImageFile, setProfileImageFile] = useState<File | null>(null);
+  const [profileImageFile, setProfileImageFile] = useState<File | undefined>(
+    undefined,
+  );
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues,
   });
+
+  const profileImageFileUrl = useMemo(() => {
+    if (!profileImageFile) return "";
+    return URL.createObjectURL(profileImageFile);
+  }, [profileImageFile]);
 
   const handleProfileImageUpload = (file?: File) => {
     const accept = "image/jpeg image/jpg image/png";
@@ -78,12 +85,20 @@ const SettingsForm: React.FC<SettingsFormProps> = ({
         className="w-full max-w-[600px] px-2 text-right md:px-0"
         // eslint-disable-next-line @typescript-eslint/no-misused-promises
         onSubmit={form.handleSubmit((values) => {
+          if (
+            !profileImageFile &&
+            JSON.stringify(values) === JSON.stringify(defaultValues)
+          )
+            return;
           void onFormSubmit({ ...values, profileImageFile });
         })}
       >
         <div {...props}>
           <div className="space-y-8 lg:w-1/2">
-            <div className="relative flex aspect-square items-center justify-center overflow-hidden rounded-full border border-input">
+            <div
+              key={form.watch("image")}
+              className="relative flex aspect-square items-center justify-center overflow-hidden rounded-full border border-input"
+            >
               <input
                 className="absolute left-0 top-0 h-full w-full cursor-pointer opacity-0"
                 type="file"
@@ -100,7 +115,7 @@ const SettingsForm: React.FC<SettingsFormProps> = ({
                   <Image
                     src={
                       !!profileImageFile
-                        ? URL.createObjectURL(profileImageFile)
+                        ? profileImageFileUrl
                         : form.getValues().image ?? ""
                     }
                     alt="Profile picture preview"
@@ -110,9 +125,10 @@ const SettingsForm: React.FC<SettingsFormProps> = ({
                   <Button
                     variant="destructive"
                     className="absolute bottom-4 bg-destructive/50"
+                    type="button"
                     onClick={() => {
                       if (profileImageFile) {
-                        setProfileImageFile(null);
+                        setProfileImageFile(undefined);
                       } else {
                         form.setValue("image", undefined);
                       }
@@ -182,7 +198,7 @@ const SettingsForm: React.FC<SettingsFormProps> = ({
                   <FormControl>
                     <Textarea
                       placeholder="Bio"
-                      className="resize-none"
+                      className="h-32 resize-none"
                       {...field}
                     />
                   </FormControl>
@@ -226,16 +242,13 @@ const SettingsForm: React.FC<SettingsFormProps> = ({
             />
           </div>
         </div>
-        <div className="flex gap-2">
-          {children}
-          {form.formState.isSubmitting ? (
-            <ButtonLoading size="lg" />
-          ) : (
-            <Button type="submit" size="lg">
-              {buttonLabel}
-            </Button>
-          )}
-        </div>
+        {!!isSubmitting ? (
+          <ButtonLoading size="lg" />
+        ) : (
+          <Button type="submit" size="lg">
+            {buttonLabel}
+          </Button>
+        )}
       </form>
     </Form>
   );

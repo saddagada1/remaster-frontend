@@ -17,20 +17,27 @@ import type {
   UseQueryResult,
 } from "@tanstack/react-query";
 import type {
+  AuthenticationResponse,
   PageResponseUserResponse,
   SearchUsersParams,
-  UpdateUserRequest,
+  UpdateUserBody,
   UserResponse,
 } from "../../model";
 import { customInstance } from "../../lib/axios";
 import type { BodyType } from "../../lib/axios";
 
-export const updateUser = (updateUserRequest: BodyType<UpdateUserRequest>) => {
-  return customInstance<UserResponse>({
+export const updateUser = (updateUserBody: BodyType<UpdateUserBody>) => {
+  const formData = new FormData();
+  formData.append("request", JSON.stringify(updateUserBody.request));
+  if (updateUserBody.imageFile !== undefined) {
+    formData.append("imageFile", updateUserBody.imageFile);
+  }
+
+  return customInstance<AuthenticationResponse>({
     url: `/user`,
     method: "PUT",
-    headers: { "Content-Type": "application/json" },
-    data: updateUserRequest,
+    headers: { "Content-Type": "multipart/form-data" },
+    data: formData,
   });
 };
 
@@ -41,20 +48,20 @@ export const getUpdateUserMutationOptions = <
   mutation?: UseMutationOptions<
     Awaited<ReturnType<typeof updateUser>>,
     TError,
-    { data: BodyType<UpdateUserRequest> },
+    { data: BodyType<UpdateUserBody> },
     TContext
   >;
 }): UseMutationOptions<
   Awaited<ReturnType<typeof updateUser>>,
   TError,
-  { data: BodyType<UpdateUserRequest> },
+  { data: BodyType<UpdateUserBody> },
   TContext
 > => {
   const { mutation: mutationOptions } = options ?? {};
 
   const mutationFn: MutationFunction<
     Awaited<ReturnType<typeof updateUser>>,
-    { data: BodyType<UpdateUserRequest> }
+    { data: BodyType<UpdateUserBody> }
   > = (props) => {
     const { data } = props ?? {};
 
@@ -67,14 +74,14 @@ export const getUpdateUserMutationOptions = <
 export type UpdateUserMutationResult = NonNullable<
   Awaited<ReturnType<typeof updateUser>>
 >;
-export type UpdateUserMutationBody = BodyType<UpdateUserRequest>;
+export type UpdateUserMutationBody = BodyType<UpdateUserBody>;
 export type UpdateUserMutationError = unknown;
 
 export const useUpdateUser = <TError = unknown, TContext = unknown>(options?: {
   mutation?: UseMutationOptions<
     Awaited<ReturnType<typeof updateUser>>,
     TError,
-    { data: BodyType<UpdateUserRequest> },
+    { data: BodyType<UpdateUserBody> },
     TContext
   >;
 }) => {

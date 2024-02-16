@@ -1,7 +1,7 @@
 import { type Tuning } from "./types";
 
 export const privatePaths = ["/profile", "/create", "/editor", "/settings"];
-export const authPaths = ["/login", "/sign-up"];
+export const authPaths = ["/login", "/sign-up", "/forgot-password"];
 
 export const tuning: Record<number, Tuning> = {
   0: { name: "Standard", notes: ["E", "A", "D", "G", "B", "E"] },

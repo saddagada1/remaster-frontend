@@ -10,31 +10,28 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "./ui/dropdown-menu";
-import { useRouter } from "next/router";
 import { type UserResponse } from "@/model";
-import { cn } from "@/lib/utils";
 import { useLogoutUser } from "@/api/authentication-controller/authentication-controller";
 import { useAppSelector } from "@/lib/redux/hooks";
 
 const UserMenu: React.FC<{ user: UserResponse }> = ({ user }) => {
   const { mutateAsync: logout } = useLogoutUser();
-  const router = useRouter();
 
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <Button
-          className={cn(
-            "button-accent",
-            router.pathname === "/profile" && "bg-background/80",
-          )}
+          variant="outline"
+          className="bg-background hover:bg-background/75"
         >
           Profile
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent className="mono w-56" align="end" forceMount>
         <DropdownMenuLabel className="ml-2">
-          <p className="mb-1 text-sm">{user.name ?? user.username}</p>
+          <p className="mb-1 text-sm">
+            {!!user.name ? user.name : user.username}
+          </p>
           <p className="p-accent font-normal">{user.email}</p>
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
@@ -72,7 +69,6 @@ const UserMenu: React.FC<{ user: UserResponse }> = ({ user }) => {
 
 const Header: React.FC = ({}) => {
   const auth = useAppSelector((store) => store.auth);
-  const router = useRouter();
 
   return (
     <header className="hidden items-center gap-2 hr:flex">
@@ -84,12 +80,7 @@ const Header: React.FC = ({}) => {
               {auth.credentials?.user ? (
                 <UserMenu user={auth.credentials.user} />
               ) : null}
-              <Button
-                asChild
-                className={cn(
-                  router.pathname === "/create" && "bg-foreground/80",
-                )}
-              >
+              <Button asChild>
                 <Link href="/create">Create</Link>
               </Button>
             </>
@@ -97,19 +88,12 @@ const Header: React.FC = ({}) => {
             <>
               <Button
                 asChild
-                className={cn(
-                  "button-accent",
-                  router.pathname === "/sign-up" && "bg-background/80",
-                )}
+                variant="outline"
+                className="bg-background hover:bg-background/75"
               >
                 <Link href="/sign-up">Sign Up</Link>
               </Button>
-              <Button
-                asChild
-                className={cn(
-                  router.pathname === "/login" && "bg-foreground/80",
-                )}
-              >
+              <Button asChild>
                 <Link href="/login">Login</Link>
               </Button>
             </>

@@ -1,9 +1,5 @@
-import type { NextPage } from "next";
-import Head from "next/head";
-import { zodResolver } from "@hookform/resolvers/zod";
-import z from "zod";
-import { useForm } from "react-hook-form";
-import Link from "next/link";
+import { useChangeForgottenPassword } from "@/api/authentication-controller/authentication-controller";
+import { ButtonLoading, Button } from "@/components/ui/button";
 import {
   Form,
   FormControl,
@@ -12,37 +8,50 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { useRouter } from "next/router";
-import { ButtonLoading, Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { useLoginUser } from "@/api/authentication-controller/authentication-controller";
-import { checkIfApiError, handleApiError, trimmedString } from "@/lib/utils";
 import { useAppDispatch } from "@/lib/redux/hooks";
 import { setAuthState } from "@/lib/redux/slices/authSlice";
+import { handleApiError } from "@/lib/utils";
+import { zodResolver } from "@hookform/resolvers/zod";
+import type { NextPage } from "next";
+import Head from "next/head";
+import { useRouter } from "next/router";
+import { useForm } from "react-hook-form";
+import { toast } from "sonner";
+import { z } from "zod";
 
-const formSchema = z.object({
-  emailOrUsername: z.string().min(1, { message: "Required" }),
-  password: z.string().min(1, { message: "Required" }),
-});
+const formSchema = z
+  .object({
+    password: z.string().min(8, { message: "Min 8 Chars Required" }),
+    confirmPassword: z.string(),
+  })
+  .refine((data) => data.password === data.confirmPassword, {
+    message: "Does Not Match",
+    path: ["confirmPassword"],
+  });
 
-const LoginForm: React.FC = () => {
+const ResetPasswordForm: React.FC = () => {
   const router = useRouter();
   const dispatch = useAppDispatch();
-  const { mutateAsync: login } = useLoginUser();
+  const { mutateAsync: resetPassword } = useChangeForgottenPassword();
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      emailOrUsername: "",
       password: "",
+      confirmPassword: "",
     },
   });
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
+    if (!router.query.token || typeof router.query.token !== "string") {
+      toast.error("No token provided. Please try again.");
+      return;
+    }
     try {
-      const response = await login({
-        data: {
-          principal: trimmedString(values.emailOrUsername),
+      const response = await resetPassword({
+        params: {
+          token: router.query.token,
           password: values.password,
         },
       });
@@ -56,16 +65,10 @@ const LoginForm: React.FC = () => {
           },
         }),
       );
-      void router.push("/");
+      toast.success("Success! Your password has been reset.");
+      await router.push("/");
     } catch (error) {
-      const apiError = checkIfApiError(error);
-      if (!!apiError && typeof apiError !== "number") {
-        form.setError(apiError.subject as "emailOrUsername", {
-          message: apiError.message,
-        });
-        return;
-      }
-      handleApiError(error, { fatal: true });
+      handleApiError(error);
     }
   };
 
@@ -73,28 +76,13 @@ const LoginForm: React.FC = () => {
     <Form {...form}>
       <form
         onSubmit={form.handleSubmit(onSubmit)}
-        className="mb-8 w-full max-w-[400px] px-2 text-right hr:px-0"
+        className="w-full max-w-[400px] space-y-8 px-2 text-right hr:px-0"
       >
-        <FormField
-          control={form.control}
-          name="emailOrUsername"
-          render={({ field }) => (
-            <FormItem className="mb-8">
-              <div className="flex justify-between">
-                <FormLabel>Email or Username</FormLabel>
-                <FormMessage />
-              </div>
-              <FormControl>
-                <Input placeholder="remaster@acme.ca" {...field} />
-              </FormControl>
-            </FormItem>
-          )}
-        />
         <FormField
           control={form.control}
           name="password"
           render={({ field }) => (
-            <FormItem className="mb-2">
+            <FormItem>
               <div className="flex justify-between">
                 <FormLabel>Password</FormLabel>
                 <FormMessage />
@@ -105,18 +93,26 @@ const LoginForm: React.FC = () => {
             </FormItem>
           )}
         />
-        <Button
-          variant="link"
-          className="mono mb-8 h-fit p-0 text-xs font-normal hr:text-sm"
-          asChild
-        >
-          <Link href="/forgot-password">Forgot Password?</Link>
-        </Button>
+        <FormField
+          control={form.control}
+          name="confirmPassword"
+          render={({ field }) => (
+            <FormItem>
+              <div className="flex justify-between">
+                <FormLabel>Confirm Password</FormLabel>
+                <FormMessage />
+              </div>
+              <FormControl>
+                <Input placeholder="********" {...field} type="password" />
+              </FormControl>
+            </FormItem>
+          )}
+        />
         {form.formState.isSubmitting ? (
           <ButtonLoading className="text-sm" size="lg" />
         ) : (
           <Button className="text-sm" size="lg" type="submit">
-            Login
+            Reset
           </Button>
         )}
       </form>
@@ -124,27 +120,19 @@ const LoginForm: React.FC = () => {
   );
 };
 
-const Login: NextPage = ({}) => {
+const ResetPassword: NextPage = ({}) => {
   return (
     <>
       <Head>
-        <title>Remaster - Login</title>
+        <title>Remaster - Reset Password</title>
       </Head>
       <main className="section flex h-full flex-col items-center justify-center">
         <h1 className="title mono mb-8 w-full max-w-[400px] pl-2 hr:pl-0">
-          Login
+          Reset Password
         </h1>
-        <LoginForm />
-        <Button
-          variant="link"
-          className="mono h-fit p-0 text-xs font-normal hr:text-sm"
-          asChild
-        >
-          <Link href="/sign-up">Don&apos;t have an account? Sign Up!</Link>
-        </Button>
+        <ResetPasswordForm />
       </main>
     </>
   );
 };
-
-export default Login;
+export default ResetPassword;

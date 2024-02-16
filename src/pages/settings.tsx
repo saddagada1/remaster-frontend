@@ -13,7 +13,7 @@ const Settings: NextPage = ({}) => {
   const [container, { height }] = useElementSize();
   const user = useAppSelector((state) => state.auth.credentials?.user);
   const dispatch = useAppDispatch();
-  const { mutateAsync: updateUser } = useUpdateUser();
+  const { mutateAsync: updateUser, isPending } = useUpdateUser();
 
   return (
     <>
@@ -45,15 +45,18 @@ const Settings: NextPage = ({}) => {
                     }
                   : undefined
               }
-              onFormSubmit={async (values) => {
+              onFormSubmit={async ({ profileImageFile, ...values }) => {
                 try {
-                  const response = await updateUser({ data: values });
-                  dispatch(setUser({ user: response.data }));
+                  const response = await updateUser({
+                    data: { request: values, imageFile: profileImageFile },
+                  });
+                  dispatch(setUser({ user: response.data.user }));
                   toast.success("Success");
                 } catch (error) {
                   handleApiError(error);
                 }
               }}
+              isSubmitting={isPending}
             />
           </main>
         </ScrollArea>

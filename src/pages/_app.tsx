@@ -43,7 +43,8 @@ const MyApp: AppType = ({ Component, pageProps }) => {
         <Provider store={store}>
           <QueryClientProvider client={queryClient}>
             <Toaster
-              position="top-right"
+              position="top-left"
+              richColors
               toastOptions={{ className: "mono" }}
             />
             <Layout>

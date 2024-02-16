@@ -29,7 +29,7 @@ const UserCard = forwardRef<HTMLDivElement, UserCardProps>(
               {!!user.name ? `@${user.username}` : `User`}
             </p>
             <h1 className="h1 mono line-clamp-2 text-white ">
-              {user.name ?? `@${user.username}`}
+              {!!user.name ? user.name : `@${user.username}`}
             </h1>
           </div>
           <Button asChild className="m-2">

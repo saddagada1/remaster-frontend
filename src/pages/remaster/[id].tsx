@@ -45,13 +45,14 @@ const Remaster: NextPage = ({}) => {
 
   useEffect(() => {
     if (
+      !remaster ||
       isLoading ||
       isRefetching ||
       (state.metadata !== null && state.metadata.id === remaster?.data.id)
     )
       return;
 
-    if (!remaster || error) {
+    if (error) {
       handleApiError(error);
       return;
     }

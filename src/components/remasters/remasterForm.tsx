@@ -46,6 +46,7 @@ interface RemasterFormProps extends HTMLAttributes<HTMLDivElement> {
   ) => void | Promise<void>;
   buttonLabel: string;
   defaultValues?: z.infer<typeof formSchema> & { duration: number };
+  isSubmitting?: boolean;
   children?: React.ReactNode;
 }
 
@@ -53,6 +54,7 @@ const RemasterForm: React.FC<RemasterFormProps> = ({
   onFormSubmit,
   buttonLabel,
   defaultValues,
+  isSubmitting,
   children,
   ...props
 }) => {
@@ -305,7 +307,7 @@ const RemasterForm: React.FC<RemasterFormProps> = ({
         </div>
         <div className="flex gap-2">
           {children}
-          {form.formState.isSubmitting ? (
+          {!!isSubmitting ? (
             <ButtonLoading size="lg" />
           ) : (
             <Button type="submit" size="lg">

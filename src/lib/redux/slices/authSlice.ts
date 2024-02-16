@@ -31,6 +31,13 @@ const authSlice = createSlice({
       if (!state.credentials) return;
       state.credentials = { ...state.credentials, user: action.payload.user };
     },
+    setVerified(state, action: PayloadAction<boolean>) {
+      if (!state.credentials) return;
+      state.credentials = {
+        ...state.credentials,
+        user: { ...state.credentials.user, verified: action.payload },
+      };
+    },
     resetAuthState(state) {
       (state.status = "unauthenticated"),
         (state.credentials = initialState.credentials);
@@ -38,6 +45,7 @@ const authSlice = createSlice({
   },
 });
 
-export const { setAuthState, setUser, resetAuthState } = authSlice.actions;
+export const { setAuthState, setUser, setVerified, resetAuthState } =
+  authSlice.actions;
 
 export default authSlice.reducer;

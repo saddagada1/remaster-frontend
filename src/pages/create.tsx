@@ -9,7 +9,7 @@ import { useElementSize } from "usehooks-ts";
 
 const Create: NextPage = ({}) => {
   const [container, { height }] = useElementSize();
-  const { mutateAsync: createRemaster } = useCreateRemaster();
+  const { mutateAsync: createRemaster, isPending } = useCreateRemaster();
   const router = useRouter();
   return (
     <>
@@ -47,6 +47,7 @@ const Create: NextPage = ({}) => {
                   handleApiError(error);
                 }
               }}
+              isSubmitting={isPending}
             />
           </main>
         </ScrollArea>

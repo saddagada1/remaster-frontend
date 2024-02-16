@@ -48,7 +48,11 @@ const UserLayout: React.FC<UserLayoutProps> = ({ user, remasterCount }) => {
         </div>
       </div>
       <div className="section flex gap-2 bg-muted">
-        <Button className="button-accent flex-1" asChild>
+        <Button
+          variant="outline"
+          className="flex-1 bg-background hover:bg-background/75"
+          asChild
+        >
           <Link href="/likes">Likes</Link>
         </Button>
         <Button className="flex-1" asChild>
@@ -57,7 +61,7 @@ const UserLayout: React.FC<UserLayoutProps> = ({ user, remasterCount }) => {
       </div>
       <div className="section">
         <h1 className="label">Name</h1>
-        <p className="p">{user.name ?? user.username}</p>
+        <p className="p">{!!user.name ? user.name : user.username}</p>
       </div>
       <div className="section flex-1 overflow-y-scroll">
         <h1 className="label">Bio</h1>

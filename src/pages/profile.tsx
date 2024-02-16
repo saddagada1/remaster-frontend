@@ -8,6 +8,7 @@ import { useMemo, useRef } from "react";
 import { defaultPaginationLimit } from "@/lib/constants";
 import InfinitePagination from "@/components/infinitePagination";
 import NoData from "@/components/noData";
+import { SimpleLoading } from "@/components/loading";
 
 const Profile: NextPage = ({}) => {
   const lastItem = useRef<HTMLDivElement>(null!);
@@ -34,15 +35,15 @@ const Profile: NextPage = ({}) => {
       <Head>
         <title>Remaster - Profile</title>
       </Head>
-      <main className="flex flex-1 flex-col-reverse justify-start gap-2 md:flex-row">
-        <InfinitePagination
-          lastItem={lastItem}
-          onLastItem={() => void fetchNextPage()}
-          loading={isLoading}
-          className="flex-1"
-        >
-          {remasters && remasters.length > 0 ? (
-            <div className="grid grid-flow-row gap-2 md:grid-cols-2 2xl:grid-cols-3">
+      <main className="profile-layout">
+        {remasters ? (
+          <InfinitePagination
+            lastItem={lastItem}
+            onLastItem={() => void fetchNextPage()}
+            loading={isLoading}
+            className="flex-1"
+          >
+            <div className="profile-grid">
               {remasters?.map((remaster, index) => (
                 <RemasterCard
                   ref={
@@ -55,10 +56,16 @@ const Profile: NextPage = ({}) => {
                 />
               ))}
             </div>
-          ) : (
-            !isLoading && <NoData>No remasters have been made :(</NoData>
-          )}
-        </InfinitePagination>
+          </InfinitePagination>
+        ) : !!isLoading ? (
+          <NoData className="section h-full">
+            No remasters have been made :(
+          </NoData>
+        ) : (
+          <div className="section flex flex-1 items-center justify-center">
+            <SimpleLoading />
+          </div>
+        )}
         <UserLayout user={user} remasterCount={1} />
       </main>
     </>

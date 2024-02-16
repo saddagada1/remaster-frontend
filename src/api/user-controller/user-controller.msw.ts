@@ -8,14 +8,19 @@ import { faker } from "@faker-js/faker";
 import { HttpResponse, delay, http } from "msw";
 
 export const getUpdateUserMock = () => ({
-  bio: faker.helpers.arrayElement([faker.word.sample(), undefined]),
-  email: faker.word.sample(),
-  id: faker.string.uuid(),
-  image: faker.helpers.arrayElement([faker.word.sample(), undefined]),
-  name: faker.helpers.arrayElement([faker.word.sample(), undefined]),
-  role: faker.helpers.arrayElement(["USER", "ADMIN"] as const),
-  username: faker.word.sample(),
-  verified: faker.datatype.boolean(),
+  accessToken: faker.word.sample(),
+  expiresAt: `${faker.date.past().toISOString().split(".")[0]}Z`,
+  refreshToken: faker.word.sample(),
+  user: {
+    bio: faker.helpers.arrayElement([faker.word.sample(), undefined]),
+    email: faker.word.sample(),
+    id: faker.string.uuid(),
+    image: faker.helpers.arrayElement([faker.word.sample(), undefined]),
+    name: faker.helpers.arrayElement([faker.word.sample(), undefined]),
+    role: faker.helpers.arrayElement(["USER", "ADMIN"] as const),
+    username: faker.word.sample(),
+    verified: faker.datatype.boolean(),
+  },
 });
 
 export const getGetUserByUsernameMock = () => ({

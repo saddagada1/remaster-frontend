@@ -1,9 +1,7 @@
 import Link from "next/link";
 import { Button } from "./ui/button";
 import { useAppSelector } from "@/lib/redux/hooks";
-import { useRouter } from "next/router";
 import { useTheme } from "next-themes";
-import { cn } from "@/lib/utils";
 import { ExitIcon, SunIcon } from "@radix-ui/react-icons";
 import { useState } from "react";
 import { Drawer, DrawerContent, DrawerTrigger } from "./ui/drawer";
@@ -18,16 +16,12 @@ interface NavButtonProps {
 }
 
 const NavButton: React.FC<NavButtonProps> = ({ href, label, description }) => {
-  const router = useRouter();
   return (
     <Button
       variant="outline"
       size="lg"
       asChild
-      className={cn(
-        "h-fit p-2 font-normal",
-        router.pathname === href && "bg-accent",
-      )}
+      className="h-fit p-2 font-normal"
     >
       <Link href={href} className="flex flex-col space-y-2">
         <p className="w-full font-medium tracking-tight">{label}</p>
@@ -87,7 +81,6 @@ const SideNavbar: React.FC = () => {
 const Navbar: React.FC = () => {
   const [open, setOpen] = useState(false);
   const auth = useAppSelector((state) => state.auth);
-  const router = useRouter();
   const { theme, setTheme } = useTheme();
   const { mutateAsync: logout } = useLogoutUser();
 
@@ -100,57 +93,42 @@ const Navbar: React.FC = () => {
       <Orb orientation="top" grain />
       <div className="flex flex-1 flex-col gap-2">
         <div className="flex gap-2">
+          <Button
+            asChild
+            variant="outline"
+            className="hidden flex-1 lg:inline-flex"
+          >
+            <Link href="/trending">Trending</Link>
+          </Button>
+          <Button
+            asChild
+            variant="outline"
+            className="hidden flex-1 lg:inline-flex"
+          >
+            <Link href="/favourites">Favourites</Link>
+          </Button>
           {auth.status === "authenticated" ? (
             <>
-              <Button
-                asChild
-                variant="outline"
-                className={cn(
-                  "button-accent flex-1",
-                  router.pathname === "/profile" && "bg-background/80",
-                )}
-              >
+              <Button asChild variant="outline" className="flex-1">
                 <Link href="/profile">Profile</Link>
               </Button>
-              <Button
-                asChild
-                className={cn(
-                  "flex-1",
-                  router.pathname === "/create" && "bg-foreground/80",
-                )}
-              >
+              <Button asChild variant="outline" className="flex-1">
                 <Link href="/create">Create</Link>
               </Button>
             </>
           ) : (
             <>
-              <Button
-                asChild
-                variant="outline"
-                className={cn(
-                  "button-accent flex-1",
-                  router.pathname === "/sign-up" && "bg-background/80",
-                )}
-              >
+              <Button asChild variant="outline" className="flex-1">
                 <Link href="/sign-up">Sign Up</Link>
               </Button>
-              <Button
-                asChild
-                className={cn(
-                  "flex-1",
-                  router.pathname === "/login" && "bg-foreground/80",
-                )}
-              >
+              <Button asChild variant="outline" className="flex-1">
                 <Link href="/login">Login</Link>
               </Button>
             </>
           )}
-
           <Drawer open={open} onOpenChange={(o) => setOpen(o)}>
             <DrawerTrigger asChild>
-              <Button variant="outline" className="button-accent md:flex-1">
-                Menu
-              </Button>
+              <Button className="md:flex-1">Menu</Button>
             </DrawerTrigger>
             <DrawerContent className="mono flex h-5/6 flex-col p-2">
               <Link href="/" className="h1 my-6 font-display">

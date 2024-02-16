@@ -101,7 +101,7 @@ const SignUpForm: React.FC = () => {
                 <FormMessage />
               </div>
               <FormControl>
-                <Input placeholder="tether@acme.ca" {...field} type="email" />
+                <Input placeholder="remaster@acme.ca" {...field} type="email" />
               </FormControl>
             </FormItem>
           )}

@@ -1,6 +1,6 @@
 import type { NextPage } from "next";
 import Head from "next/head";
-import Loading from "@/components/loading";
+import Loading, { SimpleLoading } from "@/components/loading";
 import UserLayout from "@/components/userLayout";
 import RemasterCard from "@/components/remasters/remasterCard";
 import { useGetUserByUsername } from "@/api/user-controller/user-controller";
@@ -50,15 +50,15 @@ const User: NextPage = ({}) => {
       <Head>
         <title>Remaster - {router.query.username as string}</title>
       </Head>
-      <main className="flex flex-1 flex-col-reverse justify-start gap-2 md:flex-row">
-        <InfinitePagination
-          lastItem={lastItem}
-          onLastItem={() => void fetchNextPage()}
-          loading={fetchingRemasters}
-          className="flex-1"
-        >
-          {remasters && remasters.length > 0 ? (
-            <div className="grid grid-flow-row gap-2 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
+      <main className="profile-layout">
+        {remasters && remasters.length > 0 ? (
+          <InfinitePagination
+            lastItem={lastItem}
+            onLastItem={() => void fetchNextPage()}
+            loading={fetchingRemasters}
+            className="flex-1"
+          >
+            <div className="profile-grid">
               {remasters?.map((remaster, index) => (
                 <RemasterCard
                   ref={
@@ -71,12 +71,14 @@ const User: NextPage = ({}) => {
                 />
               ))}
             </div>
-          ) : (
-            !fetchingRemasters && (
-              <NoData>No remasters have been made :(</NoData>
-            )
-          )}
-        </InfinitePagination>
+          </InfinitePagination>
+        ) : !fetchingRemasters ? (
+          <NoData>No remasters have been made :(</NoData>
+        ) : (
+          <div className="flex-1">
+            <SimpleLoading />
+          </div>
+        )}
         <UserLayout user={user?.data} remasterCount={1} />
       </main>
     </>

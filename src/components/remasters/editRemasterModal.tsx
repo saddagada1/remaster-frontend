@@ -25,7 +25,7 @@ const EditRemasterModal: React.FC<HTMLAttributes<HTMLButtonElement>> = ({
           <Button
             {...props}
             variant="outline"
-            className={cn("button-accent flex-1", className)}
+            className={cn("flex-1", className)}
           >
             Edit
           </Button>

@@ -92,9 +92,9 @@ const Topbar: React.FC = ({}) => {
     <nav className="topbar">
       <Orb orientation="top" />
       <div className="flex flex-1 flex-col gap-2">
-        <div className="section">
+        <div className="section h-full">
           <h1 className="label">Name</h1>
-          <p className="p truncate">{metadata.name}</p>
+          <p className="p truncate leading-none">{metadata.name}</p>
         </div>
         <div className="flex gap-2">
           <RemasterActions />

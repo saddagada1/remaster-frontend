@@ -7,6 +7,7 @@
 
 export * from "./authenticationResponse";
 export * from "./basicUserResponse";
+export * from "./changeForgottenPasswordParams";
 export * from "./createRemasterRequest";
 export * from "./getAllRemastersByUserIdParams";
 export * from "./getAllUserRemastersParams";
@@ -17,7 +18,10 @@ export * from "./registerRequest";
 export * from "./remasterResponse";
 export * from "./searchRemastersParams";
 export * from "./searchUsersParams";
+export * from "./sendForgotPasswordEmailParams";
 export * from "./updateRemasterRequest";
+export * from "./updateUserBody";
 export * from "./updateUserRequest";
 export * from "./userResponse";
 export * from "./userResponseRole";
+export * from "./verifyEmailParams";

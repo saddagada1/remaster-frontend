@@ -11,12 +11,188 @@ import type {
 } from "@tanstack/react-query";
 import type {
   AuthenticationResponse,
+  ChangeForgottenPasswordParams,
   LoginRequest,
   RegisterRequest,
+  SendForgotPasswordEmailParams,
+  VerifyEmailParams,
 } from "../../model";
 import { customInstance } from "../../lib/axios";
 import type { BodyType } from "../../lib/axios";
 
+export const sendVerificationEmail = () => {
+  return customInstance<string>({
+    url: `/user/send-verification-email`,
+    method: "POST",
+  });
+};
+
+export const getSendVerificationEmailMutationOptions = <
+  TError = unknown,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof sendVerificationEmail>>,
+    TError,
+    void,
+    TContext
+  >;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof sendVerificationEmail>>,
+  TError,
+  void,
+  TContext
+> => {
+  const { mutation: mutationOptions } = options ?? {};
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof sendVerificationEmail>>,
+    void
+  > = () => {
+    return sendVerificationEmail();
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type SendVerificationEmailMutationResult = NonNullable<
+  Awaited<ReturnType<typeof sendVerificationEmail>>
+>;
+
+export type SendVerificationEmailMutationError = unknown;
+
+export const useSendVerificationEmail = <
+  TError = unknown,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof sendVerificationEmail>>,
+    TError,
+    void,
+    TContext
+  >;
+}) => {
+  const mutationOptions = getSendVerificationEmailMutationOptions(options);
+
+  return useMutation(mutationOptions);
+};
+export const verifyEmail = (params: VerifyEmailParams) => {
+  return customInstance<string>({
+    url: `/auth/verify-email`,
+    method: "POST",
+    params,
+  });
+};
+
+export const getVerifyEmailMutationOptions = <
+  TError = unknown,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof verifyEmail>>,
+    TError,
+    { params: VerifyEmailParams },
+    TContext
+  >;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof verifyEmail>>,
+  TError,
+  { params: VerifyEmailParams },
+  TContext
+> => {
+  const { mutation: mutationOptions } = options ?? {};
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof verifyEmail>>,
+    { params: VerifyEmailParams }
+  > = (props) => {
+    const { params } = props ?? {};
+
+    return verifyEmail(params);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type VerifyEmailMutationResult = NonNullable<
+  Awaited<ReturnType<typeof verifyEmail>>
+>;
+
+export type VerifyEmailMutationError = unknown;
+
+export const useVerifyEmail = <TError = unknown, TContext = unknown>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof verifyEmail>>,
+    TError,
+    { params: VerifyEmailParams },
+    TContext
+  >;
+}) => {
+  const mutationOptions = getVerifyEmailMutationOptions(options);
+
+  return useMutation(mutationOptions);
+};
+export const sendForgotPasswordEmail = (
+  params: SendForgotPasswordEmailParams,
+) => {
+  return customInstance<string>({
+    url: `/auth/send-forgot-password-email`,
+    method: "POST",
+    params,
+  });
+};
+
+export const getSendForgotPasswordEmailMutationOptions = <
+  TError = unknown,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof sendForgotPasswordEmail>>,
+    TError,
+    { params: SendForgotPasswordEmailParams },
+    TContext
+  >;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof sendForgotPasswordEmail>>,
+  TError,
+  { params: SendForgotPasswordEmailParams },
+  TContext
+> => {
+  const { mutation: mutationOptions } = options ?? {};
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof sendForgotPasswordEmail>>,
+    { params: SendForgotPasswordEmailParams }
+  > = (props) => {
+    const { params } = props ?? {};
+
+    return sendForgotPasswordEmail(params);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type SendForgotPasswordEmailMutationResult = NonNullable<
+  Awaited<ReturnType<typeof sendForgotPasswordEmail>>
+>;
+
+export type SendForgotPasswordEmailMutationError = unknown;
+
+export const useSendForgotPasswordEmail = <
+  TError = unknown,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof sendForgotPasswordEmail>>,
+    TError,
+    { params: SendForgotPasswordEmailParams },
+    TContext
+  >;
+}) => {
+  const mutationOptions = getSendForgotPasswordEmailMutationOptions(options);
+
+  return useMutation(mutationOptions);
+};
 export const registerUser = (registerRequest: BodyType<RegisterRequest>) => {
   return customInstance<AuthenticationResponse>({
     url: `/auth/register`,
@@ -237,6 +413,67 @@ export const useLoginUser = <TError = unknown, TContext = unknown>(options?: {
   >;
 }) => {
   const mutationOptions = getLoginUserMutationOptions(options);
+
+  return useMutation(mutationOptions);
+};
+export const changeForgottenPassword = (
+  params: ChangeForgottenPasswordParams,
+) => {
+  return customInstance<AuthenticationResponse>({
+    url: `/auth/change-forgotten-password`,
+    method: "POST",
+    params,
+  });
+};
+
+export const getChangeForgottenPasswordMutationOptions = <
+  TError = unknown,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof changeForgottenPassword>>,
+    TError,
+    { params: ChangeForgottenPasswordParams },
+    TContext
+  >;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof changeForgottenPassword>>,
+  TError,
+  { params: ChangeForgottenPasswordParams },
+  TContext
+> => {
+  const { mutation: mutationOptions } = options ?? {};
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof changeForgottenPassword>>,
+    { params: ChangeForgottenPasswordParams }
+  > = (props) => {
+    const { params } = props ?? {};
+
+    return changeForgottenPassword(params);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type ChangeForgottenPasswordMutationResult = NonNullable<
+  Awaited<ReturnType<typeof changeForgottenPassword>>
+>;
+
+export type ChangeForgottenPasswordMutationError = unknown;
+
+export const useChangeForgottenPassword = <
+  TError = unknown,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof changeForgottenPassword>>,
+    TError,
+    { params: ChangeForgottenPasswordParams },
+    TContext
+  >;
+}) => {
+  const mutationOptions = getChangeForgottenPasswordMutationOptions(options);
 
   return useMutation(mutationOptions);
 };

@@ -1,6 +1,7 @@
 import { useSearchRemastersInfinite } from "@/api/remaster-controller/remaster-controller";
 import { useSearchUsersInfinite } from "@/api/user-controller/user-controller";
 import InfinitePagination from "@/components/infinitePagination";
+import { SimpleLoading } from "@/components/loading";
 import NoData from "@/components/noData";
 import RemasterCard from "@/components/remasters/remasterCard";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -58,7 +59,7 @@ const Search: NextPage = ({}) => {
       <Head>
         <title>Remaster - Search</title>
       </Head>
-      <main className="flex flex-1 flex-col justify-start gap-2">
+      <main className="flex-1">
         <Tabs
           key={router.query.type as string}
           defaultValue={router.query.type as string}
@@ -69,9 +70,9 @@ const Search: NextPage = ({}) => {
               { shallow: true },
             )
           }
-          className="flex flex-1 flex-col"
+          className="flex h-full flex-col"
         >
-          <TabsList>
+          <TabsList className="p-2">
             <TabsTrigger className="mono flex-1" value="remasters">
               Remasters
             </TabsTrigger>
@@ -80,14 +81,14 @@ const Search: NextPage = ({}) => {
             </TabsTrigger>
           </TabsList>
           <TabsContent value="remasters" className="flex-1">
-            <InfinitePagination
-              lastItem={lastRemaster}
-              onLastItem={() => void fetchMoreRemasters()}
-              loading={fetchingRemasters}
-              className="flex-1"
-            >
-              {remasters && remasters.length > 0 ? (
-                <div className="grid grid-flow-row gap-2 md:grid-cols-2 xl:grid-cols-3">
+            {remasters && remasters.length > 0 ? (
+              <InfinitePagination
+                lastItem={lastRemaster}
+                onLastItem={() => void fetchMoreRemasters()}
+                loading={fetchingRemasters}
+                className="flex-1"
+              >
+                <div className="search-remaster-grid">
                   {remasters?.map((remaster, index) => (
                     <RemasterCard
                       ref={
@@ -100,20 +101,24 @@ const Search: NextPage = ({}) => {
                     />
                   ))}
                 </div>
-              ) : (
-                !fetchingRemasters && <NoData />
-              )}
-            </InfinitePagination>
+              </InfinitePagination>
+            ) : !fetchingRemasters ? (
+              <NoData />
+            ) : (
+              <div className="flex-1">
+                <SimpleLoading />
+              </div>
+            )}
           </TabsContent>
           <TabsContent value="users" className="flex-1">
-            <InfinitePagination
-              lastItem={lastUser}
-              onLastItem={() => void fetchMoreUsers()}
-              loading={fetchingUsers}
-              className="flex-1"
-            >
-              {users && users.length > 0 ? (
-                <div className="grid grid-flow-row gap-2 md:grid-cols-2 xl:grid-cols-3">
+            {users && users.length > 0 ? (
+              <InfinitePagination
+                lastItem={lastUser}
+                onLastItem={() => void fetchMoreUsers()}
+                loading={fetchingUsers}
+                className="flex-1"
+              >
+                <div className="search-user-grid">
                   {users?.map((user, index) => (
                     <UserCard
                       ref={
@@ -126,10 +131,14 @@ const Search: NextPage = ({}) => {
                     />
                   ))}
                 </div>
-              ) : (
-                !fetchingUsers && <NoData />
-              )}
-            </InfinitePagination>
+              </InfinitePagination>
+            ) : !fetchingUsers ? (
+              <NoData />
+            ) : (
+              <div className="flex-1">
+                <SimpleLoading />
+              </div>
+            )}
           </TabsContent>
         </Tabs>
       </main>

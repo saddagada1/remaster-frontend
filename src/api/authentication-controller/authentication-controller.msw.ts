@@ -7,6 +7,12 @@
 import { faker } from "@faker-js/faker";
 import { HttpResponse, delay, http } from "msw";
 
+export const getSendVerificationEmailMock = () => faker.word.sample();
+
+export const getVerifyEmailMock = () => faker.word.sample();
+
+export const getSendForgotPasswordEmailMock = () => faker.word.sample();
+
 export const getRegisterUserMock = () => ({
   accessToken: faker.word.sample(),
   expiresAt: `${faker.date.past().toISOString().split(".")[0]}Z`,
@@ -57,7 +63,50 @@ export const getLoginUserMock = () => ({
   },
 });
 
+export const getChangeForgottenPasswordMock = () => ({
+  accessToken: faker.word.sample(),
+  expiresAt: `${faker.date.past().toISOString().split(".")[0]}Z`,
+  refreshToken: faker.word.sample(),
+  user: {
+    bio: faker.helpers.arrayElement([faker.word.sample(), undefined]),
+    email: faker.word.sample(),
+    id: faker.string.uuid(),
+    image: faker.helpers.arrayElement([faker.word.sample(), undefined]),
+    name: faker.helpers.arrayElement([faker.word.sample(), undefined]),
+    role: faker.helpers.arrayElement(["USER", "ADMIN"] as const),
+    username: faker.word.sample(),
+    verified: faker.datatype.boolean(),
+  },
+});
+
 export const getAuthenticationControllerMock = () => [
+  http.post("*/user/send-verification-email", async () => {
+    await delay(1000);
+    return new HttpResponse(JSON.stringify(getSendVerificationEmailMock()), {
+      status: 200,
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+  }),
+  http.post("*/auth/verify-email", async () => {
+    await delay(1000);
+    return new HttpResponse(JSON.stringify(getVerifyEmailMock()), {
+      status: 200,
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+  }),
+  http.post("*/auth/send-forgot-password-email", async () => {
+    await delay(1000);
+    return new HttpResponse(JSON.stringify(getSendForgotPasswordEmailMock()), {
+      status: 200,
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+  }),
   http.post("*/auth/register", async () => {
     await delay(1000);
     return new HttpResponse(JSON.stringify(getRegisterUserMock()), {
@@ -88,6 +137,15 @@ export const getAuthenticationControllerMock = () => [
   http.post("*/auth/login", async () => {
     await delay(1000);
     return new HttpResponse(JSON.stringify(getLoginUserMock()), {
+      status: 200,
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+  }),
+  http.post("*/auth/change-forgotten-password", async () => {
+    await delay(1000);
+    return new HttpResponse(JSON.stringify(getChangeForgottenPasswordMock()), {
       status: 200,
       headers: {
         "Content-Type": "application/json",

@@ -23,7 +23,7 @@ const Orb: React.FC<OrbProps> = ({
       {...props}
       onClick={() => void router.push("/")}
       className={cn(
-        "section relative flex cursor-pointer items-center justify-center overflow-hidden",
+        "section flex cursor-pointer items-center justify-center overflow-hidden",
         className,
       )}
     >
@@ -33,16 +33,11 @@ const Orb: React.FC<OrbProps> = ({
           height: orientation === "side" ? width : "100%",
           width: orientation === "top" ? height : "100%",
         }}
-        className="overflow-hidden rounded-[50%]"
+        className="relative flex items-center justify-center overflow-hidden rounded-[50%]"
       >
-        <Gradient
-          colours={Object.values(pitchClassColours).filter(
-            (_, i) => i % 2 !== 0,
-          )}
-          animated
-        />
+        <Gradient colours={Object.values(pitchClassColours)} animated />
+        {grain && <div className="anim-grain opacity-10 mix-blend-overlay" />}
       </div>
-      {grain && <div className="anim-grain opacity-10 mix-blend-overlay" />}
     </div>
   );
 };

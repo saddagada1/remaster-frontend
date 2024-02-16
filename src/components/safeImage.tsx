@@ -26,7 +26,7 @@ const SafeImage: React.FC<SafeImageProps> = ({
       {...props}
       className={cn(
         "relative aspect-square overflow-hidden",
-        square ? "rounded-md" : "rounded-full",
+        square ? "rounded-md" : "rounded-[50%]",
         className,
       )}
     >
@@ -39,14 +39,14 @@ const SafeImage: React.FC<SafeImageProps> = ({
           onError={() => setError(true)}
         />
       ) : (
-        <>
+        <div className="relative flex h-full w-full items-center justify-center overflow-hidden rounded-full">
           <Gradient
             colours={Object.values(pitchClassColours).filter(
               (_, i) => i % 2 !== 0,
             )}
           />
           {grain && <div className="anim-grain opacity-10 mix-blend-overlay" />}
-        </>
+        </div>
       )}
     </div>
   );
