@@ -46,7 +46,7 @@ const SideNavbar: React.FC = () => {
           sound.
         </p>
         <div className="mt-12 flex-1 space-y-2">
-          <NavButton href="/" label="Discover" description="Something New" />
+          <NavButton href="/" label="Discover" description="The Home Page" />
           <NavButton
             href="/trending"
             label="Trending"
@@ -58,9 +58,9 @@ const SideNavbar: React.FC = () => {
             description="Something Loved"
           />
           <NavButton
-            href="/library"
-            label="Library"
-            description="Something Personal"
+            href="/recent"
+            label="Recents"
+            description="Something New"
           />
         </div>
         <div className="flex items-end">
@@ -92,10 +92,11 @@ const Navbar: React.FC = () => {
     <nav className="topbar">
       <Orb orientation="top" grain />
       <div className="flex flex-1 flex-col gap-2">
-        <div className="flex gap-2">
+        <div className="flex h-3/4 gap-2">
           <Button
             asChild
             variant="outline"
+            size="topbar"
             className="hidden flex-1 lg:inline-flex"
           >
             <Link href="/trending">Trending</Link>
@@ -103,32 +104,55 @@ const Navbar: React.FC = () => {
           <Button
             asChild
             variant="outline"
+            size="topbar"
             className="hidden flex-1 lg:inline-flex"
           >
             <Link href="/favourites">Favourites</Link>
           </Button>
           {auth.status === "authenticated" ? (
             <>
-              <Button asChild variant="outline" className="flex-1">
+              <Button
+                asChild
+                variant="outline"
+                size="topbar"
+                className="flex-1"
+              >
                 <Link href="/profile">Profile</Link>
               </Button>
-              <Button asChild variant="outline" className="flex-1">
+              <Button
+                asChild
+                variant="outline"
+                size="topbar"
+                className="flex-1"
+              >
                 <Link href="/create">Create</Link>
               </Button>
             </>
           ) : (
             <>
-              <Button asChild variant="outline" className="flex-1">
+              <Button
+                asChild
+                variant="outline"
+                size="topbar"
+                className="flex-1"
+              >
                 <Link href="/sign-up">Sign Up</Link>
               </Button>
-              <Button asChild variant="outline" className="flex-1">
+              <Button
+                asChild
+                variant="outline"
+                size="topbar"
+                className="flex-1"
+              >
                 <Link href="/login">Login</Link>
               </Button>
             </>
           )}
           <Drawer open={open} onOpenChange={(o) => setOpen(o)}>
             <DrawerTrigger asChild>
-              <Button className="md:flex-1">Menu</Button>
+              <Button className="md:flex-1" size="topbar">
+                Menu
+              </Button>
             </DrawerTrigger>
             <DrawerContent className="mono flex h-5/6 flex-col p-2">
               <Link href="/" className="h1 my-6 font-display">
@@ -142,7 +166,7 @@ const Navbar: React.FC = () => {
                 <NavButton
                   href="/"
                   label="Discover"
-                  description="Something New"
+                  description="The Home Page"
                 />
                 <NavButton
                   href="/trending"
@@ -155,9 +179,9 @@ const Navbar: React.FC = () => {
                   description="Something Loved"
                 />
                 <NavButton
-                  href="/library"
-                  label="Library"
-                  description="Something Personal"
+                  href="/recent"
+                  label="Recents"
+                  description="Something New"
                 />
               </div>
               <div className="flex items-end gap-2">
@@ -169,13 +193,15 @@ const Navbar: React.FC = () => {
                 >
                   <SunIcon />
                 </Button>
-                <Button
-                  onClick={() => void logout()}
-                  variant="outline"
-                  size="icon"
-                >
-                  <ExitIcon />
-                </Button>
+                {auth.status === "authenticated" && (
+                  <Button
+                    onClick={() => void logout()}
+                    variant="outline"
+                    size="icon"
+                  >
+                    <ExitIcon />
+                  </Button>
+                )}
               </div>
             </DrawerContent>
           </Drawer>

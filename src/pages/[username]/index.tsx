@@ -54,7 +54,7 @@ const User: NextPage = ({}) => {
         <title>Remaster - {router.query.username as string}</title>
       </Head>
       <main className="profile-layout">
-        {remasters && remasters.length > 0 ? (
+        {!!remasters && remasters.length > 0 ? (
           <InfinitePagination
             lastItem={lastItem}
             onLastItem={() => void fetchNextPage()}

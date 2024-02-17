@@ -33,8 +33,8 @@ const Gradient: React.FC<GradientProps> = ({ animated, colours, ...props }) => {
     let height = cv.offsetHeight;
     const pixelRatio = window.devicePixelRatio > 1 ? 2 : 1;
     const particles: Particle[] = [];
-    const maxRadius = 180;
-    const minRadius = 180;
+    const maxRadius = 125;
+    const minRadius = 125;
 
     cv.width = width * pixelRatio;
     cv.height = height * pixelRatio;

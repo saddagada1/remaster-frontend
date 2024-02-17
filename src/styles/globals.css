@@ -124,6 +124,9 @@
   .search-user-grid {
     @apply grid grid-flow-row gap-2 md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4;
   }
+  .default-remaster-grid {
+    @apply grid grid-flow-row gap-2 md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4;
+  }
 }
 
 * {
@@ -171,6 +174,12 @@
   pointer-events: none;
 }
 
+.marquee {
+  width: fit-content;
+  white-space: nowrap;
+  animation: marquee 5s linear infinite;
+}
+
 .anim-grain {
   background-image: url("../../public/media/noise.png");
   height: 300%;
@@ -178,6 +187,15 @@
   position: absolute;
   pointer-events: none;
   animation: grain 4s steps(5) infinite;
+}
+
+@keyframes marquee {
+  0% {
+    transform: translateX(0%);
+  }
+  100% {
+    transform: translateX(-25%);
+  }
 }
 
 @keyframes grain {

@@ -32,7 +32,7 @@ const EditRemasterModal: React.FC<HTMLAttributes<HTMLButtonElement>> = ({
             {...props}
             variant="outline"
             className={cn(
-              "flex-1 bg-background hover:bg-background/75",
+              "flex-1 hr:bg-background hr:hover:bg-background/75",
               className,
             )}
           >

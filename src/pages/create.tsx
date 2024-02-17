@@ -38,7 +38,10 @@ const Create: NextPage = ({}) => {
                 timeSignature: 3,
                 tuning: 0,
                 duration: 0,
-                url: "",
+                url:
+                  !!router.query.url && typeof router.query.url === "string"
+                    ? router.query.url
+                    : "",
                 name: "",
                 description: "",
               }}

@@ -1,30 +1,29 @@
+import { useGetFavouriteRemastersInfinite } from "@/api/remaster-controller/remaster-controller";
+import InfinitePagination from "@/components/infinitePagination";
+import { SimpleLoading } from "@/components/loading";
+import Marquee from "@/components/marquee";
+import NoData from "@/components/noData";
+import RemasterCard from "@/components/remasters/remasterCard";
+import { defaultPaginationLimit } from "@/lib/constants";
 import type { NextPage } from "next";
 import Head from "next/head";
-import { useGetAllUserRemastersInfinite } from "@/api/remaster-controller/remaster-controller";
-import { useAppSelector } from "@/lib/redux/hooks";
-import UserLayout from "@/components/userLayout";
-import RemasterCard from "@/components/remasters/remasterCard";
 import { useMemo, useRef } from "react";
-import { defaultPaginationLimit } from "@/lib/constants";
-import InfinitePagination from "@/components/infinitePagination";
-import NoData from "@/components/noData";
-import { SimpleLoading } from "@/components/loading";
 
-const Profile: NextPage = ({}) => {
+const Favourites: NextPage = ({}) => {
   const lastItem = useRef<HTMLDivElement>(null!);
   const {
     data: remasterPages,
     isLoading,
     fetchNextPage,
-  } = useGetAllUserRemastersInfinite(
+  } = useGetFavouriteRemastersInfinite(
     { limit: defaultPaginationLimit },
     {
       query: {
+        queryKey: ["favourites-page"],
         getNextPageParam: (page) => page.data.next,
       },
     },
   );
-  const user = useAppSelector((store) => store.auth.credentials?.user);
 
   const remasters = useMemo(() => {
     return remasterPages?.pages.flatMap((page) => page.data.items);
@@ -33,9 +32,10 @@ const Profile: NextPage = ({}) => {
   return (
     <>
       <Head>
-        <title>Remaster - Profile</title>
+        <title>Remaster - Favourites</title>
       </Head>
-      <main className="profile-layout">
+      <main className="flex flex-1 flex-col gap-2">
+        <Marquee>Favourites</Marquee>
         {!!remasters && remasters.length > 0 ? (
           <InfinitePagination
             lastItem={lastItem}
@@ -43,7 +43,7 @@ const Profile: NextPage = ({}) => {
             loading={isLoading}
             className="flex-1"
           >
-            <div className="profile-grid">
+            <div className="default-remaster-grid">
               {remasters?.map((remaster, index) => (
                 <RemasterCard
                   ref={
@@ -66,10 +66,9 @@ const Profile: NextPage = ({}) => {
             <SimpleLoading />
           </div>
         )}
-        <UserLayout user={user} />
       </main>
     </>
   );
 };
 
-export default Profile;
+export default Favourites;

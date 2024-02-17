@@ -7,7 +7,7 @@ export default defineConfig({
       target: "./src/api",
       schemas: "./src/model",
       client: "react-query",
-      mock: true,
+      mock: false,
       prettier: true,
       clean: true,
       override: {

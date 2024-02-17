@@ -68,7 +68,7 @@ const UserLayout: React.FC<UserLayoutProps> = ({ user }) => {
           </div>
           <Button variant="outline" className="h-fit flex-1 p-2" asChild>
             <Link
-              href="/followers"
+              href={router.pathname}
               className="flex flex-col items-stretch justify-between"
             >
               <h1 className="label">Followers</h1>
@@ -77,7 +77,7 @@ const UserLayout: React.FC<UserLayoutProps> = ({ user }) => {
           </Button>
           <Button variant="outline" className="h-fit flex-1 p-2" asChild>
             <Link
-              href="/following"
+              href={router.pathname}
               className="flex flex-col items-stretch justify-between"
             >
               <h1 className="label">Following</h1>

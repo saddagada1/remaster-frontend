@@ -35,7 +35,12 @@ const Orb: React.FC<OrbProps> = ({
         }}
         className="relative flex items-center justify-center overflow-hidden rounded-[50%]"
       >
-        <Gradient colours={Object.values(pitchClassColours)} animated />
+        <Gradient
+          colours={Object.values(pitchClassColours).filter(
+            (_, i) => i % 2 === 0,
+          )}
+          animated
+        />
         {grain && <div className="anim-grain opacity-10 mix-blend-overlay" />}
       </div>
     </div>

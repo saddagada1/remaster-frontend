@@ -22,7 +22,10 @@ import type {
   DeleteRemasterParams,
   GetAllRemastersByUserIdParams,
   GetAllUserRemastersParams,
+  GetFavouriteRemastersParams,
+  GetRecentRemastersParams,
   GetRemasterParams,
+  GetTrendingRemastersParams,
   LikeRemasterParams,
   PageResponseRemasterResponse,
   RemasterResponse,
@@ -731,7 +734,7 @@ export const getGetRemasterQueryKey = (
 export const getGetRemasterInfiniteQueryOptions = <
   TData = InfiniteData<
     Awaited<ReturnType<typeof getRemaster>>,
-    GetRemasterParams["cursor"]
+    GetRemasterParams
   >,
   TError = unknown,
 >(
@@ -745,7 +748,7 @@ export const getGetRemasterInfiniteQueryOptions = <
         TData,
         Awaited<ReturnType<typeof getRemaster>>,
         QueryKey,
-        GetRemasterParams["cursor"]
+        GetRemasterParams
       >
     >;
   },
@@ -757,13 +760,8 @@ export const getGetRemasterInfiniteQueryOptions = <
   const queryFn: QueryFunction<
     Awaited<ReturnType<typeof getRemaster>>,
     QueryKey,
-    GetRemasterParams["cursor"]
-  > = ({ signal, pageParam }) =>
-    getRemaster(
-      id,
-      { ...params, cursor: pageParam || params?.["cursor"] },
-      signal,
-    );
+    GetRemasterParams
+  > = ({ signal }) => getRemaster(id, { ...params }, signal);
 
   return {
     queryKey,
@@ -776,7 +774,7 @@ export const getGetRemasterInfiniteQueryOptions = <
     TData,
     Awaited<ReturnType<typeof getRemaster>>,
     QueryKey,
-    GetRemasterParams["cursor"]
+    GetRemasterParams
   > & { queryKey: QueryKey };
 };
 
@@ -788,7 +786,7 @@ export type GetRemasterInfiniteQueryError = unknown;
 export const useGetRemasterInfinite = <
   TData = InfiniteData<
     Awaited<ReturnType<typeof getRemaster>>,
-    GetRemasterParams["cursor"]
+    GetRemasterParams
   >,
   TError = unknown,
 >(
@@ -802,7 +800,7 @@ export const useGetRemasterInfinite = <
         TData,
         Awaited<ReturnType<typeof getRemaster>>,
         QueryKey,
-        GetRemasterParams["cursor"]
+        GetRemasterParams
       >
     >;
   },
@@ -869,6 +867,173 @@ export const useGetRemaster = <
   },
 ): UseQueryResult<TData, TError> & { queryKey: QueryKey } => {
   const queryOptions = getGetRemasterQueryOptions(id, params, options);
+
+  const query = useQuery(queryOptions) as UseQueryResult<TData, TError> & {
+    queryKey: QueryKey;
+  };
+
+  query.queryKey = queryOptions.queryKey;
+
+  return query;
+};
+
+export const getTrendingRemasters = (
+  params: GetTrendingRemastersParams,
+  signal?: AbortSignal,
+) => {
+  return customInstance<PageResponseRemasterResponse>({
+    url: `/open/remaster/trending`,
+    method: "GET",
+    params,
+    signal,
+  });
+};
+
+export const getGetTrendingRemastersQueryKey = (
+  params: GetTrendingRemastersParams,
+) => {
+  return [`/open/remaster/trending`, ...(params ? [params] : [])] as const;
+};
+
+export const getGetTrendingRemastersInfiniteQueryOptions = <
+  TData = InfiniteData<
+    Awaited<ReturnType<typeof getTrendingRemasters>>,
+    GetTrendingRemastersParams["cursor"]
+  >,
+  TError = unknown,
+>(
+  params: GetTrendingRemastersParams,
+  options?: {
+    query?: Partial<
+      UseInfiniteQueryOptions<
+        Awaited<ReturnType<typeof getTrendingRemasters>>,
+        TError,
+        TData,
+        Awaited<ReturnType<typeof getTrendingRemasters>>,
+        QueryKey,
+        GetTrendingRemastersParams["cursor"]
+      >
+    >;
+  },
+) => {
+  const { query: queryOptions } = options ?? {};
+
+  const queryKey =
+    queryOptions?.queryKey ?? getGetTrendingRemastersQueryKey(params);
+
+  const queryFn: QueryFunction<
+    Awaited<ReturnType<typeof getTrendingRemasters>>,
+    QueryKey,
+    GetTrendingRemastersParams["cursor"]
+  > = ({ signal, pageParam }) =>
+    getTrendingRemasters(
+      { ...params, cursor: pageParam || params?.["cursor"] },
+      signal,
+    );
+
+  return { queryKey, queryFn, ...queryOptions } as UseInfiniteQueryOptions<
+    Awaited<ReturnType<typeof getTrendingRemasters>>,
+    TError,
+    TData,
+    Awaited<ReturnType<typeof getTrendingRemasters>>,
+    QueryKey,
+    GetTrendingRemastersParams["cursor"]
+  > & { queryKey: QueryKey };
+};
+
+export type GetTrendingRemastersInfiniteQueryResult = NonNullable<
+  Awaited<ReturnType<typeof getTrendingRemasters>>
+>;
+export type GetTrendingRemastersInfiniteQueryError = unknown;
+
+export const useGetTrendingRemastersInfinite = <
+  TData = InfiniteData<
+    Awaited<ReturnType<typeof getTrendingRemasters>>,
+    GetTrendingRemastersParams["cursor"]
+  >,
+  TError = unknown,
+>(
+  params: GetTrendingRemastersParams,
+  options?: {
+    query?: Partial<
+      UseInfiniteQueryOptions<
+        Awaited<ReturnType<typeof getTrendingRemasters>>,
+        TError,
+        TData,
+        Awaited<ReturnType<typeof getTrendingRemasters>>,
+        QueryKey,
+        GetTrendingRemastersParams["cursor"]
+      >
+    >;
+  },
+): UseInfiniteQueryResult<TData, TError> & { queryKey: QueryKey } => {
+  const queryOptions = getGetTrendingRemastersInfiniteQueryOptions(
+    params,
+    options,
+  );
+
+  const query = useInfiniteQuery(queryOptions) as UseInfiniteQueryResult<
+    TData,
+    TError
+  > & { queryKey: QueryKey };
+
+  query.queryKey = queryOptions.queryKey;
+
+  return query;
+};
+
+export const getGetTrendingRemastersQueryOptions = <
+  TData = Awaited<ReturnType<typeof getTrendingRemasters>>,
+  TError = unknown,
+>(
+  params: GetTrendingRemastersParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof getTrendingRemasters>>,
+        TError,
+        TData
+      >
+    >;
+  },
+) => {
+  const { query: queryOptions } = options ?? {};
+
+  const queryKey =
+    queryOptions?.queryKey ?? getGetTrendingRemastersQueryKey(params);
+
+  const queryFn: QueryFunction<
+    Awaited<ReturnType<typeof getTrendingRemasters>>
+  > = ({ signal }) => getTrendingRemasters(params, signal);
+
+  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
+    Awaited<ReturnType<typeof getTrendingRemasters>>,
+    TError,
+    TData
+  > & { queryKey: QueryKey };
+};
+
+export type GetTrendingRemastersQueryResult = NonNullable<
+  Awaited<ReturnType<typeof getTrendingRemasters>>
+>;
+export type GetTrendingRemastersQueryError = unknown;
+
+export const useGetTrendingRemasters = <
+  TData = Awaited<ReturnType<typeof getTrendingRemasters>>,
+  TError = unknown,
+>(
+  params: GetTrendingRemastersParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof getTrendingRemasters>>,
+        TError,
+        TData
+      >
+    >;
+  },
+): UseQueryResult<TData, TError> & { queryKey: QueryKey } => {
+  const queryOptions = getGetTrendingRemastersQueryOptions(params, options);
 
   const query = useQuery(queryOptions) as UseQueryResult<TData, TError> & {
     queryKey: QueryKey;
@@ -1029,6 +1194,340 @@ export const useSearchRemasters = <
   },
 ): UseQueryResult<TData, TError> & { queryKey: QueryKey } => {
   const queryOptions = getSearchRemastersQueryOptions(params, options);
+
+  const query = useQuery(queryOptions) as UseQueryResult<TData, TError> & {
+    queryKey: QueryKey;
+  };
+
+  query.queryKey = queryOptions.queryKey;
+
+  return query;
+};
+
+export const getRecentRemasters = (
+  params: GetRecentRemastersParams,
+  signal?: AbortSignal,
+) => {
+  return customInstance<PageResponseRemasterResponse>({
+    url: `/open/remaster/recent`,
+    method: "GET",
+    params,
+    signal,
+  });
+};
+
+export const getGetRecentRemastersQueryKey = (
+  params: GetRecentRemastersParams,
+) => {
+  return [`/open/remaster/recent`, ...(params ? [params] : [])] as const;
+};
+
+export const getGetRecentRemastersInfiniteQueryOptions = <
+  TData = InfiniteData<
+    Awaited<ReturnType<typeof getRecentRemasters>>,
+    GetRecentRemastersParams["cursor"]
+  >,
+  TError = unknown,
+>(
+  params: GetRecentRemastersParams,
+  options?: {
+    query?: Partial<
+      UseInfiniteQueryOptions<
+        Awaited<ReturnType<typeof getRecentRemasters>>,
+        TError,
+        TData,
+        Awaited<ReturnType<typeof getRecentRemasters>>,
+        QueryKey,
+        GetRecentRemastersParams["cursor"]
+      >
+    >;
+  },
+) => {
+  const { query: queryOptions } = options ?? {};
+
+  const queryKey =
+    queryOptions?.queryKey ?? getGetRecentRemastersQueryKey(params);
+
+  const queryFn: QueryFunction<
+    Awaited<ReturnType<typeof getRecentRemasters>>,
+    QueryKey,
+    GetRecentRemastersParams["cursor"]
+  > = ({ signal, pageParam }) =>
+    getRecentRemasters(
+      { ...params, cursor: pageParam || params?.["cursor"] },
+      signal,
+    );
+
+  return { queryKey, queryFn, ...queryOptions } as UseInfiniteQueryOptions<
+    Awaited<ReturnType<typeof getRecentRemasters>>,
+    TError,
+    TData,
+    Awaited<ReturnType<typeof getRecentRemasters>>,
+    QueryKey,
+    GetRecentRemastersParams["cursor"]
+  > & { queryKey: QueryKey };
+};
+
+export type GetRecentRemastersInfiniteQueryResult = NonNullable<
+  Awaited<ReturnType<typeof getRecentRemasters>>
+>;
+export type GetRecentRemastersInfiniteQueryError = unknown;
+
+export const useGetRecentRemastersInfinite = <
+  TData = InfiniteData<
+    Awaited<ReturnType<typeof getRecentRemasters>>,
+    GetRecentRemastersParams["cursor"]
+  >,
+  TError = unknown,
+>(
+  params: GetRecentRemastersParams,
+  options?: {
+    query?: Partial<
+      UseInfiniteQueryOptions<
+        Awaited<ReturnType<typeof getRecentRemasters>>,
+        TError,
+        TData,
+        Awaited<ReturnType<typeof getRecentRemasters>>,
+        QueryKey,
+        GetRecentRemastersParams["cursor"]
+      >
+    >;
+  },
+): UseInfiniteQueryResult<TData, TError> & { queryKey: QueryKey } => {
+  const queryOptions = getGetRecentRemastersInfiniteQueryOptions(
+    params,
+    options,
+  );
+
+  const query = useInfiniteQuery(queryOptions) as UseInfiniteQueryResult<
+    TData,
+    TError
+  > & { queryKey: QueryKey };
+
+  query.queryKey = queryOptions.queryKey;
+
+  return query;
+};
+
+export const getGetRecentRemastersQueryOptions = <
+  TData = Awaited<ReturnType<typeof getRecentRemasters>>,
+  TError = unknown,
+>(
+  params: GetRecentRemastersParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof getRecentRemasters>>,
+        TError,
+        TData
+      >
+    >;
+  },
+) => {
+  const { query: queryOptions } = options ?? {};
+
+  const queryKey =
+    queryOptions?.queryKey ?? getGetRecentRemastersQueryKey(params);
+
+  const queryFn: QueryFunction<
+    Awaited<ReturnType<typeof getRecentRemasters>>
+  > = ({ signal }) => getRecentRemasters(params, signal);
+
+  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
+    Awaited<ReturnType<typeof getRecentRemasters>>,
+    TError,
+    TData
+  > & { queryKey: QueryKey };
+};
+
+export type GetRecentRemastersQueryResult = NonNullable<
+  Awaited<ReturnType<typeof getRecentRemasters>>
+>;
+export type GetRecentRemastersQueryError = unknown;
+
+export const useGetRecentRemasters = <
+  TData = Awaited<ReturnType<typeof getRecentRemasters>>,
+  TError = unknown,
+>(
+  params: GetRecentRemastersParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof getRecentRemasters>>,
+        TError,
+        TData
+      >
+    >;
+  },
+): UseQueryResult<TData, TError> & { queryKey: QueryKey } => {
+  const queryOptions = getGetRecentRemastersQueryOptions(params, options);
+
+  const query = useQuery(queryOptions) as UseQueryResult<TData, TError> & {
+    queryKey: QueryKey;
+  };
+
+  query.queryKey = queryOptions.queryKey;
+
+  return query;
+};
+
+export const getFavouriteRemasters = (
+  params: GetFavouriteRemastersParams,
+  signal?: AbortSignal,
+) => {
+  return customInstance<PageResponseRemasterResponse>({
+    url: `/open/remaster/favourite`,
+    method: "GET",
+    params,
+    signal,
+  });
+};
+
+export const getGetFavouriteRemastersQueryKey = (
+  params: GetFavouriteRemastersParams,
+) => {
+  return [`/open/remaster/favourite`, ...(params ? [params] : [])] as const;
+};
+
+export const getGetFavouriteRemastersInfiniteQueryOptions = <
+  TData = InfiniteData<
+    Awaited<ReturnType<typeof getFavouriteRemasters>>,
+    GetFavouriteRemastersParams["cursor"]
+  >,
+  TError = unknown,
+>(
+  params: GetFavouriteRemastersParams,
+  options?: {
+    query?: Partial<
+      UseInfiniteQueryOptions<
+        Awaited<ReturnType<typeof getFavouriteRemasters>>,
+        TError,
+        TData,
+        Awaited<ReturnType<typeof getFavouriteRemasters>>,
+        QueryKey,
+        GetFavouriteRemastersParams["cursor"]
+      >
+    >;
+  },
+) => {
+  const { query: queryOptions } = options ?? {};
+
+  const queryKey =
+    queryOptions?.queryKey ?? getGetFavouriteRemastersQueryKey(params);
+
+  const queryFn: QueryFunction<
+    Awaited<ReturnType<typeof getFavouriteRemasters>>,
+    QueryKey,
+    GetFavouriteRemastersParams["cursor"]
+  > = ({ signal, pageParam }) =>
+    getFavouriteRemasters(
+      { ...params, cursor: pageParam || params?.["cursor"] },
+      signal,
+    );
+
+  return { queryKey, queryFn, ...queryOptions } as UseInfiniteQueryOptions<
+    Awaited<ReturnType<typeof getFavouriteRemasters>>,
+    TError,
+    TData,
+    Awaited<ReturnType<typeof getFavouriteRemasters>>,
+    QueryKey,
+    GetFavouriteRemastersParams["cursor"]
+  > & { queryKey: QueryKey };
+};
+
+export type GetFavouriteRemastersInfiniteQueryResult = NonNullable<
+  Awaited<ReturnType<typeof getFavouriteRemasters>>
+>;
+export type GetFavouriteRemastersInfiniteQueryError = unknown;
+
+export const useGetFavouriteRemastersInfinite = <
+  TData = InfiniteData<
+    Awaited<ReturnType<typeof getFavouriteRemasters>>,
+    GetFavouriteRemastersParams["cursor"]
+  >,
+  TError = unknown,
+>(
+  params: GetFavouriteRemastersParams,
+  options?: {
+    query?: Partial<
+      UseInfiniteQueryOptions<
+        Awaited<ReturnType<typeof getFavouriteRemasters>>,
+        TError,
+        TData,
+        Awaited<ReturnType<typeof getFavouriteRemasters>>,
+        QueryKey,
+        GetFavouriteRemastersParams["cursor"]
+      >
+    >;
+  },
+): UseInfiniteQueryResult<TData, TError> & { queryKey: QueryKey } => {
+  const queryOptions = getGetFavouriteRemastersInfiniteQueryOptions(
+    params,
+    options,
+  );
+
+  const query = useInfiniteQuery(queryOptions) as UseInfiniteQueryResult<
+    TData,
+    TError
+  > & { queryKey: QueryKey };
+
+  query.queryKey = queryOptions.queryKey;
+
+  return query;
+};
+
+export const getGetFavouriteRemastersQueryOptions = <
+  TData = Awaited<ReturnType<typeof getFavouriteRemasters>>,
+  TError = unknown,
+>(
+  params: GetFavouriteRemastersParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof getFavouriteRemasters>>,
+        TError,
+        TData
+      >
+    >;
+  },
+) => {
+  const { query: queryOptions } = options ?? {};
+
+  const queryKey =
+    queryOptions?.queryKey ?? getGetFavouriteRemastersQueryKey(params);
+
+  const queryFn: QueryFunction<
+    Awaited<ReturnType<typeof getFavouriteRemasters>>
+  > = ({ signal }) => getFavouriteRemasters(params, signal);
+
+  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
+    Awaited<ReturnType<typeof getFavouriteRemasters>>,
+    TError,
+    TData
+  > & { queryKey: QueryKey };
+};
+
+export type GetFavouriteRemastersQueryResult = NonNullable<
+  Awaited<ReturnType<typeof getFavouriteRemasters>>
+>;
+export type GetFavouriteRemastersQueryError = unknown;
+
+export const useGetFavouriteRemasters = <
+  TData = Awaited<ReturnType<typeof getFavouriteRemasters>>,
+  TError = unknown,
+>(
+  params: GetFavouriteRemastersParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof getFavouriteRemasters>>,
+        TError,
+        TData
+      >
+    >;
+  },
+): UseQueryResult<TData, TError> & { queryKey: QueryKey } => {
+  const queryOptions = getGetFavouriteRemastersQueryOptions(params, options);
 
   const query = useQuery(queryOptions) as UseQueryResult<TData, TError> & {
     queryKey: QueryKey;
