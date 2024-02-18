@@ -35,6 +35,7 @@ export interface Metadata {
   timeSignature: number;
   tuning: number;
   userId: string;
+  username: string;
   totalPlays: number;
   totalLikes: number;
 }

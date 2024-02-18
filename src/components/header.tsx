@@ -40,7 +40,7 @@ const UserMenu: React.FC<{ user: UserResponse }> = ({ user }) => {
         <DropdownMenuGroup>
           <DropdownMenuItem>
             <Button variant="ghost" asChild className="w-full justify-start">
-              <Link href="/profile">Profile</Link>
+              <Link href="/profile">View Profile</Link>
             </Button>
           </DropdownMenuItem>
           <DropdownMenuItem>

@@ -75,6 +75,7 @@ const Editor: NextPage = ({}) => {
           timeSignature: remaster.data.timeSignature,
           tuning: remaster.data.tuning,
           userId: remaster.data.user.id,
+          username: remaster.data.user.username,
           totalPlays: remaster.data.totalPlays,
           totalLikes: remaster.data.totalLikes,
         },

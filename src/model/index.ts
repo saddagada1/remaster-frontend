@@ -6,6 +6,7 @@
  */
 
 export * from "./authenticationResponse";
+export * from "./basicRemasterResponse";
 export * from "./basicUserResponse";
 export * from "./changeForgottenPasswordParams";
 export * from "./createOrUpdateRemasterPlaysParams";
@@ -19,8 +20,13 @@ export * from "./getRecentRemastersParams";
 export * from "./getRemasterParams";
 export * from "./getTrendingRemastersParams";
 export * from "./getUserByUsernameParams";
+export * from "./getUserFollowersParams";
+export * from "./getUserFollowingParams";
+export * from "./getUserLikedRemastersParams";
 export * from "./likeRemasterParams";
 export * from "./loginRequest";
+export * from "./pageResponseBasicRemasterResponse";
+export * from "./pageResponseBasicUserResponse";
 export * from "./pageResponseRemasterResponse";
 export * from "./pageResponseUserResponse";
 export * from "./registerRequest";

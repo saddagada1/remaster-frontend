@@ -1,12 +1,12 @@
 import { cn } from "@/lib/utils";
-import { type UserResponse } from "@/model";
+import { type BasicUserResponse, type UserResponse } from "@/model";
 import { type HTMLAttributes, forwardRef } from "react";
 import SafeImage from "./safeImage";
 import { Button } from "./ui/button";
 import Link from "next/link";
 
 interface UserCardProps extends HTMLAttributes<HTMLDivElement> {
-  user: UserResponse;
+  user: UserResponse | BasicUserResponse;
 }
 
 const UserCard = forwardRef<HTMLDivElement, UserCardProps>(

@@ -98,7 +98,7 @@ const RemasterActions: React.FC = ({}) => {
               toast.success("Copied!");
             }}
             variant="outline"
-            className="flex-1 bg-background hover:bg-background/75"
+            className="flex-1 hr:bg-background hr:hover:bg-background/75"
           >
             Share
           </Button>
@@ -129,6 +129,7 @@ const RemasterActions: React.FC = ({}) => {
 
 const Topbar: React.FC = ({}) => {
   const metadata = useAppSelector((store) => store.remaster.metadata);
+  const auth = useAppSelector((store) => store.auth);
 
   if (!metadata) {
     return <div className="topbar section" />;
@@ -139,10 +140,22 @@ const Topbar: React.FC = ({}) => {
       <Orb orientation="top" />
       <div className="flex flex-1 flex-col gap-2">
         <div className="flex gap-2">
-          <div className="section h-full flex-1 overflow-hidden">
-            <h1 className="label">Name</h1>
-            <p className="p line-clamp-1 leading-none">{metadata.name}</p>
-          </div>
+          {auth.credentials?.user.id !== metadata.userId ? (
+            <Button variant="outline" className="h-full flex-1 p-2" asChild>
+              <Link
+                href={`/${metadata.username}`}
+                className="flex flex-col items-stretch justify-between"
+              >
+                <h1 className="label">Creator</h1>
+                <p className="p leading-none">{metadata.username}</p>
+              </Link>
+            </Button>
+          ) : (
+            <div className="section h-full flex-1 overflow-hidden">
+              <h1 className="label">Name</h1>
+              <p className="p line-clamp-1 leading-none">{metadata.name}</p>
+            </div>
+          )}
           <div className="section">
             <h1 className="label">Plays</h1>
             <p className="p leading-none">{metadata.totalPlays}</p>
@@ -162,6 +175,7 @@ const Topbar: React.FC = ({}) => {
 
 const Sidebar: React.FC = ({}) => {
   const metadata = useAppSelector((store) => store.remaster.metadata);
+  const auth = useAppSelector((store) => store.auth);
 
   if (!metadata) {
     return <div className="sidebar section" />;
@@ -175,8 +189,19 @@ const Sidebar: React.FC = ({}) => {
       </div>
       <div className="section">
         <h1 className="label">Name</h1>
-        <p className="p">{metadata.name}</p>
+        <p className="p line-clamp-2">{metadata.name}</p>
       </div>
+      {auth.credentials?.user.id !== metadata.userId && (
+        <Button variant="outline" className="h-fit p-2" asChild>
+          <Link
+            href={`/${metadata.username}`}
+            className="flex flex-col items-stretch justify-between"
+          >
+            <h1 className="label">Creator</h1>
+            <p className="p">{metadata.username}</p>
+          </Link>
+        </Button>
+      )}
       <div className="section">
         <h1 className="label">Plays</h1>
         <p className="p">{metadata.totalPlays}</p>

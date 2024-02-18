@@ -20,6 +20,9 @@ import type {
   AuthenticationResponse,
   FollowUserParams,
   GetUserByUsernameParams,
+  GetUserFollowersParams,
+  GetUserFollowingParams,
+  PageResponseBasicUserResponse,
   PageResponseUserResponse,
   SearchUsersParams,
   UnfollowUserParams,
@@ -207,6 +210,330 @@ export const useFollowUser = <TError = unknown, TContext = unknown>(options?: {
 
   return useMutation(mutationOptions);
 };
+export const getUserFollowing = (
+  params: GetUserFollowingParams,
+  signal?: AbortSignal,
+) => {
+  return customInstance<PageResponseBasicUserResponse>({
+    url: `/user/following`,
+    method: "GET",
+    params,
+    signal,
+  });
+};
+
+export const getGetUserFollowingQueryKey = (params: GetUserFollowingParams) => {
+  return [`/user/following`, ...(params ? [params] : [])] as const;
+};
+
+export const getGetUserFollowingInfiniteQueryOptions = <
+  TData = InfiniteData<
+    Awaited<ReturnType<typeof getUserFollowing>>,
+    GetUserFollowingParams["cursor"]
+  >,
+  TError = unknown,
+>(
+  params: GetUserFollowingParams,
+  options?: {
+    query?: Partial<
+      UseInfiniteQueryOptions<
+        Awaited<ReturnType<typeof getUserFollowing>>,
+        TError,
+        TData,
+        Awaited<ReturnType<typeof getUserFollowing>>,
+        QueryKey,
+        GetUserFollowingParams["cursor"]
+      >
+    >;
+  },
+) => {
+  const { query: queryOptions } = options ?? {};
+
+  const queryKey =
+    queryOptions?.queryKey ?? getGetUserFollowingQueryKey(params);
+
+  const queryFn: QueryFunction<
+    Awaited<ReturnType<typeof getUserFollowing>>,
+    QueryKey,
+    GetUserFollowingParams["cursor"]
+  > = ({ signal, pageParam }) =>
+    getUserFollowing(
+      { ...params, cursor: pageParam || params?.["cursor"] },
+      signal,
+    );
+
+  return { queryKey, queryFn, ...queryOptions } as UseInfiniteQueryOptions<
+    Awaited<ReturnType<typeof getUserFollowing>>,
+    TError,
+    TData,
+    Awaited<ReturnType<typeof getUserFollowing>>,
+    QueryKey,
+    GetUserFollowingParams["cursor"]
+  > & { queryKey: QueryKey };
+};
+
+export type GetUserFollowingInfiniteQueryResult = NonNullable<
+  Awaited<ReturnType<typeof getUserFollowing>>
+>;
+export type GetUserFollowingInfiniteQueryError = unknown;
+
+export const useGetUserFollowingInfinite = <
+  TData = InfiniteData<
+    Awaited<ReturnType<typeof getUserFollowing>>,
+    GetUserFollowingParams["cursor"]
+  >,
+  TError = unknown,
+>(
+  params: GetUserFollowingParams,
+  options?: {
+    query?: Partial<
+      UseInfiniteQueryOptions<
+        Awaited<ReturnType<typeof getUserFollowing>>,
+        TError,
+        TData,
+        Awaited<ReturnType<typeof getUserFollowing>>,
+        QueryKey,
+        GetUserFollowingParams["cursor"]
+      >
+    >;
+  },
+): UseInfiniteQueryResult<TData, TError> & { queryKey: QueryKey } => {
+  const queryOptions = getGetUserFollowingInfiniteQueryOptions(params, options);
+
+  const query = useInfiniteQuery(queryOptions) as UseInfiniteQueryResult<
+    TData,
+    TError
+  > & { queryKey: QueryKey };
+
+  query.queryKey = queryOptions.queryKey;
+
+  return query;
+};
+
+export const getGetUserFollowingQueryOptions = <
+  TData = Awaited<ReturnType<typeof getUserFollowing>>,
+  TError = unknown,
+>(
+  params: GetUserFollowingParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof getUserFollowing>>,
+        TError,
+        TData
+      >
+    >;
+  },
+) => {
+  const { query: queryOptions } = options ?? {};
+
+  const queryKey =
+    queryOptions?.queryKey ?? getGetUserFollowingQueryKey(params);
+
+  const queryFn: QueryFunction<
+    Awaited<ReturnType<typeof getUserFollowing>>
+  > = ({ signal }) => getUserFollowing(params, signal);
+
+  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
+    Awaited<ReturnType<typeof getUserFollowing>>,
+    TError,
+    TData
+  > & { queryKey: QueryKey };
+};
+
+export type GetUserFollowingQueryResult = NonNullable<
+  Awaited<ReturnType<typeof getUserFollowing>>
+>;
+export type GetUserFollowingQueryError = unknown;
+
+export const useGetUserFollowing = <
+  TData = Awaited<ReturnType<typeof getUserFollowing>>,
+  TError = unknown,
+>(
+  params: GetUserFollowingParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof getUserFollowing>>,
+        TError,
+        TData
+      >
+    >;
+  },
+): UseQueryResult<TData, TError> & { queryKey: QueryKey } => {
+  const queryOptions = getGetUserFollowingQueryOptions(params, options);
+
+  const query = useQuery(queryOptions) as UseQueryResult<TData, TError> & {
+    queryKey: QueryKey;
+  };
+
+  query.queryKey = queryOptions.queryKey;
+
+  return query;
+};
+
+export const getUserFollowers = (
+  params: GetUserFollowersParams,
+  signal?: AbortSignal,
+) => {
+  return customInstance<PageResponseBasicUserResponse>({
+    url: `/user/followers`,
+    method: "GET",
+    params,
+    signal,
+  });
+};
+
+export const getGetUserFollowersQueryKey = (params: GetUserFollowersParams) => {
+  return [`/user/followers`, ...(params ? [params] : [])] as const;
+};
+
+export const getGetUserFollowersInfiniteQueryOptions = <
+  TData = InfiniteData<
+    Awaited<ReturnType<typeof getUserFollowers>>,
+    GetUserFollowersParams["cursor"]
+  >,
+  TError = unknown,
+>(
+  params: GetUserFollowersParams,
+  options?: {
+    query?: Partial<
+      UseInfiniteQueryOptions<
+        Awaited<ReturnType<typeof getUserFollowers>>,
+        TError,
+        TData,
+        Awaited<ReturnType<typeof getUserFollowers>>,
+        QueryKey,
+        GetUserFollowersParams["cursor"]
+      >
+    >;
+  },
+) => {
+  const { query: queryOptions } = options ?? {};
+
+  const queryKey =
+    queryOptions?.queryKey ?? getGetUserFollowersQueryKey(params);
+
+  const queryFn: QueryFunction<
+    Awaited<ReturnType<typeof getUserFollowers>>,
+    QueryKey,
+    GetUserFollowersParams["cursor"]
+  > = ({ signal, pageParam }) =>
+    getUserFollowers(
+      { ...params, cursor: pageParam || params?.["cursor"] },
+      signal,
+    );
+
+  return { queryKey, queryFn, ...queryOptions } as UseInfiniteQueryOptions<
+    Awaited<ReturnType<typeof getUserFollowers>>,
+    TError,
+    TData,
+    Awaited<ReturnType<typeof getUserFollowers>>,
+    QueryKey,
+    GetUserFollowersParams["cursor"]
+  > & { queryKey: QueryKey };
+};
+
+export type GetUserFollowersInfiniteQueryResult = NonNullable<
+  Awaited<ReturnType<typeof getUserFollowers>>
+>;
+export type GetUserFollowersInfiniteQueryError = unknown;
+
+export const useGetUserFollowersInfinite = <
+  TData = InfiniteData<
+    Awaited<ReturnType<typeof getUserFollowers>>,
+    GetUserFollowersParams["cursor"]
+  >,
+  TError = unknown,
+>(
+  params: GetUserFollowersParams,
+  options?: {
+    query?: Partial<
+      UseInfiniteQueryOptions<
+        Awaited<ReturnType<typeof getUserFollowers>>,
+        TError,
+        TData,
+        Awaited<ReturnType<typeof getUserFollowers>>,
+        QueryKey,
+        GetUserFollowersParams["cursor"]
+      >
+    >;
+  },
+): UseInfiniteQueryResult<TData, TError> & { queryKey: QueryKey } => {
+  const queryOptions = getGetUserFollowersInfiniteQueryOptions(params, options);
+
+  const query = useInfiniteQuery(queryOptions) as UseInfiniteQueryResult<
+    TData,
+    TError
+  > & { queryKey: QueryKey };
+
+  query.queryKey = queryOptions.queryKey;
+
+  return query;
+};
+
+export const getGetUserFollowersQueryOptions = <
+  TData = Awaited<ReturnType<typeof getUserFollowers>>,
+  TError = unknown,
+>(
+  params: GetUserFollowersParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof getUserFollowers>>,
+        TError,
+        TData
+      >
+    >;
+  },
+) => {
+  const { query: queryOptions } = options ?? {};
+
+  const queryKey =
+    queryOptions?.queryKey ?? getGetUserFollowersQueryKey(params);
+
+  const queryFn: QueryFunction<
+    Awaited<ReturnType<typeof getUserFollowers>>
+  > = ({ signal }) => getUserFollowers(params, signal);
+
+  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
+    Awaited<ReturnType<typeof getUserFollowers>>,
+    TError,
+    TData
+  > & { queryKey: QueryKey };
+};
+
+export type GetUserFollowersQueryResult = NonNullable<
+  Awaited<ReturnType<typeof getUserFollowers>>
+>;
+export type GetUserFollowersQueryError = unknown;
+
+export const useGetUserFollowers = <
+  TData = Awaited<ReturnType<typeof getUserFollowers>>,
+  TError = unknown,
+>(
+  params: GetUserFollowersParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof getUserFollowers>>,
+        TError,
+        TData
+      >
+    >;
+  },
+): UseQueryResult<TData, TError> & { queryKey: QueryKey } => {
+  const queryOptions = getGetUserFollowersQueryOptions(params, options);
+
+  const query = useQuery(queryOptions) as UseQueryResult<TData, TError> & {
+    queryKey: QueryKey;
+  };
+
+  query.queryKey = queryOptions.queryKey;
+
+  return query;
+};
+
 export const searchUsers = (
   params: SearchUsersParams,
   signal?: AbortSignal,

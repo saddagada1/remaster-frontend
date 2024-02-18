@@ -7,5 +7,7 @@
 
 export interface BasicUserResponse {
   id: string;
+  image?: string;
+  name?: string;
   username: string;
 }

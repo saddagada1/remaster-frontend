@@ -66,22 +66,32 @@ const UserLayout: React.FC<UserLayoutProps> = ({ user }) => {
             <h1 className="label">Remasters</h1>
             <p>{compactValue(user.totalRemasters)}</p>
           </div>
-          <Button variant="outline" className="h-fit flex-1 p-2" asChild>
+          <Button
+            variant="outline"
+            className="h-fit flex-1 p-2 focus-visible:ring-0 disabled:justify-start disabled:opacity-100"
+            asChild={router.pathname === "/profile"}
+            disabled={router.pathname !== "/profile"}
+          >
             <Link
-              href={router.pathname}
-              className="flex flex-col items-stretch justify-between"
+              href="/followers"
+              className="flex h-full flex-col items-stretch"
             >
-              <h1 className="label">Followers</h1>
-              <p className="p">{compactValue(user.totalFollowers)}</p>
+              <h1 className="label flex-1">Followers</h1>
+              <p className="p text-left">{compactValue(user.totalFollowers)}</p>
             </Link>
           </Button>
-          <Button variant="outline" className="h-fit flex-1 p-2" asChild>
+          <Button
+            variant="outline"
+            className="h-fit flex-1 p-2 focus-visible:ring-0 disabled:justify-start disabled:opacity-100"
+            asChild={router.pathname === "/profile"}
+            disabled={router.pathname !== "/profile"}
+          >
             <Link
-              href={router.pathname}
-              className="flex flex-col items-stretch justify-between"
+              href="/following"
+              className="flex h-full flex-col items-stretch"
             >
-              <h1 className="label">Following</h1>
-              <p className="p">{compactValue(user.totalFollowing)}</p>
+              <h1 className="label flex-1">Following</h1>
+              <p className="p text-left">{compactValue(user.totalFollowing)}</p>
             </Link>
           </Button>
         </div>

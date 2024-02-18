@@ -26,7 +26,9 @@ import type {
   GetRecentRemastersParams,
   GetRemasterParams,
   GetTrendingRemastersParams,
+  GetUserLikedRemastersParams,
   LikeRemasterParams,
+  PageResponseBasicRemasterResponse,
   PageResponseRemasterResponse,
   RemasterResponse,
   SearchRemastersParams,
@@ -445,6 +447,173 @@ export const useUnlikeRemaster = <
 
   return useMutation(mutationOptions);
 };
+export const getUserLikedRemasters = (
+  params: GetUserLikedRemastersParams,
+  signal?: AbortSignal,
+) => {
+  return customInstance<PageResponseBasicRemasterResponse>({
+    url: `/user/remaster/like`,
+    method: "GET",
+    params,
+    signal,
+  });
+};
+
+export const getGetUserLikedRemastersQueryKey = (
+  params: GetUserLikedRemastersParams,
+) => {
+  return [`/user/remaster/like`, ...(params ? [params] : [])] as const;
+};
+
+export const getGetUserLikedRemastersInfiniteQueryOptions = <
+  TData = InfiniteData<
+    Awaited<ReturnType<typeof getUserLikedRemasters>>,
+    GetUserLikedRemastersParams["cursor"]
+  >,
+  TError = unknown,
+>(
+  params: GetUserLikedRemastersParams,
+  options?: {
+    query?: Partial<
+      UseInfiniteQueryOptions<
+        Awaited<ReturnType<typeof getUserLikedRemasters>>,
+        TError,
+        TData,
+        Awaited<ReturnType<typeof getUserLikedRemasters>>,
+        QueryKey,
+        GetUserLikedRemastersParams["cursor"]
+      >
+    >;
+  },
+) => {
+  const { query: queryOptions } = options ?? {};
+
+  const queryKey =
+    queryOptions?.queryKey ?? getGetUserLikedRemastersQueryKey(params);
+
+  const queryFn: QueryFunction<
+    Awaited<ReturnType<typeof getUserLikedRemasters>>,
+    QueryKey,
+    GetUserLikedRemastersParams["cursor"]
+  > = ({ signal, pageParam }) =>
+    getUserLikedRemasters(
+      { ...params, cursor: pageParam || params?.["cursor"] },
+      signal,
+    );
+
+  return { queryKey, queryFn, ...queryOptions } as UseInfiniteQueryOptions<
+    Awaited<ReturnType<typeof getUserLikedRemasters>>,
+    TError,
+    TData,
+    Awaited<ReturnType<typeof getUserLikedRemasters>>,
+    QueryKey,
+    GetUserLikedRemastersParams["cursor"]
+  > & { queryKey: QueryKey };
+};
+
+export type GetUserLikedRemastersInfiniteQueryResult = NonNullable<
+  Awaited<ReturnType<typeof getUserLikedRemasters>>
+>;
+export type GetUserLikedRemastersInfiniteQueryError = unknown;
+
+export const useGetUserLikedRemastersInfinite = <
+  TData = InfiniteData<
+    Awaited<ReturnType<typeof getUserLikedRemasters>>,
+    GetUserLikedRemastersParams["cursor"]
+  >,
+  TError = unknown,
+>(
+  params: GetUserLikedRemastersParams,
+  options?: {
+    query?: Partial<
+      UseInfiniteQueryOptions<
+        Awaited<ReturnType<typeof getUserLikedRemasters>>,
+        TError,
+        TData,
+        Awaited<ReturnType<typeof getUserLikedRemasters>>,
+        QueryKey,
+        GetUserLikedRemastersParams["cursor"]
+      >
+    >;
+  },
+): UseInfiniteQueryResult<TData, TError> & { queryKey: QueryKey } => {
+  const queryOptions = getGetUserLikedRemastersInfiniteQueryOptions(
+    params,
+    options,
+  );
+
+  const query = useInfiniteQuery(queryOptions) as UseInfiniteQueryResult<
+    TData,
+    TError
+  > & { queryKey: QueryKey };
+
+  query.queryKey = queryOptions.queryKey;
+
+  return query;
+};
+
+export const getGetUserLikedRemastersQueryOptions = <
+  TData = Awaited<ReturnType<typeof getUserLikedRemasters>>,
+  TError = unknown,
+>(
+  params: GetUserLikedRemastersParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof getUserLikedRemasters>>,
+        TError,
+        TData
+      >
+    >;
+  },
+) => {
+  const { query: queryOptions } = options ?? {};
+
+  const queryKey =
+    queryOptions?.queryKey ?? getGetUserLikedRemastersQueryKey(params);
+
+  const queryFn: QueryFunction<
+    Awaited<ReturnType<typeof getUserLikedRemasters>>
+  > = ({ signal }) => getUserLikedRemasters(params, signal);
+
+  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
+    Awaited<ReturnType<typeof getUserLikedRemasters>>,
+    TError,
+    TData
+  > & { queryKey: QueryKey };
+};
+
+export type GetUserLikedRemastersQueryResult = NonNullable<
+  Awaited<ReturnType<typeof getUserLikedRemasters>>
+>;
+export type GetUserLikedRemastersQueryError = unknown;
+
+export const useGetUserLikedRemasters = <
+  TData = Awaited<ReturnType<typeof getUserLikedRemasters>>,
+  TError = unknown,
+>(
+  params: GetUserLikedRemastersParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof getUserLikedRemasters>>,
+        TError,
+        TData
+      >
+    >;
+  },
+): UseQueryResult<TData, TError> & { queryKey: QueryKey } => {
+  const queryOptions = getGetUserLikedRemastersQueryOptions(params, options);
+
+  const query = useQuery(queryOptions) as UseQueryResult<TData, TError> & {
+    queryKey: QueryKey;
+  };
+
+  query.queryKey = queryOptions.queryKey;
+
+  return query;
+};
+
 export const likeRemaster = (params: LikeRemasterParams) => {
   return customInstance<string>({
     url: `/user/remaster/like`,
@@ -734,7 +903,7 @@ export const getGetRemasterQueryKey = (
 export const getGetRemasterInfiniteQueryOptions = <
   TData = InfiniteData<
     Awaited<ReturnType<typeof getRemaster>>,
-    GetRemasterParams
+    GetRemasterParams["cursor"]
   >,
   TError = unknown,
 >(
@@ -748,7 +917,7 @@ export const getGetRemasterInfiniteQueryOptions = <
         TData,
         Awaited<ReturnType<typeof getRemaster>>,
         QueryKey,
-        GetRemasterParams
+        GetRemasterParams["cursor"]
       >
     >;
   },
@@ -760,8 +929,13 @@ export const getGetRemasterInfiniteQueryOptions = <
   const queryFn: QueryFunction<
     Awaited<ReturnType<typeof getRemaster>>,
     QueryKey,
-    GetRemasterParams
-  > = ({ signal }) => getRemaster(id, { ...params }, signal);
+    GetRemasterParams["cursor"]
+  > = ({ signal, pageParam }) =>
+    getRemaster(
+      id,
+      { ...params, cursor: pageParam || params?.["cursor"] },
+      signal,
+    );
 
   return {
     queryKey,
@@ -774,7 +948,7 @@ export const getGetRemasterInfiniteQueryOptions = <
     TData,
     Awaited<ReturnType<typeof getRemaster>>,
     QueryKey,
-    GetRemasterParams
+    GetRemasterParams["cursor"]
   > & { queryKey: QueryKey };
 };
 
@@ -786,7 +960,7 @@ export type GetRemasterInfiniteQueryError = unknown;
 export const useGetRemasterInfinite = <
   TData = InfiniteData<
     Awaited<ReturnType<typeof getRemaster>>,
-    GetRemasterParams
+    GetRemasterParams["cursor"]
   >,
   TError = unknown,
 >(
@@ -800,7 +974,7 @@ export const useGetRemasterInfinite = <
         TData,
         Awaited<ReturnType<typeof getRemaster>>,
         QueryKey,
-        GetRemasterParams
+        GetRemasterParams["cursor"]
       >
     >;
   },

@@ -8,6 +8,7 @@ import NoData from "@/components/noData";
 import RemasterCard from "@/components/remasters/remasterCard";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { env } from "@/env";
 import { defaultPaginationLimit } from "@/lib/constants";
 import { type NextPage } from "next";
 import Head from "next/head";
@@ -34,7 +35,7 @@ const Home: NextPage = () => {
         <div className="flex flex-col gap-2 md:flex-row">
           <div className="section relative aspect-video flex-1 overflow-hidden md:aspect-auto">
             <video
-              src="/media/hero.mp4"
+              src={env.NEXT_PUBLIC_CLOUDFRONT_URL + "videos/index-hero.mp4"}
               autoPlay
               muted
               loop
@@ -89,7 +90,7 @@ const Home: NextPage = () => {
               <ScrollArea>
                 <div className="flex flex-col gap-2">
                   {recent.data.items.map((remaster, i) => (
-                    <RemasterCard key={i} remaster={remaster} />
+                    <RemasterCard key={i} remaster={remaster} small />
                   ))}
                 </div>
               </ScrollArea>
@@ -115,7 +116,7 @@ const Home: NextPage = () => {
               <ScrollArea>
                 <div className="flex flex-col gap-2">
                   {trending.data.items.map((remaster, i) => (
-                    <RemasterCard key={i} remaster={remaster} />
+                    <RemasterCard key={i} remaster={remaster} small />
                   ))}
                 </div>
               </ScrollArea>
@@ -141,7 +142,7 @@ const Home: NextPage = () => {
               <ScrollArea>
                 <div className="flex flex-col gap-2">
                   {favourites.data.items.map((remaster, i) => (
-                    <RemasterCard key={i} remaster={remaster} />
+                    <RemasterCard key={i} remaster={remaster} small />
                   ))}
                 </div>
               </ScrollArea>
