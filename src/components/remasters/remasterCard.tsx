@@ -20,13 +20,14 @@ const RemasterCard = forwardRef<HTMLDivElement, RemasterCardProps>(
             ref={ref}
             className={cn("section flex gap-2 overflow-hidden", className)}
           >
-            <div className="aspect-video w-1/2 overflow-hidden rounded lg:w-1/3">
+            <div className="relative aspect-video w-1/2 overflow-hidden rounded lg:w-1/3">
               <ReactPlayer
                 url={remaster.url}
                 light
                 width="100%"
                 height="100%"
               />
+              <div className="absolute left-0 top-0 h-full w-full" />
             </div>
             <div className="relative flex-1">
               <p className="p-accent mono">

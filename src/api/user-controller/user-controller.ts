@@ -706,7 +706,7 @@ export const getGetUserByUsernameQueryKey = (
 export const getGetUserByUsernameInfiniteQueryOptions = <
   TData = InfiniteData<
     Awaited<ReturnType<typeof getUserByUsername>>,
-    GetUserByUsernameParams["cursor"]
+    GetUserByUsernameParams
   >,
   TError = unknown,
 >(
@@ -720,7 +720,7 @@ export const getGetUserByUsernameInfiniteQueryOptions = <
         TData,
         Awaited<ReturnType<typeof getUserByUsername>>,
         QueryKey,
-        GetUserByUsernameParams["cursor"]
+        GetUserByUsernameParams
       >
     >;
   },
@@ -733,13 +733,8 @@ export const getGetUserByUsernameInfiniteQueryOptions = <
   const queryFn: QueryFunction<
     Awaited<ReturnType<typeof getUserByUsername>>,
     QueryKey,
-    GetUserByUsernameParams["cursor"]
-  > = ({ signal, pageParam }) =>
-    getUserByUsername(
-      username,
-      { ...params, cursor: pageParam || params?.["cursor"] },
-      signal,
-    );
+    GetUserByUsernameParams
+  > = ({ signal }) => getUserByUsername(username, { ...params }, signal);
 
   return {
     queryKey,
@@ -752,7 +747,7 @@ export const getGetUserByUsernameInfiniteQueryOptions = <
     TData,
     Awaited<ReturnType<typeof getUserByUsername>>,
     QueryKey,
-    GetUserByUsernameParams["cursor"]
+    GetUserByUsernameParams
   > & { queryKey: QueryKey };
 };
 
@@ -764,7 +759,7 @@ export type GetUserByUsernameInfiniteQueryError = unknown;
 export const useGetUserByUsernameInfinite = <
   TData = InfiniteData<
     Awaited<ReturnType<typeof getUserByUsername>>,
-    GetUserByUsernameParams["cursor"]
+    GetUserByUsernameParams
   >,
   TError = unknown,
 >(
@@ -778,7 +773,7 @@ export const useGetUserByUsernameInfinite = <
         TData,
         Awaited<ReturnType<typeof getUserByUsername>>,
         QueryKey,
-        GetUserByUsernameParams["cursor"]
+        GetUserByUsernameParams
       >
     >;
   },

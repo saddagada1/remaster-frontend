@@ -903,7 +903,7 @@ export const getGetRemasterQueryKey = (
 export const getGetRemasterInfiniteQueryOptions = <
   TData = InfiniteData<
     Awaited<ReturnType<typeof getRemaster>>,
-    GetRemasterParams["cursor"]
+    GetRemasterParams
   >,
   TError = unknown,
 >(
@@ -917,7 +917,7 @@ export const getGetRemasterInfiniteQueryOptions = <
         TData,
         Awaited<ReturnType<typeof getRemaster>>,
         QueryKey,
-        GetRemasterParams["cursor"]
+        GetRemasterParams
       >
     >;
   },
@@ -929,13 +929,8 @@ export const getGetRemasterInfiniteQueryOptions = <
   const queryFn: QueryFunction<
     Awaited<ReturnType<typeof getRemaster>>,
     QueryKey,
-    GetRemasterParams["cursor"]
-  > = ({ signal, pageParam }) =>
-    getRemaster(
-      id,
-      { ...params, cursor: pageParam || params?.["cursor"] },
-      signal,
-    );
+    GetRemasterParams
+  > = ({ signal }) => getRemaster(id, { ...params }, signal);
 
   return {
     queryKey,
@@ -948,7 +943,7 @@ export const getGetRemasterInfiniteQueryOptions = <
     TData,
     Awaited<ReturnType<typeof getRemaster>>,
     QueryKey,
-    GetRemasterParams["cursor"]
+    GetRemasterParams
   > & { queryKey: QueryKey };
 };
 
@@ -960,7 +955,7 @@ export type GetRemasterInfiniteQueryError = unknown;
 export const useGetRemasterInfinite = <
   TData = InfiniteData<
     Awaited<ReturnType<typeof getRemaster>>,
-    GetRemasterParams["cursor"]
+    GetRemasterParams
   >,
   TError = unknown,
 >(
@@ -974,7 +969,7 @@ export const useGetRemasterInfinite = <
         TData,
         Awaited<ReturnType<typeof getRemaster>>,
         QueryKey,
-        GetRemasterParams["cursor"]
+        GetRemasterParams
       >
     >;
   },
